@@ -84,6 +84,56 @@
   color: #888;
 }
 
+.telepick-destinations {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.telepick-destinations-empty {
+  font-size: 12px;
+  color: #cf222e;
+}
+
+.telepick-destination-head {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.telepick-destination-list {
+  max-height: 96px;
+  overflow: auto;
+  display: grid;
+  gap: 4px;
+}
+
+.telepick-destination-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #333;
+}
+
+.telepick-destination-group {
+  display: grid;
+  gap: 4px;
+}
+
+.telepick-destination-parent-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+  margin-top: 2px;
+}
+
+.telepick-destination-child {
+  padding-left: 14px;
+}
+
 .telepick-textarea {
   display: block;
   width: calc(100% - 24px);

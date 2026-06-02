@@ -28,16 +28,12 @@
       </div>
 
       <div class="field">
-        <label for="chat-id">Chat ID</label>
-        <input
-          type="text"
-          id="chat-id"
-          name="chatId"
-          placeholder="-1001234567890 or 123456789"
-          autocomplete="off"
-          required
-        />
-        <p class="hint">Your user ID, group ID, or channel ID. Message your bot first, then use <code>getUpdates</code> or <a href="https://t.me/userinfobot" target="_blank" rel="noopener">@userinfobot</a>.</p>
+        <div class="field-row">
+          <label>Recipients (max 20)</label>
+          <button type="button" id="add-recipient-btn" class="btn btn-secondary btn-sm">+ Add recipient</button>
+        </div>
+        <div id="recipients-list" class="recipients-list"></div>
+        <p class="hint">Add your personal/group chat IDs. For forum groups, add topic IDs under each recipient.</p>
       </div>
 
       <div class="actions">

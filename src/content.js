@@ -5,6 +5,8 @@
   const PANEL_WIDTH_PX = 280;
   const PANEL_HEIGHT_LIMIT_PX = 240;
   const MIN_CAPTURE_SIZE_PX = 24;
+  const RECIPIENTS_EMPTY_MSG = "No recipients configured. Open settings first.";
+  const SITE_DESTINATIONS_KEY = "siteDestinations";
 
   let host = null;
   let shadow = null;
@@ -15,6 +17,45 @@
   let screenshotOverlay = null;
   let removeCaptureKeyListener = null;
   let keyboardGuardEnabled = false;
+  let activeSubmitHandler = null;
+
+  function destinationKey(chatId, topicId = "") {
+    return `${String(chatId)}::${String(topicId || "")}`;
+  }
+
+  function getSiteHost() {
+    return window.location.hostname || "unknown-host";
+  }
+
+  async function loadSavedDestinations(host) {
+    try {
+      const data = await chrome.storage.local.get(SITE_DESTINATIONS_KEY);
+      const siteMap = data[SITE_DESTINATIONS_KEY] || {};
+      const saved = siteMap[host];
+      if (!Array.isArray(saved)) return new Set();
+      return new Set(
+        saved
+          .map((item) => destinationKey(item.chatId, item.topicId))
+          .filter(Boolean)
+      );
+    } catch {
+      return new Set();
+    }
+  }
+
+  async function saveSelectedDestinations(host, destinations) {
+    try {
+      const data = await chrome.storage.local.get(SITE_DESTINATIONS_KEY);
+      const siteMap = data[SITE_DESTINATIONS_KEY] || {};
+      siteMap[host] = destinations.map((item) => ({
+        chatId: item.chatId,
+        topicId: item.topicId || "",
+      }));
+      await chrome.storage.local.set({ [SITE_DESTINATIONS_KEY]: siteMap });
+    } catch {
+      // Ignore storage errors to avoid blocking send flow.
+    }
+  }
 
   function stopPageShortcuts(event) {
     if (!host) return;
@@ -22,6 +63,12 @@
     if (!path.includes(host)) return;
     // Escape ni panelni yopish uchun ishlatamiz.
     if (event.key === "Escape") return;
+    if (event.key === "Enter" && event.ctrlKey && event.type === "keydown") {
+      event.preventDefault();
+      event.stopPropagation();
+      activeSubmitHandler?.();
+      return;
+    }
     event.stopPropagation();
   }
 
@@ -95,6 +142,7 @@
       clearTimeout(hideFabTimer);
       hideFabTimer = null;
     }
+    activeSubmitHandler = null;
     hideFab();
   }
 
@@ -125,6 +173,139 @@
   function truncatePreview(text) {
     if (text.length <= PREVIEW_MAX) return text;
     return text.slice(0, PREVIEW_MAX) + "…";
+  }
+
+  async function getRecipients() {
+    try {
+      const response = await chrome.runtime.sendMessage({ type: "GET_RECIPIENTS" });
+      if (!response?.ok) return [];
+      return Array.isArray(response.recipients) ? response.recipients : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function buildDestinationGroups(recipients) {
+    return recipients.map((recipient) => ({
+      chatId: recipient.chatId,
+      recipientLabel: recipient.label || recipient.chatId,
+      topics: (recipient.topics || []).map((topic) => ({
+        chatId: recipient.chatId,
+        topicId: topic.topicId,
+        topicLabel: topic.label || `Topic ${topic.topicId}`,
+      })),
+    }));
+  }
+
+  function getSelectedDestinations(container) {
+    const selected = [];
+    container
+      .querySelectorAll('input[type="checkbox"][data-destination]:checked')
+      .forEach((input) => {
+        selected.push({
+          chatId: input.dataset.chatId,
+          topicId: input.dataset.topicId || "",
+        });
+      });
+    return selected;
+  }
+
+  function formatSendResult(result, successLabel) {
+    if (result?.ok) {
+      const sent = result.successCount || result.totalCount || 0;
+      return { ok: true, text: `${successLabel} ${sent} destination(s)` };
+    }
+
+    if (typeof result?.successCount === "number" && typeof result?.totalCount === "number") {
+      return {
+        ok: false,
+        text: `Sent to ${result.successCount}/${result.totalCount}. ${result.error || "Some destinations failed."}`,
+      };
+    }
+
+    return { ok: false, text: result?.error || "Send failed." };
+  }
+
+  function createDestinationSelector(groups, savedSet) {
+    if (!groups.length) {
+      return `
+        <div class="telepick-destinations telepick-destinations-empty">${RECIPIENTS_EMPTY_MSG}</div>
+      `;
+    }
+
+    const availableKeys = [];
+    groups.forEach((group) => {
+      if (!group.topics.length) {
+        availableKeys.push(destinationKey(group.chatId, ""));
+      } else {
+        group.topics.forEach((topic) =>
+          availableKeys.push(destinationKey(topic.chatId, topic.topicId))
+        );
+      }
+    });
+
+    const hasSavedSelection = savedSet && savedSet.size > 0;
+    const hasAnySavedMatch =
+      hasSavedSelection &&
+      availableKeys.some((key) => savedSet.has(key));
+    const shouldDefaultChecked = !hasSavedSelection || !hasAnySavedMatch;
+
+    const isChecked = (chatId, topicId = "") => {
+      if (shouldDefaultChecked) return true;
+      return savedSet.has(destinationKey(chatId, topicId));
+    };
+
+    const items = groups
+      .map(
+        (group) => {
+          if (!group.topics.length) {
+            return `
+              <label class="telepick-destination-item telepick-destination-parent">
+                <input
+                  type="checkbox"
+                  data-destination="1"
+                  data-chat-id="${group.chatId}"
+                  data-topic-id=""
+                  ${isChecked(group.chatId, "") ? "checked" : ""}
+                />
+                <span>${group.recipientLabel} (${group.chatId})</span>
+              </label>
+            `;
+          }
+
+          const topicItems = group.topics
+            .map(
+              (topic) => `
+                <label class="telepick-destination-item telepick-destination-child">
+                  <input
+                    type="checkbox"
+                    data-destination="1"
+                    data-chat-id="${topic.chatId}"
+                    data-topic-id="${topic.topicId}"
+                    ${isChecked(topic.chatId, topic.topicId) ? "checked" : ""}
+                  />
+                  <span>${topic.topicLabel} (${topic.topicId})</span>
+                </label>
+              `
+            )
+            .join("");
+
+          return `
+            <div class="telepick-destination-group">
+              <div class="telepick-destination-parent-label">${group.recipientLabel} (${group.chatId})</div>
+              ${topicItems}
+            </div>
+          `;
+        }
+      )
+      .join("");
+
+    return `
+      <div class="telepick-destinations">
+        <div class="telepick-destination-head">Send to</div>
+        <div class="telepick-destination-list">${items}</div>
+      </div>
+    `;
   }
 
   function normalizeRect(rect) {
@@ -168,9 +349,13 @@
     return canvas.toDataURL("image/png");
   }
 
-  function openScreenshotSendPanel(imageDataUrl, sourceUrl, sourceTitle) {
+  async function openScreenshotSendPanel(imageDataUrl, sourceUrl, sourceTitle) {
     hidePanel();
     getHost();
+    const siteHost = getSiteHost();
+    const recipients = await getRecipients();
+    const destinationGroups = buildDestinationGroups(recipients);
+    const savedDestinations = await loadSavedDestinations(siteHost);
 
     const top = Math.max(8, Math.min(window.innerHeight - 320, 56));
     const left = Math.max(8, Math.min(window.innerWidth - (PANEL_WIDTH_PX + 16), 56));
@@ -184,6 +369,7 @@
     panel.innerHTML = `
       <div class="telepick-panel-header">TelePick Screenshot</div>
       <img class="telepick-shot-preview" alt="Screenshot preview" />
+      ${createDestinationSelector(destinationGroups, savedDestinations)}
       <label class="telepick-label" for="telepick-shot-note">Note (optional)</label>
       <textarea id="telepick-shot-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
       <div class="telepick-actions">
@@ -196,14 +382,23 @@
     const noteInput = panel.querySelector("#telepick-shot-note");
     const sendBtn = panel.querySelector(".telepick-btn-send");
     const cancelBtn = panel.querySelector(".telepick-btn-cancel");
+    const destinationWrap = panel.querySelector(".telepick-destinations");
 
     cancelBtn.addEventListener("click", () => hidePanel());
 
-    sendBtn.addEventListener("click", async () => {
+    const submitScreenshot = async () => {
       sendBtn.disabled = true;
       sendBtn.textContent = "Sending…";
 
       try {
+        const destinations = getSelectedDestinations(destinationWrap);
+        if (!destinations.length) {
+          showToast("❌ Select at least one destination", "error", 3000);
+          sendBtn.disabled = false;
+          sendBtn.textContent = "Send";
+          return;
+        }
+        await saveSelectedDestinations(siteHost, destinations);
         const result = await chrome.runtime.sendMessage({
           type: "SEND_SCREENSHOT",
           payload: {
@@ -211,16 +406,17 @@
             description: noteInput.value,
             url: sourceUrl,
             title: sourceTitle,
+            destinations,
           },
         });
 
+        const message = formatSendResult(result, "✅ Screenshot sent to");
         hidePanel();
-        if (result?.ok) {
-          showToast("✅ Screenshot sent to Telegram", "success");
+        if (message.ok) {
+          showToast(message.text, "success");
         } else {
-          const msg = result?.error || "Failed to send screenshot";
-          showToast(`❌ ${msg}`, "error", 5000);
-          if (msg.includes("settings") || msg.includes("required")) {
+          showToast(`❌ ${message.text}`, "error", 5000);
+          if (message.text.includes("settings") || message.text.includes("required")) {
             chrome.runtime.openOptionsPage?.();
           }
         }
@@ -228,7 +424,10 @@
         hidePanel();
         showToast(`❌ ${err.message || "Extension error"}`, "error", 5000);
       }
-    });
+    };
+
+    sendBtn.addEventListener("click", submitScreenshot);
+    activeSubmitHandler = submitScreenshot;
 
     shadow.appendChild(panel);
     syncKeyboardGuard();
@@ -323,8 +522,12 @@
     syncKeyboardGuard();
   }
 
-  function openPanel() {
+  async function openPanel() {
     if (!currentSelection) return;
+    const siteHost = getSiteHost();
+    const recipients = await getRecipients();
+    const destinationGroups = buildDestinationGroups(recipients);
+    const savedDestinations = await loadSavedDestinations(siteHost);
 
     // hideFab() currentSelection-ni null qiladi, shuning uchun snapshot olamiz.
     const selection = currentSelection;
@@ -350,6 +553,7 @@
     panel.innerHTML = `
       <div class="telepick-panel-header">TelePick</div>
       <p class="telepick-preview"></p>
+      ${createDestinationSelector(destinationGroups, savedDestinations)}
       <label class="telepick-label" for="telepick-note">Note (optional)</label>
       <textarea id="telepick-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
       <div class="telepick-actions">
@@ -367,19 +571,30 @@
     const sendBtn = panel.querySelector(".telepick-btn-send");
     const cancelBtn = panel.querySelector(".telepick-btn-cancel");
     const screenshotBtn = panel.querySelector(".telepick-btn-shot");
+    const destinationWrap = panel.querySelector(".telepick-destinations");
 
     cancelBtn.addEventListener("click", () => hidePanel());
     screenshotBtn.addEventListener("click", () => startScreenshotSelection());
 
-    sendBtn.addEventListener("click", async () => {
+    const submitText = async () => {
       sendBtn.disabled = true;
       sendBtn.textContent = "Sending…";
+
+      const destinations = getSelectedDestinations(destinationWrap);
+      if (!destinations.length) {
+        showToast("❌ Select at least one destination", "error", 3000);
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Send";
+        return;
+      }
+      await saveSelectedDestinations(siteHost, destinations);
 
       const payload = {
         text: selection.text,
         description: noteInput.value,
         url: window.location.href,
         title: document.title,
+        destinations,
       };
 
       try {
@@ -390,12 +605,12 @@
 
         hidePanel();
 
-        if (result?.ok) {
-          showToast("✅ Sent to Telegram", "success");
+        const message = formatSendResult(result, "✅ Sent to");
+        if (message.ok) {
+          showToast(message.text, "success");
         } else {
-          const msg = result?.error || "Failed to send";
-          showToast(`❌ ${msg}`, "error", 5000);
-          if (msg.includes("settings") || msg.includes("required")) {
+          showToast(`❌ ${message.text}`, "error", 5000);
+          if (message.text.includes("settings") || message.text.includes("required")) {
             chrome.runtime.openOptionsPage?.();
           }
         }
@@ -403,7 +618,10 @@
         hidePanel();
         showToast(`❌ ${err.message || "Extension error"}`, "error", 5000);
       }
-    });
+    };
+
+    sendBtn.addEventListener("click", submitText);
+    activeSubmitHandler = submitText;
 
     shadow.appendChild(panel);
     syncKeyboardGuard();
