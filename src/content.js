@@ -14,6 +14,31 @@
   let hideFabTimer = null;
   let screenshotOverlay = null;
   let removeCaptureKeyListener = null;
+  let keyboardGuardEnabled = false;
+
+  function stopPageShortcuts(event) {
+    if (!host) return;
+    const path = typeof event.composedPath === "function" ? event.composedPath() : [];
+    if (!path.includes(host)) return;
+    // Escape ni panelni yopish uchun ishlatamiz.
+    if (event.key === "Escape") return;
+    event.stopPropagation();
+  }
+
+  function syncKeyboardGuard() {
+    const shouldEnable = Boolean(panel || screenshotOverlay);
+    if (shouldEnable && !keyboardGuardEnabled) {
+      window.addEventListener("keydown", stopPageShortcuts, true);
+      window.addEventListener("keyup", stopPageShortcuts, true);
+      keyboardGuardEnabled = true;
+      return;
+    }
+    if (!shouldEnable && keyboardGuardEnabled) {
+      window.removeEventListener("keydown", stopPageShortcuts, true);
+      window.removeEventListener("keyup", stopPageShortcuts, true);
+      keyboardGuardEnabled = false;
+    }
+  }
 
   function getHost() {
     if (host && document.contains(host)) return host;
@@ -119,6 +144,7 @@
       screenshotOverlay.remove();
       screenshotOverlay = null;
     }
+    syncKeyboardGuard();
   }
 
   async function cropImageDataUrl(dataUrl, rect) {
@@ -205,6 +231,7 @@
     });
 
     shadow.appendChild(panel);
+    syncKeyboardGuard();
     noteInput.focus();
   }
 
@@ -293,6 +320,7 @@
     document.addEventListener("keydown", removeCaptureKeyListener);
 
     shadow.appendChild(screenshotOverlay);
+    syncKeyboardGuard();
   }
 
   function openPanel() {
@@ -378,6 +406,7 @@
     });
 
     shadow.appendChild(panel);
+    syncKeyboardGuard();
     noteInput.focus();
   }
 
