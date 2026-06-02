@@ -90,7 +90,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     sendToTelegram({
       text: testText,
       description: "",
-      url: "https://github.com",
+      url: "https://github.com/IMadatov/TelePick",
       title: "TelePick",
     })
       .then(sendResponse)
