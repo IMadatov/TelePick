@@ -7,6 +7,8 @@
   const MIN_CAPTURE_SIZE_PX = 24;
   const RECIPIENTS_EMPTY_MSG = "No recipients configured. Open settings first.";
   const SITE_DESTINATIONS_KEY = "siteDestinations";
+  const SITE_SOURCE_PREFS_KEY = "siteSourcePrefs";
+  const SITE_NOTE_PREFS_KEY = "siteNotePrefs";
 
   let host = null;
   let shadow = null;
@@ -52,6 +54,50 @@
         topicId: item.topicId || "",
       }));
       await chrome.storage.local.set({ [SITE_DESTINATIONS_KEY]: siteMap });
+    } catch {
+      // Ignore storage errors to avoid blocking send flow.
+    }
+  }
+
+  async function loadSourcePreference(host) {
+    try {
+      const data = await chrome.storage.local.get(SITE_SOURCE_PREFS_KEY);
+      const prefs = data[SITE_SOURCE_PREFS_KEY] || {};
+      if (typeof prefs[host] !== "boolean") return true;
+      return prefs[host];
+    } catch {
+      return true;
+    }
+  }
+
+  async function saveSourcePreference(host, includeSource) {
+    try {
+      const data = await chrome.storage.local.get(SITE_SOURCE_PREFS_KEY);
+      const prefs = data[SITE_SOURCE_PREFS_KEY] || {};
+      prefs[host] = Boolean(includeSource);
+      await chrome.storage.local.set({ [SITE_SOURCE_PREFS_KEY]: prefs });
+    } catch {
+      // Ignore storage errors to avoid blocking send flow.
+    }
+  }
+
+  async function loadNotePreference(host) {
+    try {
+      const data = await chrome.storage.local.get(SITE_NOTE_PREFS_KEY);
+      const prefs = data[SITE_NOTE_PREFS_KEY] || {};
+      if (typeof prefs[host] !== "boolean") return true;
+      return prefs[host];
+    } catch {
+      return true;
+    }
+  }
+
+  async function saveNotePreference(host, includeNote) {
+    try {
+      const data = await chrome.storage.local.get(SITE_NOTE_PREFS_KEY);
+      const prefs = data[SITE_NOTE_PREFS_KEY] || {};
+      prefs[host] = Boolean(includeNote);
+      await chrome.storage.local.set({ [SITE_NOTE_PREFS_KEY]: prefs });
     } catch {
       // Ignore storage errors to avoid blocking send flow.
     }
@@ -308,6 +354,42 @@
     `;
   }
 
+  function createMessagePartsToggles(includeNote, includeSource) {
+    return `
+      <div class="telepick-message-parts">
+        <div class="telepick-destination-head">Message parts</div>
+        <label class="telepick-source-toggle">
+          <input type="checkbox" id="telepick-include-note" ${includeNote ? "checked" : ""} />
+          <span>Include note</span>
+        </label>
+        <label class="telepick-source-toggle">
+          <input type="checkbox" id="telepick-include-source" ${includeSource ? "checked" : ""} />
+          <span>Include source link</span>
+        </label>
+      </div>
+    `;
+  }
+
+  function createOptionsSection(destinationHtml, messagePartsHtml) {
+    return `
+      <div class="telepick-options-bar">
+        <span class="telepick-options-title">Options</span>
+        <button
+          type="button"
+          class="telepick-options-toggle"
+          id="telepick-options-toggle"
+          aria-expanded="false"
+          aria-controls="telepick-options-body"
+          title="Configure send options"
+        >⚙</button>
+      </div>
+      <div class="telepick-options-body telepick-options-body-collapsed" id="telepick-options-body">
+        ${destinationHtml}
+        ${messagePartsHtml}
+      </div>
+    `;
+  }
+
   function normalizeRect(rect) {
     const width = Math.abs(rect.endX - rect.startX);
     const height = Math.abs(rect.endY - rect.startY);
@@ -356,6 +438,8 @@
     const recipients = await getRecipients();
     const destinationGroups = buildDestinationGroups(recipients);
     const savedDestinations = await loadSavedDestinations(siteHost);
+    const includeNoteDefault = await loadNotePreference(siteHost);
+    const includeSourceDefault = await loadSourcePreference(siteHost);
 
     const top = Math.max(8, Math.min(window.innerHeight - 320, 56));
     const left = Math.max(8, Math.min(window.innerWidth - (PANEL_WIDTH_PX + 16), 56));
@@ -369,7 +453,10 @@
     panel.innerHTML = `
       <div class="telepick-panel-header">TelePick Screenshot</div>
       <img class="telepick-shot-preview" alt="Screenshot preview" />
-      ${createDestinationSelector(destinationGroups, savedDestinations)}
+      ${createOptionsSection(
+        createDestinationSelector(destinationGroups, savedDestinations),
+        createMessagePartsToggles(includeNoteDefault, includeSourceDefault)
+      )}
       <label class="telepick-label" for="telepick-shot-note">Note (optional)</label>
       <textarea id="telepick-shot-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
       <div class="telepick-actions">
@@ -383,6 +470,24 @@
     const sendBtn = panel.querySelector(".telepick-btn-send");
     const cancelBtn = panel.querySelector(".telepick-btn-cancel");
     const destinationWrap = panel.querySelector(".telepick-destinations");
+    const includeNoteInput = panel.querySelector("#telepick-include-note");
+    const includeSourceInput = panel.querySelector("#telepick-include-source");
+    const noteLabel = panel.querySelector('label[for="telepick-shot-note"]');
+    const optionsToggleBtn = panel.querySelector("#telepick-options-toggle");
+    const optionsBody = panel.querySelector("#telepick-options-body");
+
+    optionsToggleBtn.addEventListener("click", () => {
+      const isCollapsed = optionsBody.classList.toggle("telepick-options-body-collapsed");
+      optionsToggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+    });
+
+    const syncNoteVisibility = () => {
+      const showNote = includeNoteInput.checked;
+      noteLabel.style.display = showNote ? "" : "none";
+      noteInput.style.display = showNote ? "" : "none";
+    };
+    includeNoteInput.addEventListener("change", syncNoteVisibility);
+    syncNoteVisibility();
 
     cancelBtn.addEventListener("click", () => hidePanel());
 
@@ -399,14 +504,17 @@
           return;
         }
         await saveSelectedDestinations(siteHost, destinations);
+        await saveNotePreference(siteHost, includeNoteInput.checked);
+        await saveSourcePreference(siteHost, includeSourceInput.checked);
         const result = await chrome.runtime.sendMessage({
           type: "SEND_SCREENSHOT",
           payload: {
             imageDataUrl,
-            description: noteInput.value,
+            description: includeNoteInput.checked ? noteInput.value : "",
             url: sourceUrl,
             title: sourceTitle,
             destinations,
+            includeSource: includeSourceInput.checked,
           },
         });
 
@@ -528,6 +636,8 @@
     const recipients = await getRecipients();
     const destinationGroups = buildDestinationGroups(recipients);
     const savedDestinations = await loadSavedDestinations(siteHost);
+    const includeNoteDefault = await loadNotePreference(siteHost);
+    const includeSourceDefault = await loadSourcePreference(siteHost);
 
     // hideFab() currentSelection-ni null qiladi, shuning uchun snapshot olamiz.
     const selection = currentSelection;
@@ -553,7 +663,10 @@
     panel.innerHTML = `
       <div class="telepick-panel-header">TelePick</div>
       <p class="telepick-preview"></p>
-      ${createDestinationSelector(destinationGroups, savedDestinations)}
+      ${createOptionsSection(
+        createDestinationSelector(destinationGroups, savedDestinations),
+        createMessagePartsToggles(includeNoteDefault, includeSourceDefault)
+      )}
       <label class="telepick-label" for="telepick-note">Note (optional)</label>
       <textarea id="telepick-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
       <div class="telepick-actions">
@@ -572,6 +685,24 @@
     const cancelBtn = panel.querySelector(".telepick-btn-cancel");
     const screenshotBtn = panel.querySelector(".telepick-btn-shot");
     const destinationWrap = panel.querySelector(".telepick-destinations");
+    const includeNoteInput = panel.querySelector("#telepick-include-note");
+    const includeSourceInput = panel.querySelector("#telepick-include-source");
+    const noteLabel = panel.querySelector('label[for="telepick-note"]');
+    const optionsToggleBtn = panel.querySelector("#telepick-options-toggle");
+    const optionsBody = panel.querySelector("#telepick-options-body");
+
+    optionsToggleBtn.addEventListener("click", () => {
+      const isCollapsed = optionsBody.classList.toggle("telepick-options-body-collapsed");
+      optionsToggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+    });
+
+    const syncNoteVisibility = () => {
+      const showNote = includeNoteInput.checked;
+      noteLabel.style.display = showNote ? "" : "none";
+      noteInput.style.display = showNote ? "" : "none";
+    };
+    includeNoteInput.addEventListener("change", syncNoteVisibility);
+    syncNoteVisibility();
 
     cancelBtn.addEventListener("click", () => hidePanel());
     screenshotBtn.addEventListener("click", () => startScreenshotSelection());
@@ -588,13 +719,16 @@
         return;
       }
       await saveSelectedDestinations(siteHost, destinations);
+      await saveNotePreference(siteHost, includeNoteInput.checked);
+      await saveSourcePreference(siteHost, includeSourceInput.checked);
 
       const payload = {
         text: selection.text,
-        description: noteInput.value,
+        description: includeNoteInput.checked ? noteInput.value : "",
         url: window.location.href,
         title: document.title,
         destinations,
+        includeSource: includeSourceInput.checked,
       };
 
       try {

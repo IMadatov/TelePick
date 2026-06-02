@@ -33,28 +33,32 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
-function buildMessage(text, description, url, title) {
+function buildMessage(text, description, url, title, includeSource = true) {
   const parts = [`"${escapeHtml(text)}"`];
 
   if (description && description.trim()) {
     parts.push("", `📝 Note: ${escapeHtml(description.trim())}`);
   }
 
-  const sourceLabel = title ? escapeHtml(title) : "Source";
-  parts.push("", `🔗 <a href="${escapeHtml(url)}">${sourceLabel}</a>`);
+  if (includeSource) {
+    const sourceLabel = title ? escapeHtml(title) : "Source";
+    parts.push("", `🔗 <a href="${escapeHtml(url)}">${sourceLabel}</a>`);
+  }
 
   return parts.join("\n");
 }
 
-function buildPhotoCaption(description, url, title) {
+function buildPhotoCaption(description, url, title, includeSource = true) {
   const parts = [];
 
   if (description && description.trim()) {
     parts.push(`📝 Note: ${escapeHtml(description.trim())}`);
   }
 
-  const sourceLabel = title ? escapeHtml(title) : "Source";
-  parts.push(`🔗 <a href="${escapeHtml(url)}">${sourceLabel}</a>`);
+  if (includeSource) {
+    const sourceLabel = title ? escapeHtml(title) : "Source";
+    parts.push(`🔗 <a href="${escapeHtml(url)}">${sourceLabel}</a>`);
+  }
 
   return parts.join("\n");
 }
@@ -240,7 +244,7 @@ async function sendMessageSingle({ botToken, destination, message }) {
   }
 }
 
-async function sendToTelegram({ text, description, url, title, destinations }) {
+async function sendToTelegram({ text, description, url, title, destinations, includeSource = true }) {
   const { botToken, recipients } = await getConfig();
 
   if (!botToken || !recipients.length) {
@@ -250,7 +254,7 @@ async function sendToTelegram({ text, description, url, title, destinations }) {
     };
   }
 
-  const message = buildMessage(text, description, url, title);
+  const message = buildMessage(text, description, url, title, includeSource);
   const resolvedDestinations = resolveDestinations(destinations, recipients);
   if (!resolvedDestinations.length) {
     return { ok: false, error: "No destinations selected." };
@@ -302,7 +306,7 @@ async function sendPhotoSingle({ botToken, destination, caption, imageDataUrl })
   }
 }
 
-async function sendPhotoToTelegram({ imageDataUrl, description, url, title, destinations }) {
+async function sendPhotoToTelegram({ imageDataUrl, description, url, title, destinations, includeSource = true }) {
   const { botToken, recipients } = await getConfig();
 
   if (!botToken || !recipients.length) {
@@ -316,7 +320,7 @@ async function sendPhotoToTelegram({ imageDataUrl, description, url, title, dest
     return { ok: false, error: "Screenshot image is missing." };
   }
 
-  const caption = buildPhotoCaption(description, url, title);
+  const caption = buildPhotoCaption(description, url, title, includeSource);
   const resolvedDestinations = resolveDestinations(destinations, recipients);
   if (!resolvedDestinations.length) {
     return { ok: false, error: "No destinations selected." };

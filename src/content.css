@@ -74,6 +74,42 @@
   content: "”";
 }
 
+.telepick-options-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.telepick-options-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+}
+
+.telepick-options-toggle {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #f9fafb;
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.telepick-options-toggle:hover {
+  background: #eef2ff;
+}
+
+.telepick-options-body-collapsed {
+  display: none;
+}
+
 .telepick-label {
   display: block;
   padding: 8px 12px 4px;
@@ -134,6 +170,28 @@
   padding-left: 14px;
 }
 
+.telepick-source-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 2px;
+  font-size: 12px;
+  color: #374151;
+}
+
+.telepick-message-parts {
+  padding: 8px 12px 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.telepick-message-parts .telepick-destination-head {
+  margin-bottom: 4px;
+}
+
+.telepick-message-parts .telepick-source-toggle {
+  padding: 4px 0;
+}
+
 .telepick-textarea {
   display: block;
   width: calc(100% - 24px);
@@ -156,19 +214,32 @@
 
 .telepick-actions {
   display: flex;
-  gap: 8px;
-  padding: 0 12px 12px;
-  justify-content: flex-end;
+  gap: 6px;
+  padding: 2px 12px 12px;
+  justify-content: stretch;
 }
 
 .telepick-btn {
-  padding: 8px 16px;
+  flex: 1 1 0;
+  min-height: 32px;
+  padding: 7px 10px;
   border: none;
   border-radius: 8px;
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
+  line-height: 1.2;
   cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.telepick-btn:active {
+  transform: translateY(1px);
+}
+
+.telepick-btn:focus-visible {
+  outline: 2px solid rgba(34, 158, 217, 0.35);
+  outline-offset: 1px;
 }
 
 .telepick-btn-secondary {

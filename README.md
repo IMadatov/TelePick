@@ -40,7 +40,7 @@ TelePick is a Chrome extension (Manifest V3). Select text on any webpage, click 
 
 3. Find `"chat":{"id":123456789}` — that number is your Chat ID.
 
-**Alternative:** use [@userinfobot](https://t.me/userinfobot) for your user ID (message the bot first if using a private chat with your bot).
+**Alternative:** use [@GetChatID_IL_BOT](https://t.me/GetChatID_IL_BOT) for your user ID (message the bot first if using a private chat with your bot).
 
 **Groups/channels:** add the bot to the group, send a message, then use `getUpdates`. Group IDs are usually negative (e.g. `-1001234567890`).
 
