@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TelePick</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      width: 280px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #229ed9;
+    }
+    p { margin: 0 0 12px; color: #555; font-size: 13px; line-height: 1.4; }
+    .status {
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .status.ok { background: #dafbe1; color: #1a7f37; }
+    .status.warn { background: #fff8c5; color: #9a6700; }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #229ed9;
+      color: #fff;
+    }
+    button:hover { background: #1a8bc4; }
+  </style>
+</head>
+<body>
+  <h1>TelePick</h1>
+  <p>Select text on any page, then click the floating button to send it to Telegram.</p>
+  <div id="status" class="status warn">Checking configuration…</div>
+  <button type="button" id="open-settings">Open Settings</button>
+  <script src="popup.js"></script>
+</body>
+</html>
