@@ -38,7 +38,7 @@
 .telepick-panel {
   position: fixed;
   z-index: 2147483647;
-  width: 320px;
+  width: 280px;
   max-width: calc(100vw - 24px);
   background: #fff;
   border-radius: 12px;
@@ -47,7 +47,7 @@
 }
 
 .telepick-panel-header {
-  padding: 12px 14px 8px;
+  padding: 10px 12px 6px;
   font-weight: 600;
   font-size: 13px;
   color: #229ed9;
@@ -56,7 +56,7 @@
 
 .telepick-preview {
   margin: 0;
-  padding: 10px 14px;
+  padding: 8px 12px;
   max-height: 80px;
   overflow: hidden;
   font-size: 12px;
@@ -76,7 +76,7 @@
 
 .telepick-label {
   display: block;
-  padding: 10px 14px 4px;
+  padding: 8px 12px 4px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -86,9 +86,9 @@
 
 .telepick-textarea {
   display: block;
-  width: calc(100% - 28px);
-  margin: 0 14px 10px;
-  padding: 8px 10px;
+  width: calc(100% - 24px);
+  margin: 0 12px 8px;
+  padding: 7px 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font: inherit;
@@ -107,7 +107,7 @@
 .telepick-actions {
   display: flex;
   gap: 8px;
-  padding: 0 14px 14px;
+  padding: 0 12px 12px;
   justify-content: flex-end;
 }
 

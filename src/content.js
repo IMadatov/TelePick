@@ -1,6 +1,9 @@
 (function () {
   const HOST_ID = "telepick-root";
   const PREVIEW_MAX = 120;
+  const FAB_DEBOUNCE_MS = 250;
+  const PANEL_WIDTH_PX = 280;
+  const PANEL_HEIGHT_LIMIT_PX = 240;
 
   let host = null;
   let shadow = null;
@@ -59,6 +62,10 @@
       panel.remove();
       panel = null;
     }
+    if (hideFabTimer) {
+      clearTimeout(hideFabTimer);
+      hideFabTimer = null;
+    }
     hideFab();
   }
 
@@ -94,15 +101,18 @@
   function openPanel() {
     if (!currentSelection) return;
 
+    // hideFab() currentSelection-ni null qiladi, shuning uchun snapshot olamiz.
+    const selection = currentSelection;
     hideFab();
+    currentSelection = selection;
 
     const rect = currentSelection.range.getBoundingClientRect();
     const top = Math.min(
-      window.innerHeight - 280,
+      window.innerHeight - PANEL_HEIGHT_LIMIT_PX,
       Math.max(8, rect.bottom + 8)
     );
     const left = Math.min(
-      window.innerWidth - 336,
+      window.innerWidth - (PANEL_WIDTH_PX + 16),
       Math.max(8, rect.left)
     );
 
@@ -116,7 +126,7 @@
       <div class="telepick-panel-header">TelePick</div>
       <p class="telepick-preview"></p>
       <label class="telepick-label" for="telepick-note">Note (optional)</label>
-      <textarea id="telepick-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="3"></textarea>
+      <textarea id="telepick-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
       <div class="telepick-actions">
         <button type="button" class="telepick-btn telepick-btn-cancel">Cancel</button>
         <button type="button" class="telepick-btn telepick-btn-send">Send</button>
@@ -124,7 +134,7 @@
     `;
 
     panel.querySelector(".telepick-preview").textContent = truncatePreview(
-      currentSelection.text
+      selection.text
     );
 
     const noteInput = panel.querySelector("#telepick-note");
@@ -138,7 +148,7 @@
       sendBtn.textContent = "Sending…";
 
       const payload = {
-        text: currentSelection.text,
+        text: selection.text,
         description: noteInput.value,
         url: window.location.href,
         title: document.title,
@@ -191,7 +201,7 @@
       }
       if (panel) return;
       showFab(sel);
-    }, 150);
+    }, FAB_DEBOUNCE_MS);
   }
 
   document.addEventListener("mouseup", onSelectionEnd);
@@ -203,6 +213,11 @@
     if (!host) return;
     const path = e.composedPath();
     if (path.includes(host)) return;
+    // Selection "debounce" timer ishlayotgan bo'lishi mumkin, uni o'chiramiz.
+    if (hideFabTimer) {
+      clearTimeout(hideFabTimer);
+      hideFabTimer = null;
+    }
     if (panel) hidePanel();
     else hideFab();
   });
