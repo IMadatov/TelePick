@@ -121,6 +121,15 @@
   cursor: pointer;
 }
 
+.telepick-btn-secondary {
+  background: #eef6ff;
+  color: #0a66c2;
+}
+
+.telepick-btn-secondary:hover {
+  background: #dcecff;
+}
+
 .telepick-btn-cancel {
   background: #f0f0f0;
   color: #333;
@@ -142,6 +151,47 @@
 .telepick-btn-send:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.telepick-shot-preview {
+  display: block;
+  width: calc(100% - 24px);
+  max-height: 180px;
+  margin: 10px 12px 0;
+  border-radius: 8px;
+  object-fit: contain;
+  border: 1px solid #e6e6e6;
+  background: #f8f9fa;
+}
+
+.telepick-capture-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  cursor: crosshair;
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.telepick-capture-hint {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 24, 39, 0.9);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  user-select: none;
+}
+
+.telepick-capture-box {
+  display: none;
+  position: fixed;
+  border: 2px solid #229ed9;
+  background: rgba(34, 158, 217, 0.15);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
 }
 
 .telepick-toast {

@@ -4,6 +4,7 @@
   const FAB_DEBOUNCE_MS = 250;
   const PANEL_WIDTH_PX = 280;
   const PANEL_HEIGHT_LIMIT_PX = 240;
+  const MIN_CAPTURE_SIZE_PX = 24;
 
   let host = null;
   let shadow = null;
@@ -11,6 +12,8 @@
   let panel = null;
   let currentSelection = null;
   let hideFabTimer = null;
+  let screenshotOverlay = null;
+  let removeCaptureKeyListener = null;
 
   function getHost() {
     if (host && document.contains(host)) return host;
@@ -62,6 +65,7 @@
       panel.remove();
       panel = null;
     }
+    removeScreenshotOverlay();
     if (hideFabTimer) {
       clearTimeout(hideFabTimer);
       hideFabTimer = null;
@@ -98,6 +102,199 @@
     return text.slice(0, PREVIEW_MAX) + "…";
   }
 
+  function normalizeRect(rect) {
+    const width = Math.abs(rect.endX - rect.startX);
+    const height = Math.abs(rect.endY - rect.startY);
+    const left = Math.min(rect.startX, rect.endX);
+    const top = Math.min(rect.startY, rect.endY);
+    return { left, top, width, height };
+  }
+
+  function removeScreenshotOverlay() {
+    if (removeCaptureKeyListener) {
+      document.removeEventListener("keydown", removeCaptureKeyListener);
+      removeCaptureKeyListener = null;
+    }
+    if (screenshotOverlay) {
+      screenshotOverlay.remove();
+      screenshotOverlay = null;
+    }
+  }
+
+  async function cropImageDataUrl(dataUrl, rect) {
+    const image = new Image();
+    image.src = dataUrl;
+    await image.decode();
+
+    const scaleX = image.naturalWidth / window.innerWidth;
+    const scaleY = image.naturalHeight / window.innerHeight;
+
+    const sx = Math.max(0, Math.floor(rect.left * scaleX));
+    const sy = Math.max(0, Math.floor(rect.top * scaleY));
+    const sw = Math.max(1, Math.floor(rect.width * scaleX));
+    const sh = Math.max(1, Math.floor(rect.height * scaleY));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = sw;
+    canvas.height = sh;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
+    return canvas.toDataURL("image/png");
+  }
+
+  function openScreenshotSendPanel(imageDataUrl, sourceUrl, sourceTitle) {
+    hidePanel();
+    getHost();
+
+    const top = Math.max(8, Math.min(window.innerHeight - 320, 56));
+    const left = Math.max(8, Math.min(window.innerWidth - (PANEL_WIDTH_PX + 16), 56));
+
+    panel = document.createElement("div");
+    panel.className = "telepick-panel";
+    panel.style.top = `${top}px`;
+    panel.style.left = `${left}px`;
+    panel.style.pointerEvents = "auto";
+
+    panel.innerHTML = `
+      <div class="telepick-panel-header">TelePick Screenshot</div>
+      <img class="telepick-shot-preview" alt="Screenshot preview" />
+      <label class="telepick-label" for="telepick-shot-note">Note (optional)</label>
+      <textarea id="telepick-shot-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
+      <div class="telepick-actions">
+        <button type="button" class="telepick-btn telepick-btn-cancel">Cancel</button>
+        <button type="button" class="telepick-btn telepick-btn-send">Send</button>
+      </div>
+    `;
+
+    panel.querySelector(".telepick-shot-preview").src = imageDataUrl;
+    const noteInput = panel.querySelector("#telepick-shot-note");
+    const sendBtn = panel.querySelector(".telepick-btn-send");
+    const cancelBtn = panel.querySelector(".telepick-btn-cancel");
+
+    cancelBtn.addEventListener("click", () => hidePanel());
+
+    sendBtn.addEventListener("click", async () => {
+      sendBtn.disabled = true;
+      sendBtn.textContent = "Sending…";
+
+      try {
+        const result = await chrome.runtime.sendMessage({
+          type: "SEND_SCREENSHOT",
+          payload: {
+            imageDataUrl,
+            description: noteInput.value,
+            url: sourceUrl,
+            title: sourceTitle,
+          },
+        });
+
+        hidePanel();
+        if (result?.ok) {
+          showToast("✅ Screenshot sent to Telegram", "success");
+        } else {
+          const msg = result?.error || "Failed to send screenshot";
+          showToast(`❌ ${msg}`, "error", 5000);
+          if (msg.includes("settings") || msg.includes("required")) {
+            chrome.runtime.openOptionsPage?.();
+          }
+        }
+      } catch (err) {
+        hidePanel();
+        showToast(`❌ ${err.message || "Extension error"}`, "error", 5000);
+      }
+    });
+
+    shadow.appendChild(panel);
+    noteInput.focus();
+  }
+
+  function startScreenshotSelection() {
+    getHost();
+    removeScreenshotOverlay();
+    hidePanel();
+
+    screenshotOverlay = document.createElement("div");
+    screenshotOverlay.className = "telepick-capture-overlay";
+    screenshotOverlay.innerHTML = `
+      <div class="telepick-capture-hint">Drag to select screenshot area (Esc to cancel)</div>
+      <div class="telepick-capture-box"></div>
+    `;
+
+    const box = screenshotOverlay.querySelector(".telepick-capture-box");
+    const dragRect = { startX: 0, startY: 0, endX: 0, endY: 0 };
+    let dragging = false;
+
+    function updateBox() {
+      const rect = normalizeRect(dragRect);
+      box.style.left = `${rect.left}px`;
+      box.style.top = `${rect.top}px`;
+      box.style.width = `${rect.width}px`;
+      box.style.height = `${rect.height}px`;
+    }
+
+    async function finishSelection() {
+      const rect = normalizeRect(dragRect);
+      removeScreenshotOverlay();
+
+      if (
+        rect.width < MIN_CAPTURE_SIZE_PX ||
+        rect.height < MIN_CAPTURE_SIZE_PX
+      ) {
+        showToast("❌ Selected area is too small", "error", 3500);
+        return;
+      }
+
+      try {
+        const captureResult = await chrome.runtime.sendMessage({
+          type: "CAPTURE_SCREENSHOT",
+        });
+        if (!captureResult?.ok || !captureResult?.dataUrl) {
+          throw new Error(captureResult?.error || "Could not capture screenshot");
+        }
+
+        const croppedDataUrl = await cropImageDataUrl(captureResult.dataUrl, rect);
+        openScreenshotSendPanel(croppedDataUrl, window.location.href, document.title);
+      } catch (err) {
+        showToast(`❌ ${err.message || "Screenshot capture failed"}`, "error", 5000);
+      }
+    }
+
+    screenshotOverlay.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+      dragging = true;
+      dragRect.startX = event.clientX;
+      dragRect.startY = event.clientY;
+      dragRect.endX = event.clientX;
+      dragRect.endY = event.clientY;
+      box.style.display = "block";
+      updateBox();
+    });
+
+    screenshotOverlay.addEventListener("mousemove", (event) => {
+      if (!dragging) return;
+      dragRect.endX = event.clientX;
+      dragRect.endY = event.clientY;
+      updateBox();
+    });
+
+    screenshotOverlay.addEventListener("mouseup", async (event) => {
+      if (!dragging) return;
+      dragRect.endX = event.clientX;
+      dragRect.endY = event.clientY;
+      dragging = false;
+      await finishSelection();
+    });
+
+    removeCaptureKeyListener = (event) => {
+      if (event.key !== "Escape") return;
+      removeScreenshotOverlay();
+      showToast("Screenshot capture cancelled", "success", 1500);
+    };
+    document.addEventListener("keydown", removeCaptureKeyListener);
+
+    shadow.appendChild(screenshotOverlay);
+  }
+
   function openPanel() {
     if (!currentSelection) return;
 
@@ -129,6 +326,7 @@
       <textarea id="telepick-note" class="telepick-textarea" placeholder="Add a note or tag…" rows="2"></textarea>
       <div class="telepick-actions">
         <button type="button" class="telepick-btn telepick-btn-cancel">Cancel</button>
+        <button type="button" class="telepick-btn telepick-btn-secondary telepick-btn-shot">Screenshot</button>
         <button type="button" class="telepick-btn telepick-btn-send">Send</button>
       </div>
     `;
@@ -140,8 +338,10 @@
     const noteInput = panel.querySelector("#telepick-note");
     const sendBtn = panel.querySelector(".telepick-btn-send");
     const cancelBtn = panel.querySelector(".telepick-btn-cancel");
+    const screenshotBtn = panel.querySelector(".telepick-btn-shot");
 
     cancelBtn.addEventListener("click", () => hidePanel());
+    screenshotBtn.addEventListener("click", () => startScreenshotSelection());
 
     sendBtn.addEventListener("click", async () => {
       sendBtn.disabled = true;
@@ -206,7 +406,10 @@
 
   document.addEventListener("mouseup", onSelectionEnd);
   document.addEventListener("keyup", (e) => {
-    if (e.key === "Escape") hidePanel();
+    if (e.key === "Escape") {
+      removeScreenshotOverlay();
+      hidePanel();
+    }
   });
 
   document.addEventListener("mousedown", (e) => {
@@ -227,4 +430,10 @@
       positionFab(currentSelection.range);
     }
   }, true);
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type !== "START_SCREENSHOT_SELECTION") return;
+    startScreenshotSelection();
+    sendResponse({ ok: true });
+  });
 })();
