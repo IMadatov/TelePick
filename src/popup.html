@@ -41,6 +41,15 @@
       color: #fff;
     }
     button:hover { background: #1a8bc4; }
+    .help-link {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #229ed9;
+      text-align: center;
+      text-decoration: none;
+    }
+    .help-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -48,6 +57,7 @@
   <p>Select text on any page, then click the floating button to send it to Telegram.</p>
   <div id="status" class="status warn">Checking configuration…</div>
   <button type="button" id="open-settings">Open Settings</button>
+  <a class="help-link" href="https://t.me/GetChatID_IL_BOT" target="_blank" rel="noopener">Get Chat ID via @GetChatID_IL_BOT</a>
   <script src="popup.js"></script>
 </body>
 </html>
