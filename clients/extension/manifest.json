@@ -4,7 +4,7 @@
   "short_name": "TelePick",
   "version": "1.0.0",
   "description": "Pick selected text and send it as a note to your Telegram chat",
-  "permissions": ["storage", "activeTab", "tabs", "contextMenus"],
+  "permissions": ["storage", "activeTab", "contextMenus"],
   "host_permissions": ["https://api.telegram.org/*"],
   "background": {
     "service_worker": "src/background.js"

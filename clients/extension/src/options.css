@@ -209,3 +209,20 @@ header h1 {
   background: #ddf4ff;
   color: #0969da;
 }
+
+.footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+  font-size: 12px;
+  text-align: center;
+}
+
+.footer a {
+  color: #229ed9;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}

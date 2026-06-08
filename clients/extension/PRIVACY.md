@@ -40,9 +40,8 @@ Data is transmitted only to Telegram's API as requested by the user to deliver m
 
 TelePick requests only the permissions needed for its single purpose:
 
-- `storage`: store bot token/chat ID settings
-- `activeTab`: interact with the currently active page after user action
-- `tabs`: capture visible tab image for screenshot feature
+- `storage`: store bot token, chat ID, and per-site send preferences
+- `activeTab`: access the current tab only after a user gesture (text selection, floating button, context menu, or screenshot action) to read selected content and capture a visible-area screenshot
 - `contextMenus`: provide right-click "TelePick: Screenshot" menu action
 - host permission `https://api.telegram.org/*`: send content through Telegram Bot API
 
@@ -68,4 +67,4 @@ This policy may be updated to reflect feature or compliance changes. The latest 
 
 ## 10. Contact
 
-For privacy questions, contact: **[your email here]**
+For privacy questions, contact: **madatovislom250@gmail.com** or open an issue at [github.com/IMadatov/TelePick](https://github.com/IMadatov/TelePick).
