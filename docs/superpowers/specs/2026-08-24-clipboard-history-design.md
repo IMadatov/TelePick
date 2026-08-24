@@ -8,7 +8,11 @@ Implement an in-memory, cross-platform clipboard history manager (similar to Win
 
 ## Architecture
 
-1. **Models**
+To ensure separation of concerns, the core history logic will be built as a separate class library module (`TelePick.Clipboard`), which the main desktop app will reference.
+
+### 1. `TelePick.Clipboard` (New Module)
+
+**Models**
    - `ClipboardItem`: Represents a single historical entry.
      - `Id`: Unique identifier (GUID).
      - `Type`: Enum (`Text`, `Image`, `Files`).
@@ -16,7 +20,7 @@ Implement an in-memory, cross-platform clipboard history manager (similar to Win
      - `Timestamp`: When it was captured.
      - `RawData`: The actual `string`, `IImage` (Avalonia bitmap), or `IEnumerable<string>` (paths).
 
-2. **ClipboardMonitorService**
+**ClipboardMonitorService**
    - Runs a continuous loop using `PeriodicTimer` (e.g., 500ms intervals).
    - Reads `clipboard.GetFormatsAsync()`.
    - To detect changes without heavy memory allocation:
@@ -26,7 +30,7 @@ Implement an in-memory, cross-platform clipboard history manager (similar to Win
    - Pushes new distinct items to an in-memory `ObservableCollection<ClipboardItem>`.
    - Enforces a maximum limit (e.g., keeping only the last 50 items) to prevent RAM bloat, especially with images.
 
-3. **User Interface (MainWindow)**
+### 2. `TelePick.Desktop` (UI Integration)
    - A new **"History"** tab or side-panel will be added.
    - Uses an Avalonia `ListBox` bound to the history collection.
    - **DataTemplates**:
