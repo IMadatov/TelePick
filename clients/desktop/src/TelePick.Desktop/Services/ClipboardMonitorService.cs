@@ -63,31 +63,68 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 var filePaths = files.Select(f => f.Path.LocalPath).Where(p => p != null).ToList();
                 if (filePaths.Any())
                 {
-                    var preview = filePaths.Count == 1 ? filePaths.First() : $"{filePaths.Count} files copied";
-                    var latestItem = History.FirstOrDefault();
+                    var dataHash = string.Join("|", filePaths);
+                    var preview = filePaths.Count == 1 ? Path.GetFileName(filePaths.First()) : $"{filePaths.Count} files copied";
                     
-                    if (latestItem == null || latestItem.Type != ClipboardItemType.Files || latestItem.PreviewText != preview)
+                    var existingItem = History.FirstOrDefault(x => x.Type == ClipboardItemType.Files && x.DataHash == dataHash);
+                    if (existingItem != null)
+                    {
+                        BubbleUpItem(existingItem);
+                    }
+                    else
                     {
                         var item = new ClipboardItem
                         {
                             Type = ClipboardItemType.Files,
                             PreviewText = preview,
-                            RawData = filePaths
+                            RawData = filePaths,
+                            DataHash = dataHash
                         };
 
-                        // Try generate thumbnail if single file and image extension
                         if (filePaths.Count == 1)
                         {
-                            var ext = Path.GetExtension(filePaths.First())?.ToLowerInvariant();
-                            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                            var filePath = filePaths.First();
+                            var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
+                            
+                            // Determine IconKind
+                            if (Directory.Exists(filePath))
                             {
+                                item.IconKind = "FolderOutline";
+                            }
+                            else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".gif" || ext == ".svg")
+                            {
+                                item.IconKind = "FileImageOutline";
                                 try
                                 {
-                                    using var stream = File.OpenRead(filePaths.First());
+                                    using var stream = File.OpenRead(filePath);
                                     item.Thumbnail = Bitmap.DecodeToWidth(stream, 100);
                                 }
-                                catch { } // Ignore thumbnail errors
+                                catch { }
                             }
+                            else if (ext == ".pdf" || ext == ".doc" || ext == ".docx" || ext == ".txt")
+                            {
+                                item.IconKind = "FileDocumentOutline";
+                            }
+                            else if (ext == ".mp3" || ext == ".wav" || ext == ".ogg")
+                            {
+                                item.IconKind = "FileMusicOutline";
+                            }
+                            else if (ext == ".mp4" || ext == ".avi" || ext == ".mkv" || ext == ".mov")
+                            {
+                                item.IconKind = "FileVideoOutline";
+                            }
+                            else if (ext == ".zip" || ext == ".rar" || ext == ".7z" || ext == ".tar" || ext == ".gz")
+                            {
+                                item.IconKind = "ZipBoxOutline";
+                            }
+                            else
+                            {
+                                item.IconKind = "FileOutline";
+                            }
+                        }
+                        else
+                        {
+                            item.IconKind = "FolderMultipleOutline";
                         }
 
                         AddItem(item);
@@ -99,14 +136,19 @@ public class ClipboardMonitorService : IClipboardMonitorService
             var text = await _clipboard.TryGetTextAsync();
             if (!string.IsNullOrWhiteSpace(text))
             {
-                var latestTextItem = History.FirstOrDefault();
-                if (latestTextItem == null || latestTextItem.Type != ClipboardItemType.Text || latestTextItem.PreviewText != text)
+                var existingItem = History.FirstOrDefault(x => x.Type == ClipboardItemType.Text && x.PreviewText == text);
+                if (existingItem != null)
+                {
+                    BubbleUpItem(existingItem);
+                }
+                else
                 {
                     var item = new ClipboardItem
                     {
                         Type = ClipboardItemType.Text,
                         PreviewText = text,
-                        RawData = text
+                        RawData = text,
+                        IconKind = "TextSubject"
                     };
                     AddItem(item);
                 }
@@ -121,8 +163,12 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 var bytes = ms.ToArray();
                 var hash = Convert.ToBase64String(MD5.HashData(bytes));
 
-                var latestItem = History.FirstOrDefault();
-                if (latestItem == null || latestItem.Type != ClipboardItemType.Image || latestItem.DataHash != hash)
+                var existingItem = History.FirstOrDefault(x => x.Type == ClipboardItemType.Image && x.DataHash == hash);
+                if (existingItem != null)
+                {
+                    BubbleUpItem(existingItem);
+                }
+                else
                 {
                     // For raw screenshots, we save them to a temp folder so we have an address
                     var tempPath = Path.Combine(Path.GetTempPath(), "TelePick", "Screenshots");
@@ -134,9 +180,10 @@ public class ClipboardMonitorService : IClipboardMonitorService
                     var item = new ClipboardItem
                     {
                         Type = ClipboardItemType.Image,
-                        PreviewText = "Screenshot",
+                        PreviewText = Path.GetFileName(filePath),
                         RawData = filePath,
-                        DataHash = hash
+                        DataHash = hash,
+                        IconKind = "ImageOutline"
                     };
 
                     try
@@ -154,6 +201,19 @@ public class ClipboardMonitorService : IClipboardMonitorService
         {
             // Ignore errors
         }
+    }
+
+    private void BubbleUpItem(ClipboardItem item)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var index = History.IndexOf(item);
+            if (index > 0)
+            {
+                History.RemoveAt(index);
+                History.Insert(0, item);
+            }
+        });
     }
 
     private void AddItem(ClipboardItem item)

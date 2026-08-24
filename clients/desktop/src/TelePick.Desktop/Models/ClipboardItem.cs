@@ -12,4 +12,5 @@ public class ClipboardItem
     public object? RawData { get; set; }
     public Bitmap? Thumbnail { get; set; }
     public string DataHash { get; set; } = string.Empty;
+    public string? IconKind { get; set; }
 }

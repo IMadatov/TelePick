@@ -12,6 +12,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ITelegramService _telegramService;
     private readonly ISettingsService _settingsService;
     private readonly IClipboardMonitorService _clipboardMonitorService;
+    private readonly IGlobalHotkeyService _globalHotkeyService;
     
     public System.Collections.ObjectModel.ObservableCollection<ClipboardItem> History => _clipboardMonitorService.History;
 
@@ -34,6 +35,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _chatId = string.Empty;
 
+    [ObservableProperty]
+    private string _clipboardPopupHotkey = "Control+Shift+V";
+
     public MainWindowViewModel(
         IClipboardService clipboardService,
         ITelegramService telegramService,
@@ -45,6 +49,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _telegramService = telegramService;
         _settingsService = settingsService;
         _clipboardMonitorService = clipboardMonitorService;
+        _globalHotkeyService = globalHotkeyService;
 
         _ = LoadSettingsAsync();
         
@@ -53,7 +58,6 @@ public partial class MainWindowViewModel : ViewModelBase
             await ReadClipboardAsync();
             await SendToTelegramAsync();
         };
-        globalHotkeyService.Start();
     }
 
     private async Task LoadSettingsAsync()
@@ -61,6 +65,8 @@ public partial class MainWindowViewModel : ViewModelBase
         var settings = await _settingsService.LoadSettingsAsync();
         BotToken = settings.BotToken;
         ChatId = settings.ChatId;
+        ClipboardPopupHotkey = settings.ClipboardPopupHotkey;
+        _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
     }
 
     [RelayCommand]
@@ -69,10 +75,29 @@ public partial class MainWindowViewModel : ViewModelBase
         var settings = new Settings
         {
             BotToken = this.BotToken,
-            ChatId = this.ChatId
+            ChatId = this.ChatId,
+            ClipboardPopupHotkey = this.ClipboardPopupHotkey
         };
         await _settingsService.SaveSettingsAsync(settings);
+        _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
         SetStatus("Settings saved successfully.", false);
+    }
+
+    [RelayCommand]
+    private async Task ChangeHotkeyAsync()
+    {
+        if (Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null)
+        {
+            var dialog = new Views.HotkeyRecorderWindow();
+            var result = await dialog.ShowDialog<string>(desktop.MainWindow);
+            
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                ClipboardPopupHotkey = result;
+                // Auto-save setting when changed via dialog
+                SaveSettingsCommand.Execute(null);
+            }
+        }
     }
 
     [RelayCommand]

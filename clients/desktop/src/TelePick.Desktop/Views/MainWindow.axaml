@@ -3,6 +3,7 @@
         xmlns:vm="using:TelePick.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="600"
         x:Class="TelePick.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -61,7 +62,10 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,5">
-                                <Image Source="{Binding Thumbnail}" MaxWidth="100" MaxHeight="100" Margin="0,0,10,0" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <Panel Grid.Column="0" Width="100" Height="100" Margin="0,0,10,0">
+                                    <Image Source="{Binding Thumbnail}" MaxWidth="100" MaxHeight="100" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    <materialIcons:MaterialIcon Kind="{Binding IconKind}" Width="48" Height="48" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNull}}" />
+                                </Panel>
                                 <TextBlock Grid.Column="1" Text="{Binding PreviewText}" TextTrimming="CharacterEllipsis" MaxWidth="300" VerticalAlignment="Center"/>
                                 <Button Grid.Column="2" Content="Use" 
                                         Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SetActiveClipboardItemCommand}"
@@ -75,7 +79,7 @@
             
             <!-- Settings Tab -->
             <TabItem Header="Settings">
-                <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" Margin="10">
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto" Margin="10">
                     <TextBlock Grid.Row="0" Text="Telegram Bot Token" FontWeight="SemiBold" Margin="0,0,0,5" />
                     <TextBox Grid.Row="1" 
                              Text="{Binding BotToken}" 
@@ -85,9 +89,17 @@
                     <TextBlock Grid.Row="2" Text="Chat ID" FontWeight="SemiBold" Margin="0,15,0,5" />
                     <TextBox Grid.Row="3" 
                              Text="{Binding ChatId}" 
-                             Watermark="-1001234567890" />
+                             PlaceholderText="-1001234567890" />
+
+                    <TextBlock Grid.Row="4" Text="Clipboard Popup Hotkey" FontWeight="SemiBold" Margin="0,15,0,5" />
+                    <Grid Grid.Row="5" ColumnDefinitions="*, Auto">
+                        <Border Grid.Column="0" Background="#E5E5E5" CornerRadius="4" Padding="10,5" Margin="0,0,10,0">
+                            <TextBlock Text="{Binding ClipboardPopupHotkey}" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#333333"/>
+                        </Border>
+                        <Button Grid.Column="1" Content="Change" Command="{Binding ChangeHotkeyCommand}" />
+                    </Grid>
                     
-                    <Button Grid.Row="4" 
+                    <Button Grid.Row="6" 
                             Content="Save Settings" 
                             Command="{Binding SaveSettingsCommand}"
                             HorizontalAlignment="Stretch" 

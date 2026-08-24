@@ -11,6 +11,7 @@ namespace TelePick.Desktop;
 
 public partial class App : Application
 {
+    public static IServiceProvider? Services { get; private set; }
     private IServiceProvider? _serviceProvider;
 
     public override void Initialize()
@@ -23,6 +24,25 @@ public partial class App : Application
         var services = new ServiceCollection();
         ConfigureServices(services);
         _serviceProvider = services.BuildServiceProvider();
+        Services = _serviceProvider;
+
+        var hotkeyService = _serviceProvider.GetRequiredService<IGlobalHotkeyService>();
+        hotkeyService.Start();
+        hotkeyService.ClipboardPopupHotkeyPressed += (s, e) =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var window = new ClipboardPopupWindow 
+                { 
+                    DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>() 
+                };
+                
+                // Set position near cursor
+                window.Position = new Avalonia.PixelPoint(hotkeyService.LastMouseX, hotkeyService.LastMouseY);
+                window.Show();
+                window.Activate();
+            });
+        };
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

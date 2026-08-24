@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TelePick.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="400"
+        x:Class="TelePick.Desktop.Views.ClipboardPopupWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="TelePick Clipboard"
+        Width="350" Height="450"
+        WindowDecorations="None"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        Background="#F5F5F5"
+        CornerRadius="8">
+
+    <Window.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,2" />
+        </Style>
+        <Style Selector="ListBoxItem Border.ItemCard">
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBoxItem:selected Border.ItemCard">
+            <Setter Property="BorderBrush" Value="#0088cc" />
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </Window.Styles>
+
+    <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+        <Grid RowDefinitions="Auto, *">
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#0088cc" Padding="15,10">
+                <TextBlock Text="Clipboard History" Foreground="White" FontWeight="Bold" FontSize="14" />
+            </Border>
+
+            <!-- List -->
+            <ListBox Grid.Row="1" ItemsSource="{Binding History}" Margin="5" Background="Transparent" KeyUp="OnListBoxKeyUp">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="ItemCard" Background="White" CornerRadius="5" Padding="10" BoxShadow="0 1 3 0 #20000000" Tapped="OnItemTapped">
+                            <Grid ColumnDefinitions="Auto, *">
+                                <Panel Grid.Column="0" Width="40" Height="40" Margin="0,0,10,0">
+                                    <Image Source="{Binding Thumbnail}" MaxWidth="40" MaxHeight="40" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    <materialIcons:MaterialIcon Kind="{Binding IconKind}" Width="24" Height="24" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNull}}" Foreground="#555555" />
+                                </Panel>
+                                <TextBlock Grid.Column="1" Text="{Binding PreviewText}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" MaxHeight="40" VerticalAlignment="Center" FontSize="12" Foreground="#333333"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+</Window>

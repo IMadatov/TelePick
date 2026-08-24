@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="TelePick.Desktop.Views.HotkeyRecorderWindow"
+        Title="Record Hotkey"
+        Width="350" Height="200"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="#F5F5F5"
+        WindowDecorations="BorderOnly"
+        KeyDown="OnKeyDown"
+        KeyUp="OnKeyUp">
+
+    <Grid RowDefinitions="*, Auto, Auto, Auto">
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Press the keys you want to use:" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Bottom" 
+                   Margin="0,0,0,10" 
+                   FontSize="16" 
+                   FontWeight="SemiBold" />
+
+        <!-- Recorded Hotkey Display -->
+        <Border Grid.Row="1" Background="White" BorderBrush="#0088cc" BorderThickness="2" CornerRadius="8" Margin="20,10" Padding="10">
+            <TextBlock x:Name="HotkeyDisplay" 
+                       Text="Listening..." 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       Foreground="#0088cc"/>
+        </Border>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" Margin="20,20,20,20">
+            <Button Grid.Column="0" Content="Cancel" Click="OnCancelClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
+            <Button Grid.Column="1" Content="Save" Click="OnSaveClick" Background="#0088cc" Foreground="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="10,0,0,0"/>
+        </Grid>
+    </Grid>
+</Window>
