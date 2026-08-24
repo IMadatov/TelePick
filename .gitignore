@@ -1,0 +1,11 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Avalonia
+*.ide/
+/graphify-out/*
+*.zip

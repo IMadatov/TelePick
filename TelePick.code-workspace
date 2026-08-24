@@ -1,0 +1,11 @@
+{
+    "folders": [
+        {
+            "path": "clients/desktop"
+        }
+    ],
+    "settings": {
+        "omnisharp.useModernNet": true,
+        "omnisharp.projectLoadTimeout": 60
+    }
+}

@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TelePick.Desktop/TelePick.Desktop.csproj" />
+  </Folder>
+</Solution>

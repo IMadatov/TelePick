@@ -1,0 +1,106 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TelePick.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="600"
+        x:Class="TelePick.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="TelePick"
+        Width="450" Height="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*, Auto">
+        
+        <TabControl Grid.Row="0" Margin="10">
+            <!-- Capture Tab -->
+            <TabItem Header="Capture">
+                <Grid RowDefinitions="Auto, *, Auto, *, Auto" Margin="10">
+                    <TextBlock Grid.Row="0" Text="Clipboard Text" FontWeight="SemiBold" Margin="0,0,0,5" />
+                    <TextBox Grid.Row="1" 
+                             AcceptsReturn="True" 
+                             TextWrapping="Wrap" 
+                             Text="{Binding ClipboardText}" 
+                             PlaceholderText="Click 'Read from Clipboard' below..." />
+                    
+                    <TextBlock Grid.Row="2" Text="Add Note" FontWeight="SemiBold" Margin="0,15,0,5" />
+                    <TextBox Grid.Row="3" 
+                             AcceptsReturn="True" 
+                             TextWrapping="Wrap" 
+                             Text="{Binding Note}" 
+                             PlaceholderText="Optional note..." />
+                    
+                    <Grid Grid.Row="4" ColumnDefinitions="*, *" Margin="0,20,0,0">
+                        <Button Grid.Column="0" 
+                                Content="Read from Clipboard" 
+                                Command="{Binding ReadClipboardCommand}"
+                                HorizontalAlignment="Stretch" 
+                                HorizontalContentAlignment="Center"
+                                Margin="0,0,5,0" />
+                        <Button Grid.Column="1" 
+                                Content="Send to Telegram" 
+                                Command="{Binding SendToTelegramCommand}"
+                                HorizontalAlignment="Stretch" 
+                                HorizontalContentAlignment="Center"
+                                Margin="5,0,0,0"
+                                Background="#0088cc"
+                                Foreground="White" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <!-- History Tab -->
+            <TabItem Header="History">
+                <ListBox ItemsSource="{Binding History}" Margin="10">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,5">
+                                <Image Source="{Binding Thumbnail}" MaxWidth="100" MaxHeight="100" Margin="0,0,10,0" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <TextBlock Grid.Column="1" Text="{Binding PreviewText}" TextTrimming="CharacterEllipsis" MaxWidth="300" VerticalAlignment="Center"/>
+                                <Button Grid.Column="2" Content="Use" 
+                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SetActiveClipboardItemCommand}"
+                                        CommandParameter="{Binding}"
+                                        Margin="10,0,0,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+            
+            <!-- Settings Tab -->
+            <TabItem Header="Settings">
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" Margin="10">
+                    <TextBlock Grid.Row="0" Text="Telegram Bot Token" FontWeight="SemiBold" Margin="0,0,0,5" />
+                    <TextBox Grid.Row="1" 
+                             Text="{Binding BotToken}" 
+                             PasswordChar="*" 
+                             PlaceholderText="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" />
+                    
+                    <TextBlock Grid.Row="2" Text="Chat ID" FontWeight="SemiBold" Margin="0,15,0,5" />
+                    <TextBox Grid.Row="3" 
+                             Text="{Binding ChatId}" 
+                             Watermark="-1001234567890" />
+                    
+                    <Button Grid.Row="4" 
+                            Content="Save Settings" 
+                            Command="{Binding SaveSettingsCommand}"
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Center"
+                            Margin="0,20,0,0" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Status Bar -->
+        <Border Grid.Row="1" Background="#f0f0f0" Padding="10,5">
+            <TextBlock Text="{Binding StatusMessage}" 
+                       Foreground="{Binding IsStatusError, Converter={StaticResource StatusColorConverter}}" />
+        </Border>
+    </Grid>
+</Window>
