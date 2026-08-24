@@ -9,7 +9,7 @@ TelePick is a monorepo with two clients that share the same core purpose — cap
 | Client | Path | Status | Description |
 |--------|------|--------|-------------|
 | **Browser extension** | [`clients/extension/`](clients/extension/) | Available | Chrome extension (Manifest V3) — select text on any webpage and send via floating button |
-| **Desktop app** | [`clients/desktop/`](clients/desktop/) | Planned | Cross-platform .NET + Avalonia UI app with OS-level capture, hotkeys, and system tray |
+| **Desktop app** | [`clients/desktop/`](clients/desktop/) | Available (Linux MVP) | .NET 8 + Avalonia UI — read clipboard text, add a note, send to Telegram |
 
 ## Quick start (extension)
 
@@ -23,7 +23,12 @@ See [`clients/extension/README.md`](clients/extension/README.md) for full setup 
 
 ## Desktop app
 
-The desktop client is under active planning. See [`clients/desktop/README.md`](clients/desktop/README.md) for the target architecture and roadmap.
+Minimal MVP is available. See [`clients/desktop/README.md`](clients/desktop/README.md) for build instructions and usage.
+
+```bash
+cd clients/desktop
+dotnet run --project src/TelePick.Desktop
+```
 
 ## Repository structure
 
@@ -37,13 +42,17 @@ TelePick/
       icons/
       README.md
       PRIVACY.md
-    desktop/            # .NET Avalonia desktop app (planned)
+    desktop/            # .NET 8 Avalonia desktop app
+      TelePick.sln
+      src/
+      tests/
       README.md
 ```
 
 ## Privacy
 
 - The browser extension stores credentials in `chrome.storage.sync`. See [`clients/extension/PRIVACY.md`](clients/extension/PRIVACY.md) for details.
+- The desktop app stores credentials in `~/.config/TelePick/settings.json`.
 - Selected text is sent only to Telegram's API using your bot; no third-party servers are used.
 
 ## License

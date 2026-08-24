@@ -24,8 +24,9 @@ We will use **SharpHook** (`libuiohook` wrapper), which provides a unified, high
 4. **Event Flow & UI Trigger**
    - `App.axaml.cs` or `MainWindowViewModel` will instantiate the service and register the shortcut upon startup.
    - When triggered, the callback will:
-     1. Bring the `MainWindow` to the foreground (unminimize/focus).
-     2. Automatically execute `ReadClipboardCommand` to populate the clipboard text into the UI.
+     1. Automatically read the clipboard text.
+     2. Execute `SendToTelegramAsync` to send it directly to Telegram without requiring manual confirmation.
+     3. Show a brief native OS notification or update the app's status bar to confirm it was sent.
 
 ## Error Handling
 - If `SharpHook` fails to bind to the OS (e.g., due to missing X11/Wayland dependencies on some minimal Linux setups), the service will catch the exception and disable the hotkey feature gracefully, showing a status message instead of crashing the app.
