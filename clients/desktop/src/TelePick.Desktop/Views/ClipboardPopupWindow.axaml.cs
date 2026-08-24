@@ -53,8 +53,45 @@ public partial class ClipboardPopupWindow : Window
         {
             if (selectedItem.Type == ClipboardItemType.Text)
             {
+                await clipboard.ClearAsync();
                 await clipboard.SetTextAsync(selectedItem.RawData as string);
             }
+            else if (selectedItem.Type == ClipboardItemType.Image)
+            {
+                var path = selectedItem.RawData as string;
+                if (!string.IsNullOrEmpty(path))
+                {
+                    try
+                    {
+                        // Clean path string
+                        var actualPath = path;
+                        if (actualPath.StartsWith("file://"))
+                        {
+                            actualPath = actualPath.Substring(7);
+                        }
+                        
+                        var bitmap = new Avalonia.Media.Imaging.Bitmap(actualPath);
+                        await clipboard.ClearAsync();
+                        await clipboard.SetBitmapAsync(bitmap);
+                    }
+                    catch
+                    {
+                        // Fallback to pasting as file
+                        var topLevel = TopLevel.GetTopLevel(this);
+                        if (topLevel != null)
+                        {
+                            var file = await topLevel.StorageProvider.TryGetFileFromPathAsync(new System.Uri(path.StartsWith("file://") ? path : "file://" + path));
+                            if (file != null)
+                            {
+                                await clipboard.ClearAsync();
+                                await clipboard.SetFilesAsync(new[] { file });
+                            }
+                        }
+                    }
+                }
+            }
+            // TODO: Files paste — revisit with xclip or native approach
+            // else if (selectedItem.Type == ClipboardItemType.Files) { ... }
         }
 
         // 2. Wait a tiny bit for OS clipboard to sync while we still have focus
