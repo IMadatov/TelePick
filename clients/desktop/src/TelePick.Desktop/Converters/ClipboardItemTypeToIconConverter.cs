@@ -15,6 +15,7 @@ namespace TelePick.Desktop.Converters
                 return type switch
                 {
                     ClipboardItemType.Text => MaterialIconKind.CodeBraces,
+                    ClipboardItemType.Link => MaterialIconKind.Link,
                     ClipboardItemType.Image => MaterialIconKind.Image,
                     ClipboardItemType.Files => MaterialIconKind.FileDocument,
                     _ => MaterialIconKind.ClipboardText

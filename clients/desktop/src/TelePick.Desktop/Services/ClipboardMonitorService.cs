@@ -166,7 +166,12 @@ public class ClipboardMonitorService : IClipboardMonitorService
             var text = await _clipboard.TryGetTextAsync();
             if (!string.IsNullOrWhiteSpace(text))
             {
-                var existingItem = History.FirstOrDefault(x => x.Type == ClipboardItemType.Text && x.PreviewText == text);
+                bool isLink = Uri.TryCreate(text.Trim(), UriKind.Absolute, out var uriResult) 
+                              && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+                
+                var itemType = isLink ? ClipboardItemType.Link : ClipboardItemType.Text;
+
+                var existingItem = History.FirstOrDefault(x => (x.Type == ClipboardItemType.Text || x.Type == ClipboardItemType.Link) && x.PreviewText == text);
                 if (existingItem != null)
                 {
                     BubbleUpItem(existingItem);
@@ -175,10 +180,10 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 {
                     var item = new ClipboardItem
                     {
-                        Type = ClipboardItemType.Text,
+                        Type = itemType,
                         PreviewText = text,
                         RawData = text,
-                        IconKind = "TextSubject",
+                        IconKind = isLink ? "Link" : "TextSubject",
                         EstimatedSizeBytes = EstimateTextSize(text)
                     };
                     AddItem(item);

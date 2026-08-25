@@ -151,6 +151,11 @@
                             Command="{Binding SetFilterCommand}" 
                             CommandParameter="Text" />
                     <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
+                            IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Links, Mode=OneWay}" 
+                            Content="Links" 
+                            Command="{Binding SetFilterCommand}" 
+                            CommandParameter="Links" />
+                    <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
                             IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Images, Mode=OneWay}" 
                             Content="Images" 
                             Command="{Binding SetFilterCommand}" 

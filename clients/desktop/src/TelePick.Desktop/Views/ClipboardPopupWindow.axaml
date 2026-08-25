@@ -248,6 +248,7 @@
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="All Items" IsChecked="True" Command="{Binding SetFilterCommand}" CommandParameter="All" />
                             <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Text" Command="{Binding SetFilterCommand}" CommandParameter="Text" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Links" Command="{Binding SetFilterCommand}" CommandParameter="Links" />
                             <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Images" Command="{Binding SetFilterCommand}" CommandParameter="Images" />
                             <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Files" Command="{Binding SetFilterCommand}" CommandParameter="Files" />
                         </StackPanel>

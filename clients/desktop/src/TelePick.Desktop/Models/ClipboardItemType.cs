@@ -4,5 +4,6 @@ public enum ClipboardItemType
 {
     Text,
     Image,
-    Files
+    Files,
+    Link
 }

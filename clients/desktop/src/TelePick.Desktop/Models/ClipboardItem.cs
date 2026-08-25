@@ -21,6 +21,7 @@ public partial class ClipboardItem : ObservableObject, IDisposable
             return Type switch
             {
                 ClipboardItemType.Text => IsLikelyCode ? "Code" : "Text",
+                ClipboardItemType.Link => "Link",
                 ClipboardItemType.Image => "Image",
                 ClipboardItemType.Files => "Files",
                 _ => "Clipboard Item"
