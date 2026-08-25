@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings Dashboard - TelePick</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#282a2d",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "tertiary-container": "#04aede",
+                        "surface-variant": "#333538",
+                        "surface-container-low": "#1a1c1f",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "on-surface": "#e2e2e6",
+                        "surface-bright": "#37393d",
+                        "on-secondary-fixed-variant": "#42474b",
+                        "surface-container": "#1e2023",
+                        "on-surface-variant": "#bec8d2",
+                        "inverse-on-surface": "#2f3034",
+                        "primary-container": "#2aabee",
+                        "on-error": "#690005",
+                        "on-primary": "#00344d",
+                        "surface-dim": "#111317",
+                        "surface": "#111317",
+                        "inverse-surface": "#e2e2e6",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#89ceff",
+                        "on-primary-container": "#003c58",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "secondary-fixed-dim": "#c2c7cb",
+                        "secondary-container": "#42474b",
+                        "surface-container-lowest": "#0c0e11",
+                        "outline-variant": "#3e4850",
+                        "tertiary": "#68d3ff",
+                        "on-background": "#e2e2e6",
+                        "on-secondary": "#2c3135",
+                        "surface-container-highest": "#333538",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#bee9ff",
+                        "outline": "#88929b",
+                        "on-secondary-fixed": "#171c20",
+                        "secondary": "#c2c7cb",
+                        "background": "#111317",
+                        "inverse-primary": "#006591",
+                        "on-tertiary-container": "#003d50",
+                        "on-primary-fixed": "#001e2f",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#003546",
+                        "secondary-fixed": "#dfe3e7",
+                        "surface-tint": "#89ceff",
+                        "on-secondary-container": "#b1b6ba",
+                        "on-tertiary-fixed": "#001f2a",
+                        "primary": "#89ceff",
+                        "primary-fixed": "#c9e6ff"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+                    },
+                    spacing: {
+                        "container-padding": "16px",
+                        "item-gap": "8px",
+                        "glass-padding": "12px",
+                        "unit": "4px"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-sm": ["JetBrains Mono"],
+                        "display-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-md": ["18px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "body-lg": ["15px", { lineHeight: "22px", fontWeight: "400" }],
+                        "mono-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+                        "display-sm": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background-color: rgba(28, 31, 36, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-active {
+            border: 1px solid #2AABEE;
+            box-shadow: 0 0 4px rgba(42, 171, 238, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex">
+<!-- TopAppBar (Mobile Only) -->
+<header class="md:hidden flex justify-between items-center px-container-padding h-14 w-full bg-surface-dim/95 backdrop-blur-xl border-b border-white/10 fixed top-0 z-50">
+<div class="font-display-sm text-display-sm text-primary tracking-tight">TelePick</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary hover:bg-white/5 transition-colors p-2 rounded-full cursor-pointer">sync</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 transition-colors p-2 rounded-full cursor-pointer">help</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 transition-colors p-2 rounded-full cursor-pointer">settings</span>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest/95 backdrop-blur-2xl border-r border-white/5 flex-col gap-item-gap p-glass-padding z-40">
+<div class="mb-8 px-2 mt-4">
+<h1 class="font-headline-md text-headline-md text-primary">TelePick Pro</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-70">V 2.1.0</p>
+</div>
+<ul class="flex flex-col gap-2 w-full">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-all w-full" href="#">
+<span class="material-symbols-outlined">content_paste</span>
+                    Clipboard
+                </a>
+</li>
+<li>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-semibold font-body-sm text-body-sm transition-transform translate-x-1 w-full" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+                    Telegram
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-all w-full" href="#">
+<span class="material-symbols-outlined">keyboard</span>
+                    Hotkeys
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-all w-full" href="#">
+<span class="material-symbols-outlined">tune</span>
+                    Advanced
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 ml-0 md:ml-64 mt-14 md:mt-0 p-container-padding md:p-8 min-h-screen">
+<div class="max-w-4xl mx-auto space-y-8">
+<header class="mb-8 flex justify-between items-end">
+<div>
+<h2 class="font-display-sm text-display-sm text-on-surface mb-2">Telegram Integration</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Configure your connection to the TelePick bot for seamless clipboard syncing.</p>
+</div>
+<div class="hidden md:flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full border border-white/5">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-body-sm text-body-sm text-on-surface">Connected</span>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Connection Settings Card -->
+<section class="glass-card rounded-xl p-6 flex flex-col gap-6">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">link</span>
+                            Bot Configuration
+                        </h3>
+<!-- Mobile Status -->
+<div class="md:hidden flex items-center gap-2 bg-surface-container-high px-2 py-1 rounded-full border border-white/5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-body-sm text-body-sm text-on-surface text-[10px]">Connected</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Bot Token</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-white/10 rounded-lg px-4 py-3 font-mono-sm text-mono-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Enter Bot Token" type="password" value="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Chat ID</label>
+<input class="w-full bg-surface-container-low border border-white/10 rounded-lg px-4 py-3 font-mono-sm text-mono-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Enter Chat ID" type="text" value="-1001234567890"/>
+</div>
+</div>
+<div class="mt-auto pt-4 flex gap-3">
+<button class="bg-primary-container text-white font-headline-md text-headline-md px-4 py-2 rounded-lg hover:bg-primary-container/90 active:scale-95 transition-all flex items-center justify-center gap-2 flex-1">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                            Save
+                        </button>
+<button class="bg-surface-container text-on-surface border border-white/10 font-headline-md text-headline-md px-4 py-2 rounded-lg hover:bg-surface-variant active:scale-95 transition-all flex items-center justify-center">
+                            Test
+                        </button>
+</div>
+</section>
+<!-- Hotkeys & Actions -->
+<div class="space-y-6 flex flex-col">
+<!-- Keyboard Shortcuts Card -->
+<section class="glass-card rounded-xl p-6 flex-1 flex flex-col gap-4">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-on-surface-variant">keyboard</span>
+                            Global Shortcut
+                        </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Set the combination to instantly send your current clipboard to Telegram from anywhere.</p>
+<div class="bg-surface-container-low border border-white/10 rounded-lg p-6 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-primary-container/50 transition-colors group">
+<div class="flex items-center gap-2 font-mono-sm text-mono-sm text-on-surface">
+<span class="bg-surface-variant px-3 py-1.5 rounded border border-white/10 group-hover:border-primary-container/30">Ctrl</span>
+<span class="text-on-surface-variant">+</span>
+<span class="bg-surface-variant px-3 py-1.5 rounded border border-white/10 group-hover:border-primary-container/30">Shift</span>
+<span class="text-on-surface-variant">+</span>
+<span class="bg-surface-variant px-3 py-1.5 rounded border border-white/10 group-hover:border-primary-container/30">V</span>
+</div>
+<span class="font-body-sm text-body-sm text-primary-container opacity-0 group-hover:opacity-100 transition-opacity">Click to record new shortcut</span>
+</div>
+</section>
+<!-- Primary Action -->
+<button class="w-full bg-[#2AABEE] text-white font-headline-md text-headline-md py-4 rounded-xl shadow-[0_0_15px_rgba(42,171,238,0.3)] hover:shadow-[0_0_25px_rgba(42,171,238,0.5)] hover:bg-[#209ddc] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
+<span class="material-symbols-outlined transition-transform group-hover:translate-x-1" style="font-variation-settings: 'FILL' 1;">send</span>
+                        Send Current Clipboard to Telegram
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -38,7 +38,10 @@ public partial class ClipboardPopupWindow : Window
                 {
                     listBox.SelectedIndex = 0;
                 }
-                listBox.Focus();
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    listBox.Focus();
+                }, Avalonia.Threading.DispatcherPriority.Loaded);
             }
         };
     }
