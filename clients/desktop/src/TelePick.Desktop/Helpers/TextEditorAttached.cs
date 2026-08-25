@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
@@ -13,7 +14,7 @@ public static class TextEditorAttached
     {
         TextProperty.Changed.AddClassHandler<TextEditor>((editor, e) =>
         {
-            // In Avalonia 11, we should just get the value from the property to be safe
+            // Always get the latest value directly from the property to avoid boxed value issues
             string? newText = editor.GetValue(TextProperty);
             
             if (newText != null)

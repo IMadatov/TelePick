@@ -7,6 +7,7 @@
              xmlns:models="using:TelePick.Desktop.Models"
              xmlns:conv="using:TelePick.Desktop.Converters"
              xmlns:helpers="using:TelePick.Desktop.Helpers"
+             xmlns:controls="using:TelePick.Desktop.Controls"
              xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
              x:Class="TelePick.Desktop.Views.ClipboardDashboardView"
@@ -246,7 +247,7 @@
                                             ClipToBounds="True"
                                             IsVisible="{Binding IsLikelyCode}">
                                         
-                                        <avaloniaEdit:TextEditor helpers:TextEditorAttached.Text="{Binding PreviewText}"
+                                        <controls:BindableTextEditor TextContent="{Binding PreviewText}"
                                                                  IsReadOnly="True"
                                                                  ShowLineNumbers="False"
                                                                  FontFamily="JetBrains Mono, Consolas, monospace"
