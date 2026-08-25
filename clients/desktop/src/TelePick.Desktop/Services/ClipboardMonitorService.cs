@@ -121,7 +121,10 @@ public class ClipboardMonitorService : IClipboardMonitorService
                                     using var stream = File.OpenRead(filePath);
                                     item.Thumbnail = Bitmap.DecodeToWidth(stream, 100);
                                 }
-                                catch { }
+                                catch (System.Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Failed to create thumbnail from file: {ex}");
+                                }
                             }
                             else if (ext == ".pdf" || ext == ".doc" || ext == ".docx" || ext == ".txt")
                             {
@@ -215,7 +218,10 @@ public class ClipboardMonitorService : IClipboardMonitorService
                         using var stream = new MemoryStream(bytes);
                         item.Thumbnail = Bitmap.DecodeToWidth(stream, 100);
                     }
-                    catch { }
+                    catch (System.Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to create thumbnail from bytes: {ex}");
+                    }
 
                     item.EstimatedSizeBytes = EstimateImageSize(item.Thumbnail);
                     AddItem(item);

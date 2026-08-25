@@ -74,8 +74,9 @@ public partial class ClipboardPopupWindow : Window
                         await clipboard.ClearAsync();
                         await clipboard.SetBitmapAsync(bitmap);
                     }
-                    catch
+                    catch (System.Exception ex)
                     {
+                        System.Diagnostics.Debug.WriteLine($"Failed to set bitmap: {ex}");
                         // Fallback to pasting as file
                         var topLevel = TopLevel.GetTopLevel(this);
                         if (topLevel != null)
@@ -90,8 +91,57 @@ public partial class ClipboardPopupWindow : Window
                     }
                 }
             }
-            // TODO: Files paste — revisit with xclip or native approach
-            // else if (selectedItem.Type == ClipboardItemType.Files) { ... }
+            else if (selectedItem.Type == ClipboardItemType.Files)
+            {
+                var paths = selectedItem.RawData as System.Collections.Generic.List<string>;
+                if (paths != null && paths.Count > 0)
+                {
+                    if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
+                    {
+                        try
+                        {
+                            var uriList = string.Join("\n", System.Linq.Enumerable.Select(paths, p => $"file://{p}"));
+                            var process = new System.Diagnostics.Process
+                            {
+                                StartInfo = new System.Diagnostics.ProcessStartInfo
+                                {
+                                    FileName = "xclip",
+                                    Arguments = "-selection clipboard -t text/uri-list",
+                                    RedirectStandardInput = true,
+                                    UseShellExecute = false,
+                                    CreateNoWindow = true
+                                }
+                            };
+                            process.Start();
+                            process.StandardInput.Write(uriList);
+                            process.StandardInput.Close();
+                            process.WaitForExit(1000);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Failed to paste file via xclip: {ex}");
+                        }
+                    }
+                    else
+                    {
+                        var topLevel = TopLevel.GetTopLevel(this);
+                        if (topLevel != null)
+                        {
+                            var storageFiles = new System.Collections.Generic.List<Avalonia.Platform.Storage.IStorageFile>();
+                            foreach (var p in paths)
+                            {
+                                var file = await topLevel.StorageProvider.TryGetFileFromPathAsync(new System.Uri(p.StartsWith("file://") ? p : "file://" + p));
+                                if (file != null) storageFiles.Add(file);
+                            }
+                            if (storageFiles.Count > 0)
+                            {
+                                await clipboard.ClearAsync();
+                                await clipboard.SetFilesAsync(storageFiles);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // 2. Wait a tiny bit for OS clipboard to sync while we still have focus
