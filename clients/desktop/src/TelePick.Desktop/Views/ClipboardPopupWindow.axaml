@@ -19,8 +19,8 @@
 
     <Window.Resources>
         <!-- Translucent surface for glassmorphic window backing -->
-        <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#E6282A2D" />
-        <SolidColorBrush x:Key="ChipSelectedBackground" Color="#262AABEE" />
+        <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#F20F1114" />
+        <SolidColorBrush x:Key="ChipSelectedBackground" Color="#1A2AABEE" /> <!-- 10% primary -->
     </Window.Resources>
 
     <Window.Styles>

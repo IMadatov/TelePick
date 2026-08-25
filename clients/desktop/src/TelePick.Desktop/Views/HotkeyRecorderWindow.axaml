@@ -1,39 +1,136 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         x:Class="TelePick.Desktop.Views.HotkeyRecorderWindow"
         Title="Record Hotkey"
-        Width="350" Height="200"
+        Width="420" Height="360"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
-        Background="#F5F5F5"
-        WindowDecorations="BorderOnly"
+        Background="Transparent"
+        TransparencyLevelHint="Mica, AcrylicBlur"
+        WindowDecorations="None"
         KeyDown="OnKeyDown"
         KeyUp="OnKeyUp">
 
-    <Grid RowDefinitions="*, Auto, Auto, Auto">
-        <!-- Title -->
-        <TextBlock Grid.Row="0" Text="Press the keys you want to use:" 
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Bottom" 
-                   Margin="0,0,0,10" 
-                   FontSize="16" 
-                   FontWeight="SemiBold" />
+    <Window.Resources>
+        <SolidColorBrush x:Key="Background" Color="#F20C0E11" />
+        <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#282A2D" />
+        <SolidColorBrush x:Key="SurfaceContainerLow" Color="#1A1C1F" />
+        <SolidColorBrush x:Key="Primary" Color="#89CEFF" />
+        <SolidColorBrush x:Key="PrimaryContainer" Color="#2AABEE" />
+        <SolidColorBrush x:Key="OnPrimaryContainer" Color="#003C58" />
+        <SolidColorBrush x:Key="OnSurface" Color="#E2E2E6" />
+        <SolidColorBrush x:Key="OnSurfaceVariant" Color="#BEC8D2" />
+        <SolidColorBrush x:Key="Outline" Color="#88929B" />
+        <SolidColorBrush x:Key="White5" Color="#0DFFFFFF" />
+        <SolidColorBrush x:Key="White10" Color="#1AFFFFFF" />
+    </Window.Resources>
 
-        <!-- Recorded Hotkey Display -->
-        <Border Grid.Row="1" Background="White" BorderBrush="#0088cc" BorderThickness="2" CornerRadius="8" Margin="20,10" Padding="10">
-            <TextBlock x:Name="HotkeyDisplay" 
-                       Text="Listening..." 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="20" 
-                       FontWeight="Bold" 
-                       Foreground="#0088cc"/>
-        </Border>
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="Inter, Arial, sans-serif" />
+        </Style>
+        
+        <Style Selector="Button.ActionBtn">
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        
+        <Style Selector="Button.CancelBtn">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+        </Style>
+        <Style Selector="Button.CancelBtn:pointerover">
+            <Setter Property="Background" Value="#1AFFFFFF" />
+        </Style>
+        
+        <Style Selector="Button.SaveBtn">
+            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Button.SaveBtn:pointerover">
+            <Setter Property="Background" Value="#209DDC" />
+        </Style>
+    </Window.Styles>
 
-        <!-- Buttons -->
-        <Grid Grid.Row="3" ColumnDefinitions="*,*" Margin="20,20,20,20">
-            <Button Grid.Column="0" Content="Cancel" Click="OnCancelClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
-            <Button Grid.Column="1" Content="Save" Click="OnSaveClick" Background="#0088cc" Foreground="White" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="10,0,0,0"/>
+    <!-- Modal Container -->
+    <Border Background="{DynamicResource Background}" 
+            BorderBrush="{DynamicResource White10}" 
+            BorderThickness="1" 
+            CornerRadius="16" 
+            ClipToBounds="True">
+        <Grid RowDefinitions="Auto, *, Auto">
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Margin="24,24,24,16">
+                <TextBlock Text="Set Global Shortcut" 
+                           FontSize="18" 
+                           FontWeight="SemiBold" 
+                           Foreground="{DynamicResource OnSurface}" />
+                <TextBlock Text="Press the key combination you want to use" 
+                           FontSize="13" 
+                           Foreground="{DynamicResource OnSurfaceVariant}" 
+                           Margin="0,4,0,0" />
+            </StackPanel>
+
+            <!-- Content Body -->
+            <StackPanel Grid.Row="1" Margin="24,16,24,32" Spacing="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!-- Listening Area -->
+                <Border x:Name="ListeningBorder" 
+                        Width="372" 
+                        Height="128" 
+                        Background="{DynamicResource SurfaceContainerHigh}" 
+                        BorderBrush="{DynamicResource Primary}" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        BoxShadow="0 0 15 0 #1A2AABEE">
+                    <!-- Note: Real pulse animations and gradient masks are complex in Avalonia XAML, using a solid border with box shadow as approximation -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                        <materialIcons:MaterialIcon x:Name="ListeningIcon" 
+                                                    Kind="Keyboard" 
+                                                    Width="36" 
+                                                    Height="36" 
+                                                    Foreground="{DynamicResource Primary}" />
+                        <TextBlock x:Name="HotkeyDisplay" 
+                                   Text="LISTENING..." 
+                                   FontFamily="JetBrains Mono, Consolas, monospace" 
+                                   FontSize="14" 
+                                   FontWeight="Bold" 
+                                   LetterSpacing="0.1" 
+                                   Foreground="{DynamicResource Primary}" 
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Helper Text -->
+                <TextBlock Text="Use combinations like CMD+Shift+C to avoid conflicts with system shortcuts." 
+                           FontSize="13" 
+                           Foreground="{DynamicResource Outline}" 
+                           TextWrapping="Wrap" 
+                           TextAlignment="Center" 
+                           MaxWidth="280" />
+            </StackPanel>
+
+            <!-- Footer Actions -->
+            <Border Grid.Row="2" 
+                    Background="#801A1C1F" 
+                    BorderBrush="{DynamicResource White5}" 
+                    BorderThickness="0,1,0,0" 
+                    Padding="24,16">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                    <Button Classes="ActionBtn CancelBtn" 
+                            Content="Cancel" 
+                            Click="OnCancelClick" />
+                    <Button Classes="ActionBtn SaveBtn" 
+                            Content="Save" 
+                            Click="OnSaveClick" 
+                            x:Name="SaveButton" />
+                </StackPanel>
+            </Border>
         </Grid>
-    </Grid>
+    </Border>
 </Window>
