@@ -82,23 +82,24 @@
                 <!-- Listening Area -->
                 <Border x:Name="ListeningBorder" 
                         Width="372" 
-                        Height="128" 
+                        MinHeight="140" 
                         Background="{DynamicResource SurfaceContainerHigh}" 
                         BorderBrush="{DynamicResource Primary}" 
                         BorderThickness="1" 
                         CornerRadius="12" 
+                        Padding="24"
                         BoxShadow="0 0 15 0 #1A2AABEE">
                     <!-- Note: Real pulse animations and gradient masks are complex in Avalonia XAML, using a solid border with box shadow as approximation -->
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
                         <materialIcons:MaterialIcon x:Name="ListeningIcon" 
                                                     Kind="Keyboard" 
-                                                    Width="36" 
-                                                    Height="36" 
+                                                    Width="42" 
+                                                    Height="42" 
                                                     Foreground="{DynamicResource Primary}" />
                         <TextBlock x:Name="HotkeyDisplay" 
                                    Text="LISTENING..." 
                                    FontFamily="JetBrains Mono, Consolas, monospace" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    FontWeight="Bold" 
                                    LetterSpacing="0.1" 
                                    Foreground="{DynamicResource Primary}" 
