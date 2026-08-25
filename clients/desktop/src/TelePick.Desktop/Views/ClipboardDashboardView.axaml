@@ -1,0 +1,225 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="using:TelePick.Desktop.ViewModels"
+             xmlns:models="using:TelePick.Desktop.Models"
+             xmlns:conv="using:TelePick.Desktop.Converters"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
+             x:Class="TelePick.Desktop.Views.ClipboardDashboardView"
+             x:DataType="vm:MainWindowViewModel">
+    
+    <UserControl.Resources>
+        <conv:ClipboardItemTypeToIconConverter x:Key="TypeToIconConverter" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="TextBox.SearchInput">
+            <Setter Property="Background" Value="#1AFFFFFF" />
+            <Setter Property="BorderBrush" Value="#0DFFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="40,10,64,10" />
+            <Setter Property="FontFamily" Value="Inter, Arial, sans-serif" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="MinHeight" Value="44" />
+        </Style>
+        <Style Selector="TextBox.SearchInput:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+        </Style>
+        
+        <Style Selector="Button.FilterChip">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Padding" Value="12,4" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.FilterChip:pointerover">
+            <Setter Property="BorderBrush" Value="#c2c7cb" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+        <Style Selector="Button.FilterChip:pressed">
+            <Setter Property="Background" Value="#1A89CEFF" />
+        </Style>
+
+        <Style Selector="Border.ClipboardItemCard">
+            <Setter Property="Background" Value="#991C1F24" />
+            <Setter Property="BorderBrush" Value="#0DFFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.ClipboardItemCard:pointerover">
+            <Setter Property="Background" Value="#1AFFFFFF" />
+        </Style>
+        
+        <Style Selector="Button.QuickActionBtn">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="6" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.QuickActionBtn:pointerover">
+            <Setter Property="Background" Value="#1AFFFFFF" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto, Auto, *">
+        <!-- Top Bar / Search -->
+        <Border Grid.Row="0" BorderBrush="#0DFFFFFF" BorderThickness="0,0,0,1" Padding="16,16">
+            <Grid>
+                <TextBox Classes="SearchInput" 
+                         Text="{Binding SearchText}" 
+                         PlaceholderText="Search clipboard history..." />
+                
+                <materialIcons:MaterialIcon Kind="Search" 
+                                            Width="20" Height="20" 
+                                            Foreground="{DynamicResource Outline}" 
+                                            HorizontalAlignment="Left" 
+                                            Margin="12,0,0,0" />
+                
+                <Border Background="#0DFFFFFF" 
+                        BorderBrush="#1AFFFFFF" 
+                        BorderThickness="1" 
+                        CornerRadius="4" 
+                        Padding="6,2" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="⌘K" 
+                               FontFamily="JetBrains Mono, monospace" 
+                               FontSize="12" 
+                               Foreground="{DynamicResource OutlineVariant}" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Filters & Status -->
+        <Border Grid.Row="1" Margin="16,12" BorderBrush="#0DFFFFFF" BorderThickness="0,0,0,1" Padding="0,0,0,12">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <Button Classes="FilterChip" 
+                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=All}" 
+                            Content="All" 
+                            Command="{Binding SetFilterCommand}" 
+                            CommandParameter="All" />
+                    <Button Classes="FilterChip" 
+                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Text}" 
+                            Content="Text" 
+                            Command="{Binding SetFilterCommand}" 
+                            CommandParameter="Text" />
+                    <Button Classes="FilterChip" 
+                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Images}" 
+                            Content="Images" 
+                            Command="{Binding SetFilterCommand}" 
+                            CommandParameter="Images" />
+                    <Button Classes="FilterChip" 
+                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Files}" 
+                            Content="Files" 
+                            Command="{Binding SetFilterCommand}" 
+                            CommandParameter="Files" />
+                    <Button Classes="FilterChip" 
+                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Links}" 
+                            Content="Links" 
+                            Command="{Binding SetFilterCommand}" 
+                            CommandParameter="Links" />
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Ellipse Width="6" Height="6" Fill="{DynamicResource Primary}" />
+                    <TextBlock Text="Syncing active" 
+                               FontFamily="JetBrains Mono, monospace" 
+                               FontSize="12" 
+                               Foreground="{DynamicResource OnSurfaceVariant}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Clipboard List -->
+        <ScrollViewer Grid.Row="2" Margin="16,16,16,0">
+            <ItemsControl ItemsSource="{Binding FilteredHistory}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:ClipboardItem">
+                        <Border Classes="ClipboardItemCard">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <!-- Icon based on type -->
+                                <materialIcons:MaterialIcon Grid.Column="0" 
+                                                            Kind="{Binding Type, Converter={StaticResource TypeToIconConverter}}" 
+                                                            Width="24" Height="24" 
+                                                            Foreground="{DynamicResource Primary}" 
+                                                            Margin="0,4,12,0" 
+                                                            VerticalAlignment="Top" />
+                                
+                                <StackPanel Grid.Column="1">
+                                    <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,6">
+                                        <TextBlock Grid.Column="0" 
+                                                   Text="{Binding Title}" 
+                                                   FontFamily="Inter, Arial" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="11" 
+                                                   Foreground="{DynamicResource Primary}" 
+                                                   LetterSpacing="0.05" />
+                                        
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}" 
+                                                       FontFamily="JetBrains Mono, monospace" 
+                                                       FontSize="12" 
+                                                       Foreground="{DynamicResource OutlineVariant}" />
+                                        </StackPanel>
+                                    </Grid>
+                                    
+                                    <Border Background="{DynamicResource SurfaceContainerLowest}" 
+                                            CornerRadius="4" 
+                                            BorderBrush="#0DFFFFFF" 
+                                            BorderThickness="1" 
+                                            Padding="10"
+                                            MaxHeight="150"
+                                            ClipToBounds="True">
+                                        <!-- For text/code. Note: We use PreviewText for all types as a fallback preview -->
+                                        <TextBlock Text="{Binding PreviewText}" 
+                                                   FontFamily="JetBrains Mono, monospace" 
+                                                   FontSize="12" 
+                                                   Foreground="{DynamicResource OnSurfaceVariant}" 
+                                                   TextWrapping="Wrap" />
+                                    </Border>
+                                </StackPanel>
+                                
+                                <!-- Quick Actions -->
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Top" Margin="12,0,0,0">
+                                    <Button Classes="QuickActionBtn" 
+                                            Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).TogglePinItemCommand}" 
+                                            CommandParameter="{Binding}">
+                                        <materialIcons:MaterialIcon Kind="PinOutline" Width="16" Height="16" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                    </Button>
+                                    <Button Classes="QuickActionBtn" 
+                                            Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).ShareClipboardItemCommand}" 
+                                            CommandParameter="{Binding}">
+                                        <materialIcons:MaterialIcon Kind="Send" Width="16" Height="16" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                    </Button>
+                                    <Button Classes="QuickActionBtn" 
+                                            Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).DeleteClipboardItemCommand}" 
+                                            CommandParameter="{Binding}">
+                                        <materialIcons:MaterialIcon Kind="DeleteOutline" Width="16" Height="16" Foreground="{DynamicResource Error}" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

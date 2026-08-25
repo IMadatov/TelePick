@@ -3,6 +3,7 @@
         xmlns:vm="using:TelePick.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="using:TelePick.Desktop.Views"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
         x:Class="TelePick.Desktop.Views.MainWindow"
@@ -165,6 +166,9 @@
             <ScrollViewer>
                 <Grid Margin="32,48,32,32" MaxWidth="850" HorizontalAlignment="Stretch">
                     
+                    <!-- Clipboard Dashboard Page (Index 0) -->
+                    <views:ClipboardDashboardView IsVisible="{Binding SelectedPageIndex, Converter={StaticResource EqualityConverter}, ConverterParameter=0}" />
+
                     <!-- Telegram Integration Page (Index 1) -->
                     <StackPanel IsVisible="{Binding SelectedPageIndex, Converter={StaticResource EqualityConverter}, ConverterParameter=1}">
                         

@@ -24,9 +24,16 @@ public partial class MainWindowViewModel : ViewModelBase
         get 
         {
             var query = History.AsEnumerable();
-            if (CurrentFilter != null)
+            if (FilterCategory != "All")
             {
-                query = query.Where(x => x.Type == CurrentFilter);
+                if (FilterCategory == "Text")
+                    query = query.Where(x => x.Type == ClipboardItemType.Text && !(x.PreviewText?.StartsWith("http", System.StringComparison.OrdinalIgnoreCase) == true));
+                else if (FilterCategory == "Images")
+                    query = query.Where(x => x.Type == ClipboardItemType.Image);
+                else if (FilterCategory == "Files")
+                    query = query.Where(x => x.Type == ClipboardItemType.Files);
+                else if (FilterCategory == "Links")
+                    query = query.Where(x => x.Type == ClipboardItemType.Text && x.PreviewText?.StartsWith("http", System.StringComparison.OrdinalIgnoreCase) == true);
             }
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
@@ -50,13 +57,13 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private ClipboardItemType? _currentFilter = null;
-    public ClipboardItemType? CurrentFilter
+    private string _filterCategory = "All";
+    public string FilterCategory
     {
-        get => _currentFilter;
+        get => _filterCategory;
         set 
         {
-            if (SetProperty(ref _currentFilter, value))
+            if (SetProperty(ref _filterCategory, value))
             {
                 OnPropertyChanged(nameof(FilteredHistory));
             }
@@ -66,13 +73,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void SetFilter(string filter)
     {
-        CurrentFilter = filter switch
-        {
-            "Text" => ClipboardItemType.Text,
-            "Images" => ClipboardItemType.Image,
-            "Files" => ClipboardItemType.Files,
-            _ => null
-        };
+        FilterCategory = string.IsNullOrEmpty(filter) ? "All" : filter;
     }
 
     [ObservableProperty]
