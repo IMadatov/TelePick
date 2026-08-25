@@ -319,6 +319,25 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void OpenLink(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return;
+        
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (System.Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open link: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
     private void ClearLocalCache()
     {
         History.Clear();

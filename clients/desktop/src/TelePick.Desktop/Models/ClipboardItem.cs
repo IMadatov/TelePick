@@ -43,6 +43,11 @@ public partial class ClipboardItem : ObservableObject, IDisposable
 
     public bool IsImage => Type == ClipboardItemType.Image;
     
+    public bool IsLink => Type == ClipboardItemType.Link;
+    
+    public bool IsNotImageAndNotLink => !IsImage && !IsLink;
+    
+    public bool IsStandardText => Type == ClipboardItemType.Text && !IsLikelyCode;
     private bool _isLikelyCode;
     public bool IsLikelyCode 
     {

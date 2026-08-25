@@ -306,14 +306,34 @@
                                                FontSize="13" 
                                                Foreground="{DynamicResource OnSurface}" 
                                                TextTrimming="CharacterEllipsis" />
-                                    <!-- Standard Text Layout -->
-                                    <TextBlock Text="{Binding PreviewText}" 
-                                               FontSize="12" 
-                                               Foreground="{DynamicResource OnSurfaceVariant}" 
-                                               TextTrimming="CharacterEllipsis" 
-                                               MaxLines="2" 
-                                               TextWrapping="Wrap"
-                                               IsVisible="{Binding !IsLikelyCode}" />
+                                    <Grid>
+                                        <!-- Standard Text Layout -->
+                                        <TextBlock Text="{Binding PreviewText}" 
+                                                   FontSize="12" 
+                                                   Foreground="{DynamicResource OnSurfaceVariant}" 
+                                                   TextTrimming="CharacterEllipsis" 
+                                                   MaxLines="2" 
+                                                   TextWrapping="Wrap"
+                                                   IsVisible="{Binding IsNotImageAndNotLink}" />
+                                                   
+                                        <Button Content="{Binding PreviewText}"
+                                                Background="Transparent"
+                                                Foreground="#2979FF"
+                                                Padding="0"
+                                                Cursor="Hand"
+                                                FontSize="12"
+                                                HorizontalAlignment="Left"
+                                                IsVisible="{Binding IsLink}"
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenLinkCommand}"
+                                                CommandParameter="{Binding PreviewText}">
+                                            <Button.Styles>
+                                                <Style Selector="Button:pointerover">
+                                                    <Setter Property="Foreground" Value="#64B5F6"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </Style>
+                                            </Button.Styles>
+                                        </Button>
+                                    </Grid>
                                     <!-- Code Text Layout -->
                                     <TextBlock Text="{Binding PreviewText}" 
                                                FontSize="11" 

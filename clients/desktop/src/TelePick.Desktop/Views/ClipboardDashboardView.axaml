@@ -231,7 +231,23 @@
                                                        FontSize="13" 
                                                        Foreground="{DynamicResource OnSurfaceVariant}" 
                                                        TextWrapping="Wrap"
-                                                       IsVisible="{Binding !IsImage}" />
+                                                       IsVisible="{Binding IsNotImageAndNotLink}" />
+                                                       
+                                            <Button Content="{Binding PreviewText}"
+                                                    Background="Transparent"
+                                                    Foreground="#2979FF"
+                                                    Padding="0"
+                                                    Cursor="Hand"
+                                                    IsVisible="{Binding IsLink}"
+                                                    Command="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).OpenLinkCommand}"
+                                                    CommandParameter="{Binding PreviewText}">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover">
+                                                        <Setter Property="Foreground" Value="#64B5F6"/>
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Style>
+                                                </Button.Styles>
+                                            </Button>
                                             
                                             <!-- Image Layout -->
                                             <Image Source="{Binding Thumbnail}" 
