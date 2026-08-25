@@ -41,6 +41,39 @@ public partial class ClipboardItem : ObservableObject, IDisposable
     [ObservableProperty]
     private bool _isPinned;
 
+    public bool IsImage => Type == ClipboardItemType.Image;
+    
+    private bool _isLikelyCode;
+    public bool IsLikelyCode 
+    {
+        get => _isLikelyCode;
+        set => SetProperty(ref _isLikelyCode, value);
+    }
+
+    private void DetermineIfCode()
+    {
+        if (Type != ClipboardItemType.Text || string.IsNullOrWhiteSpace(PreviewText))
+        {
+            IsLikelyCode = false;
+            return;
+        }
+
+        // Basic heuristic: density of programming symbols and keywords
+        var codeChars = new[] { '{', '}', ';', '<', '>', '=', '(', ')', '[', ']' };
+        int symbolCount = PreviewText.Count(c => codeChars.Contains(c));
+        
+        string[] keywords = { "class ", "public ", "private ", "void ", "function ", "const ", "let ", "var ", "using ", "import ", "def ", "return ", "if ", "else ", "for " };
+        int keywordCount = keywords.Count(kw => PreviewText.Contains(kw, StringComparison.OrdinalIgnoreCase));
+
+        // If high symbol density or contains multiple keywords, treat as code
+        IsLikelyCode = (symbolCount > 5) || (keywordCount >= 2) || PreviewText.Contains("=>") || PreviewText.Contains("==") || PreviewText.Contains("</");
+    }
+
+    partial void OnPreviewTextChanged(string value)
+    {
+        DetermineIfCode();
+    }
+
     public object? RawData { get; set; }
     public Bitmap? Thumbnail { get; set; }
     public string DataHash { get; set; } = string.Empty;
