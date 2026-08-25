@@ -19,6 +19,62 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public System.Collections.ObjectModel.ObservableCollection<ClipboardItem> History => _clipboardMonitorService.History;
 
+    public IEnumerable<ClipboardItem> FilteredHistory 
+    {
+        get 
+        {
+            var query = History.AsEnumerable();
+            if (CurrentFilter != null)
+            {
+                query = query.Where(x => x.Type == CurrentFilter);
+            }
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                query = query.Where(x => (x.Title != null && x.Title.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase)) ||
+                                         (x.PreviewText != null && x.PreviewText.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase)));
+            }
+            return query.OrderByDescending(x => x.IsPinned).ThenByDescending(x => x.Timestamp);
+        }
+    }
+
+    private string _searchText = string.Empty;
+    public string SearchText
+    {
+        get => _searchText;
+        set 
+        {
+            if (SetProperty(ref _searchText, value))
+            {
+                OnPropertyChanged(nameof(FilteredHistory));
+            }
+        }
+    }
+
+    private ClipboardItemType? _currentFilter = null;
+    public ClipboardItemType? CurrentFilter
+    {
+        get => _currentFilter;
+        set 
+        {
+            if (SetProperty(ref _currentFilter, value))
+            {
+                OnPropertyChanged(nameof(FilteredHistory));
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void SetFilter(string filter)
+    {
+        CurrentFilter = filter switch
+        {
+            "Text" => ClipboardItemType.Text,
+            "Images" => ClipboardItemType.Image,
+            "Files" => ClipboardItemType.Files,
+            _ => null
+        };
+    }
+
     [ObservableProperty]
     private string _clipboardText = string.Empty;
 
@@ -63,6 +119,8 @@ public partial class MainWindowViewModel : ViewModelBase
             await ReadClipboardAsync();
             await SendToTelegramAsync();
         };
+
+        _clipboardMonitorService.History.CollectionChanged += (s, e) => OnPropertyChanged(nameof(FilteredHistory));
     }
 
     private async Task LoadSettingsAsync()
@@ -209,6 +267,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 History.Move(index, 0);
             }
         }
+        OnPropertyChanged(nameof(FilteredHistory));
     }
 
     [RelayCommand]

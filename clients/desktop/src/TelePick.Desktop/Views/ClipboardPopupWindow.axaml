@@ -206,7 +206,8 @@
                 <StackPanel Spacing="10">
                     <!-- Search Input -->
                     <TextBox Classes="SearchBox" 
-                             PlaceholderText="Search clipboard...">
+                             PlaceholderText="Search clipboard..."
+                             Text="{Binding SearchText, Mode=TwoWay}">
                         <TextBox.InnerLeftContent>
                             <materialIcons:MaterialIcon Kind="Magnify" 
                                                         Width="18" 
@@ -235,10 +236,10 @@
                     <!-- Filter Chips -->
                     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="All Items" IsChecked="True" />
-                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Text" />
-                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Images" />
-                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Files" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="All Items" IsChecked="True" Command="{Binding SetFilterCommand}" CommandParameter="All" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Text" Command="{Binding SetFilterCommand}" CommandParameter="Text" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Images" Command="{Binding SetFilterCommand}" CommandParameter="Images" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Files" Command="{Binding SetFilterCommand}" CommandParameter="Files" />
                         </StackPanel>
                     </ScrollViewer>
                 </StackPanel>
@@ -246,7 +247,7 @@
 
             <!-- List (Clipboard Items Area) -->
             <ListBox Grid.Row="1" 
-                     ItemsSource="{Binding History}" 
+                     ItemsSource="{Binding FilteredHistory}" 
                      Margin="8" 
                      Background="Transparent" 
                      KeyUp="OnListBoxKeyUp">
