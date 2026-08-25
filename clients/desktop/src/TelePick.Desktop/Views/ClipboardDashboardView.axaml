@@ -246,7 +246,7 @@
                                             ClipToBounds="True"
                                             IsVisible="{Binding IsLikelyCode}">
                                         
-                                        <avaloniaEdit:TextEditor helpers:TextEditorAttached.Text="{Binding PreviewText}"
+                                        <avaloniaEdit:TextEditor Document="{Binding Document}"
                                                                  SyntaxHighlighting="C#"
                                                                  IsReadOnly="True"
                                                                  ShowLineNumbers="False"

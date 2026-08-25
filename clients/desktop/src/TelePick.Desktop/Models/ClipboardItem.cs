@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Avalonia.Media.Imaging;
+using AvaloniaEdit.Document;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace TelePick.Desktop.Models;
@@ -69,9 +70,26 @@ public partial class ClipboardItem : ObservableObject, IDisposable
         OnPropertyChanged(nameof(Title));
     }
 
+    private TextDocument? _document;
+    public TextDocument Document
+    {
+        get
+        {
+            if (_document == null)
+            {
+                _document = new TextDocument(PreviewText);
+            }
+            return _document;
+        }
+    }
+
     partial void OnPreviewTextChanged(string value)
     {
         DetermineIfCode();
+        if (_document != null && _document.Text != value)
+        {
+            _document.Text = value;
+        }
     }
 
     public object? RawData { get; set; }
