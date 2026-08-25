@@ -16,8 +16,13 @@ namespace TelePick.Desktop.Services;
 
 public class ClipboardMonitorService : IClipboardMonitorService
 {
+    private const int MaxItems = 50;
+    private static readonly string ScreenshotDir = Path.Combine(Path.GetTempPath(), "TelePick", "Screenshots");
+
     private Avalonia.Input.Platform.IClipboard? _clipboard;
     private INativeClipboardListener? _listener;
+    private long _memoryBudget;
+    private long _currentUsage;
 
     public ObservableCollection<ClipboardItem> History { get; } = new();
 
@@ -26,6 +31,14 @@ public class ClipboardMonitorService : IClipboardMonitorService
         if (_listener != null) return;
 
         _clipboard = clipboard;
+
+        // Calculate memory budget: 1% of system RAM
+        var memInfo = GC.GetGCMemoryInfo();
+        _memoryBudget = memInfo.TotalAvailableMemoryBytes / 100;
+
+        // Clean up stale temp screenshots from previous sessions
+        CleanupStaleScreenshots();
+
         _listener = NativeClipboardListenerFactory.Create();
         _listener.ClipboardChanged += OnClipboardChanged;
         _listener.StartListening();
@@ -44,6 +57,15 @@ public class ClipboardMonitorService : IClipboardMonitorService
         }
 
         _clipboard = null;
+
+        // Dispose all history items
+        Dispatcher.UIThread.Post(() =>
+        {
+            foreach (var item in History)
+                item.Dispose();
+            History.Clear();
+            _currentUsage = 0;
+        });
     }
 
     private void OnClipboardChanged(object? sender, EventArgs e)
@@ -127,6 +149,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
                             item.IconKind = "FolderMultipleOutline";
                         }
 
+                        // Estimate size: path strings + thumbnail
+                        item.EstimatedSizeBytes = EstimateFilesSize(filePaths, item.Thumbnail);
                         AddItem(item);
                     }
                     return;
@@ -148,7 +172,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
                         Type = ClipboardItemType.Text,
                         PreviewText = text,
                         RawData = text,
-                        IconKind = "TextSubject"
+                        IconKind = "TextSubject",
+                        EstimatedSizeBytes = EstimateTextSize(text)
                     };
                     AddItem(item);
                 }
@@ -170,10 +195,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 }
                 else
                 {
-                    // For raw screenshots, we save them to a temp folder so we have an address
-                    var tempPath = Path.Combine(Path.GetTempPath(), "TelePick", "Screenshots");
-                    Directory.CreateDirectory(tempPath);
-                    var filePath = Path.Combine(tempPath, $"screenshot_{DateTime.Now:yyyyMMdd_HHmmss}.png");
+                    Directory.CreateDirectory(ScreenshotDir);
+                    var filePath = Path.Combine(ScreenshotDir, $"screenshot_{DateTime.Now:yyyyMMdd_HHmmss}.png");
                     
                     File.WriteAllBytes(filePath, bytes);
                     
@@ -183,7 +206,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
                         PreviewText = Path.GetFileName(filePath),
                         RawData = filePath,
                         DataHash = hash,
-                        IconKind = "ImageOutline"
+                        IconKind = "ImageOutline",
+                        ScreenshotPath = filePath
                     };
 
                     try
@@ -192,7 +216,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
                         item.Thumbnail = Bitmap.DecodeToWidth(stream, 100);
                     }
                     catch { }
-                    
+
+                    item.EstimatedSizeBytes = EstimateImageSize(item.Thumbnail);
                     AddItem(item);
                 }
             }
@@ -220,11 +245,60 @@ public class ClipboardMonitorService : IClipboardMonitorService
     {
         Dispatcher.UIThread.Post(() =>
         {
-            History.Insert(0, item);
-            if (History.Count > 50)
+            // Evict oldest items while over budget or max count
+            while (History.Count > 0 &&
+                   (_currentUsage + item.EstimatedSizeBytes > _memoryBudget || History.Count >= MaxItems))
             {
-                History.RemoveAt(History.Count - 1);
+                EvictOldest();
             }
+
+            History.Insert(0, item);
+            _currentUsage += item.EstimatedSizeBytes;
         });
+    }
+
+    private void EvictOldest()
+    {
+        if (History.Count == 0) return;
+
+        var oldest = History[History.Count - 1];
+        History.RemoveAt(History.Count - 1);
+        _currentUsage -= oldest.EstimatedSizeBytes;
+        oldest.Dispose();
+    }
+
+    private static long EstimateTextSize(string text)
+    {
+        // UTF-16 encoding (2 bytes per char) + object overhead
+        // Text is stored twice: PreviewText + RawData
+        return (text.Length * 2L * 2) + 100;
+    }
+
+    private static long EstimateImageSize(Bitmap? thumbnail)
+    {
+        if (thumbnail == null) return 100;
+
+        // ARGB = 4 bytes per pixel
+        return (long)thumbnail.PixelSize.Width * thumbnail.PixelSize.Height * 4 + 100;
+    }
+
+    private static long EstimateFilesSize(System.Collections.Generic.List<string> paths, Bitmap? thumbnail)
+    {
+        var pathBytes = paths.Sum(p => (long)p.Length * 2) + 100;
+        var thumbBytes = EstimateImageSize(thumbnail);
+        return pathBytes + thumbBytes;
+    }
+
+    private static void CleanupStaleScreenshots()
+    {
+        try
+        {
+            if (Directory.Exists(ScreenshotDir))
+                Directory.Delete(ScreenshotDir, recursive: true);
+        }
+        catch
+        {
+            // Best-effort cleanup
+        }
     }
 }
