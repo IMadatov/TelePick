@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TelePick - Advanced Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#e2e2e6",
+                      "surface-variant": "#333538",
+                      "inverse-primary": "#006591",
+                      "tertiary-fixed": "#bee9ff",
+                      "primary-fixed": "#c9e6ff",
+                      "surface-container": "#1e2023",
+                      "on-secondary-fixed-variant": "#42474b",
+                      "surface-dim": "#111317",
+                      "on-error-container": "#ffdad6",
+                      "background": "#111317",
+                      "on-background": "#e2e2e6",
+                      "tertiary-fixed-dim": "#68d3ff",
+                      "error": "#ffb4ab",
+                      "secondary-fixed": "#dfe3e7",
+                      "outline": "#88929b",
+                      "surface-bright": "#37393d",
+                      "surface-container-highest": "#333538",
+                      "tertiary-container": "#04aede",
+                      "surface-container-high": "#282a2d",
+                      "on-primary-fixed": "#001e2f",
+                      "on-tertiary-fixed-variant": "#004d64",
+                      "surface-container-low": "#1a1c1f",
+                      "secondary": "#c2c7cb",
+                      "secondary-container": "#42474b",
+                      "on-tertiary": "#003546",
+                      "primary": "#89ceff",
+                      "on-secondary-container": "#b1b6ba",
+                      "secondary-fixed-dim": "#c2c7cb",
+                      "primary-fixed-dim": "#89ceff",
+                      "on-primary-fixed-variant": "#004c6e",
+                      "on-primary-container": "#003c58",
+                      "surface-container-lowest": "#0c0e11",
+                      "tertiary": "#68d3ff",
+                      "on-tertiary-fixed": "#001f2a",
+                      "on-surface-variant": "#bec8d2",
+                      "surface": "#111317",
+                      "on-error": "#690005",
+                      "error-container": "#93000a",
+                      "on-primary": "#00344d",
+                      "surface-tint": "#89ceff",
+                      "outline-variant": "#3e4850",
+                      "on-surface": "#e2e2e6",
+                      "inverse-on-surface": "#2f3034",
+                      "primary-container": "#2aabee",
+                      "on-secondary-fixed": "#171c20",
+                      "on-secondary": "#2c3135",
+                      "on-tertiary-container": "#003d50"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "glass-padding": "12px",
+                      "item-gap": "8px",
+                      "container-padding": "16px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "mono-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "display-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "15px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .glass-panel {
+            background-color: rgba(28, 31, 36, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: theme('colors.primary-container');
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: theme('colors.primary-container');
+        }
+        
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bec8d2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+      </style>
+</head>
+<body class="flex h-screen overflow-hidden antialiased selection:bg-primary-container/30 selection:text-primary">
+<!-- SideNavBar Component -->
+<nav aria-label="Sidebar Navigation" class="bg-surface-dim/95 backdrop-blur-xl border-r border-white/10 shadow-none h-screen w-64 flex-col hidden md:flex">
+<div class="flex flex-col h-full py-container-padding px-4">
+<!-- Header Brand -->
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-container to-primary flex items-center justify-center shadow-[0_0_15px_rgba(42,171,238,0.4)]">
+<span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<h1 class="font-display-sm text-display-sm text-primary tracking-tight">TelePick</h1>
+<p class="font-mono-sm text-mono-sm text-on-surface-variant">v1.2.0</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">content_paste</span>
+<span class="font-body-lg text-body-lg">Clipboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">send</span>
+<span class="font-body-lg text-body-lg">Telegram</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">keyboard_command_key</span>
+<span class="font-body-lg text-body-lg">Hotkeys</span>
+</a>
+<!-- Active State: Advanced -->
+<a aria-current="page" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-bold bg-primary/10 border-l-2 border-primary active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-body-lg text-body-lg">Advanced</span>
+</a>
+</div>
+<!-- Footer Links -->
+<div class="mt-auto pt-4 border-t border-white/5 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors">help</span>
+<span class="font-body-sm text-body-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[18px] group-hover:text-error transition-colors">logout</span>
+<span class="font-body-sm text-body-sm">Log Out</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto bg-[url('placeholder')] bg-cover bg-center relative" style="background-image: linear-gradient(to bottom right, rgba(17, 19, 23, 1), rgba(26, 28, 31, 0.95));">
+<!-- Header -->
+<header class="flex items-center justify-between px-8 py-6 sticky top-0 z-10 bg-surface-dim/80 backdrop-blur-md border-b border-white/5">
+<div>
+<h2 class="font-display-sm text-display-sm text-on-surface">Advanced Settings</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Manage system integration and core technical preferences.</p>
+</div>
+<!-- Global Action (e.g. Save/Apply) -->
+<button class="bg-primary-container text-on-primary font-headline-md text-headline-md px-5 py-2 rounded-lg hover:bg-primary-fixed transition-colors active:scale-95 shadow-[0_4px_12px_rgba(42,171,238,0.2)]">
+                Apply Changes
+            </button>
+</header>
+<!-- Settings Container - Bento Grid Layout -->
+<div class="p-8 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- System Integration Module -->
+<section class="lg:col-span-8 glass-panel rounded-xl p-6 flex flex-col gap-6">
+<div class="flex items-center gap-3 border-b border-white/5 pb-4">
+<span class="material-symbols-outlined text-primary text-[24px]">integration_instructions</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">System Integration</h3>
+</div>
+<!-- Toggle Item: Launch on Startup -->
+<div class="flex items-center justify-between group">
+<div>
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface group-hover:text-primary transition-colors">Launch on Startup</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Automatically start TelePick in the background when your system boots.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-surface-container appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out peer" id="toggle_startup" name="toggle_startup" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-high cursor-pointer transition-colors duration-200 peer-checked:bg-primary-container" for="toggle_startup"></label>
+</div>
+</div>
+<!-- Toggle Item: Sync across devices -->
+<div class="flex items-center justify-between group pt-4 border-t border-white/5">
+<div>
+<h4 class="font-body-lg text-body-lg font-semibold text-on-surface group-hover:text-primary transition-colors">Sync Across Devices</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Keep your clipboard history and snippets synchronized via Telegram secure cloud.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-surface-container appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out peer" id="toggle_sync" name="toggle_sync" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-high cursor-pointer transition-colors duration-200 peer-checked:bg-primary-container" for="toggle_sync"></label>
+</div>
+</div>
+</section>
+<!-- Memory & Performance Module -->
+<section class="lg:col-span-4 glass-panel rounded-xl p-6 flex flex-col gap-6">
+<div class="flex items-center gap-3 border-b border-white/5 pb-4">
+<span class="material-symbols-outlined text-primary text-[24px]">memory</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Data Limits</h3>
+</div>
+<!-- Dropdown: History Limit -->
+<div class="flex flex-col gap-2">
+<label class="font-body-sm text-body-sm font-semibold text-on-surface" for="history_limit">Clipboard History Limit</label>
+<div class="relative">
+<select class="custom-select w-full bg-surface-container-low border border-white/10 rounded-lg px-4 py-2.5 font-mono-sm text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors cursor-pointer" id="history_limit">
+<option value="50">50 Items</option>
+<option value="100">100 Items</option>
+<option selected="" value="500">500 Items</option>
+<option value="1000">1000 Items</option>
+<option value="unlimited">Unlimited (Not Recommended)</option>
+</select>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 text-[11px]">Higher limits increase RAM usage.</p>
+</div>
+<!-- Action: Clear Cache -->
+<div class="mt-auto pt-4 border-t border-white/5">
+<h4 class="font-body-sm text-body-sm font-semibold text-on-surface mb-3">Maintenance</h4>
+<button class="w-full flex items-center justify-center gap-2 bg-surface-container-highest hover:bg-surface-bright text-on-surface font-body-sm text-body-sm px-4 py-2.5 rounded-lg border border-white/5 transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]">delete_sweep</span>
+                        Clear Local Cache
+                    </button>
+</div>
+</section>
+<!-- Developer Options Module (Full Width) -->
+<section class="lg:col-span-12 glass-panel rounded-xl p-6 flex flex-col gap-4 border-l-4 border-l-tertiary-container">
+<div class="flex items-center justify-between cursor-pointer group" onclick="document.getElementById('dev_content').classList.toggle('hidden'); document.getElementById('dev_icon').classList.toggle('rotate-180');">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary-container text-[24px]">terminal</span>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-tertiary-container transition-colors">Developer Options</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Debug logging and experimental features.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-300" id="dev_icon">expand_more</span>
+</div>
+<div class="hidden flex-col gap-4 mt-4 pt-4 border-t border-white/5" id="dev_content">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="font-mono-sm text-mono-sm font-semibold text-on-surface">Enable Verbose Logging</h4>
+</div>
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-surface-container appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out peer" id="toggle_debug" name="toggle_debug" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-container-high cursor-pointer transition-colors duration-200 peer-checked:bg-tertiary-container" for="toggle_debug"></label>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-white/5 rounded-lg p-3 overflow-x-auto">
+<code class="font-mono-sm text-mono-sm text-on-surface-variant block whitespace-pre">
+&gt; TelePick Engine v1.2.0 initialized.
+&gt; Loading user config... OK.
+&gt; Connecting to local IPC socket...
+                        </code>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Simple logic for toggle switches visual update
+        document.querySelectorAll('.toggle-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if(this.checked) {
+                    this.style.transform = 'translateX(100%)';
+                } else {
+                    this.style.transform = 'translateX(0)';
+                }
+            });
+            // Initial state
+            if(checkbox.checked) {
+                 checkbox.style.transform = 'translateX(100%)';
+            }
+        });
+    </script>
+</body></html>

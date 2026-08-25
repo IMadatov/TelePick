@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TelePick - Clipboard History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e2e2e6",
+                        "surface-variant": "#333538",
+                        "inverse-primary": "#006591",
+                        "tertiary-fixed": "#bee9ff",
+                        "primary-fixed": "#c9e6ff",
+                        "surface-container": "#1e2023",
+                        "on-secondary-fixed-variant": "#42474b",
+                        "surface-dim": "#111317",
+                        "on-error-container": "#ffdad6",
+                        "background": "#111317",
+                        "on-background": "#e2e2e6",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "error": "#ffb4ab",
+                        "secondary-fixed": "#dfe3e7",
+                        "outline": "#88929b",
+                        "surface-bright": "#37393d",
+                        "surface-container-highest": "#333538",
+                        "tertiary-container": "#04aede",
+                        "surface-container-high": "#282a2d",
+                        "on-primary-fixed": "#001e2f",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "surface-container-low": "#1a1c1f",
+                        "secondary": "#c2c7cb",
+                        "secondary-container": "#42474b",
+                        "on-tertiary": "#003546",
+                        "primary": "#89ceff",
+                        "on-secondary-container": "#b1b6ba",
+                        "secondary-fixed-dim": "#c2c7cb",
+                        "primary-fixed-dim": "#89ceff",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "on-primary-container": "#003c58",
+                        "surface-container-lowest": "#0c0e11",
+                        "tertiary": "#68d3ff",
+                        "on-tertiary-fixed": "#001f2a",
+                        "on-surface-variant": "#bec8d2",
+                        "surface": "#111317",
+                        "on-error": "#690005",
+                        "error-container": "#93000a",
+                        "on-primary": "#00344d",
+                        "surface-tint": "#89ceff",
+                        "outline-variant": "#3e4850",
+                        "on-surface": "#e2e2e6",
+                        "inverse-on-surface": "#2f3034",
+                        "primary-container": "#2aabee",
+                        "on-secondary-fixed": "#171c20",
+                        "on-secondary": "#2c3135",
+                        "on-tertiary-container": "#003d50"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "glass-padding": "12px",
+                        "item-gap": "8px",
+                        "container-padding": "16px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "mono-sm": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display-sm": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better integration */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-panel {
+            background: rgba(28, 31, 36, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .clipboard-item {
+            transition: all 0.2s ease;
+        }
+        .clipboard-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .clipboard-item:hover .quick-actions {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .clipboard-item.active {
+            border: 1px solid #2aabee;
+            box-shadow: 0 0 12px rgba(42, 171, 238, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden font-body-sm selection:bg-primary-container/30">
+<div class="flex h-full w-full">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full w-64 bg-surface-dim/95 backdrop-blur-xl border-r border-white/10 shadow-none py-container-padding shrink-0">
+<!-- Header -->
+<div class="px-container-padding mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">content_copy</span>
+</div>
+<div>
+<h1 class="font-display-sm text-display-sm text-primary tracking-tight">TelePick</h1>
+<p class="font-mono-sm text-mono-sm text-on-surface-variant opacity-70">v1.2.0</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 px-3 space-y-1">
+<!-- Active Tab: Clipboard -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/5 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="content_paste">content_paste</span>
+<span class="font-body-lg text-body-lg">Clipboard</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+<span class="font-body-lg text-body-lg">Telegram</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="keyboard_command_key">keyboard_command_key</span>
+<span class="font-body-lg text-body-lg">Hotkeys</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-lg text-body-lg">Advanced</span>
+</a>
+</div>
+<!-- Footer Navigation -->
+<div class="mt-auto px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-lg text-body-lg">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-error/80 hover:text-error font-medium hover:bg-error/10 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-lg text-body-lg">Log Out</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-surface-container-high to-background">
+<!-- Top Bar / Search -->
+<header class="px-container-padding py-4 border-b border-white/5 flex items-center justify-between shrink-0">
+<div class="relative w-full max-w-2xl mx-auto flex items-center">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="block w-full pl-10 pr-16 py-2.5 glass-panel rounded-lg text-on-surface placeholder-outline-variant focus:ring-1 focus:ring-primary focus:border-primary transition-all font-body-lg text-body-lg bg-transparent" placeholder="Search clipboard history..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<span class="font-mono-sm text-mono-sm text-outline-variant px-1.5 py-0.5 rounded border border-white/10 bg-white/5">⌘K</span>
+</div>
+</div>
+</header>
+<!-- Filters & Status -->
+<div class="px-container-padding py-3 flex items-center justify-between shrink-0 border-b border-white/5">
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded-full border border-primary bg-primary/10 text-primary font-body-sm text-body-sm transition-colors">All</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-on-surface transition-colors font-body-sm text-body-sm">Text</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-on-surface transition-colors font-body-sm text-body-sm">Images</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-on-surface transition-colors font-body-sm text-body-sm">Files</button>
+<button class="px-3 py-1 rounded-full border border-outline-variant text-on-surface-variant hover:border-secondary hover:text-on-surface transition-colors font-body-sm text-body-sm">Links</button>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(137,206,255,0.8)]"></div>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant">Syncing active</span>
+</div>
+</div>
+<!-- Clipboard List -->
+<div class="flex-1 overflow-y-auto px-container-padding py-4 space-y-item-gap pb-20">
+<!-- Item 1: Active Code Snippet -->
+<div class="clipboard-item active glass-panel rounded-lg p-3 relative group cursor-pointer flex gap-3">
+<div class="shrink-0 pt-1">
+<span class="material-symbols-outlined text-primary text-xl">code</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider">React Component</span>
+<span class="font-mono-sm text-mono-sm text-outline-variant">Just now</span>
+</div>
+<div class="bg-surface-container-lowest rounded p-2 border border-white/5 overflow-hidden">
+<pre class="font-mono-sm text-mono-sm text-on-surface-variant whitespace-pre-wrap break-words"><span class="text-tertiary">const</span> <span class="text-primary-fixed">UserCard</span> <span class="text-tertiary">=</span> ({ user }) <span class="text-tertiary">=&gt;</span> {
+  <span class="text-tertiary">return</span> (
+    <span class="text-secondary-fixed">&lt;</span><span class="text-primary-container">div</span> <span class="text-tertiary">className</span><span class="text-secondary-fixed">=</span><span class="text-error">"card glass"</span><span class="text-secondary-fixed">&gt;</span>
+      {user.name}
+    <span class="text-secondary-fixed">&lt;/</span><span class="text-primary-container">div</span><span class="text-secondary-fixed">&gt;</span>
+  );
+};</pre>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="quick-actions absolute right-4 top-4 opacity-0 transform translate-x-2 transition-all flex gap-1 bg-surface-container-high/90 backdrop-blur rounded-lg p-1 border border-white/10 shadow-lg">
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Pin">
+<span class="material-symbols-outlined text-sm">keep</span>
+</button>
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Share via Telegram">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+<button class="p-1.5 rounded hover:bg-error/20 text-on-surface-variant hover:text-error transition-colors" title="Delete">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</div>
+<!-- Item 2: Image -->
+<div class="clipboard-item glass-panel rounded-lg p-3 relative group cursor-pointer flex gap-3 border border-white/5">
+<div class="shrink-0 pt-1">
+<span class="material-symbols-outlined text-tertiary text-xl">image</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Screenshot</span>
+<div class="flex items-center gap-2">
+<span class="font-mono-sm text-mono-sm text-outline-variant">10 mins ago</span>
+<span class="font-mono-sm text-mono-sm text-outline-variant px-1.5 py-0.5 rounded bg-white/5">2.4 MB</span>
+</div>
+</div>
+<div class="w-48 h-32 rounded-lg overflow-hidden border border-white/10 relative">
+<div class="bg-cover bg-center w-full h-full" data-alt="A sleek, modern dashboard UI design showcasing data visualization charts, dark mode theme with neon blue and purple accents, high resolution." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkid5gu25Sb4QNEoQ3dM23g2Wdgdf6uhZ3QiYMDpez6Ol5G6BDAskQAY5pR9klt8uWCiusPfXOXqF7TI_H-wQsNOIbH3KWdq1s2YwYn5cZQ_Jk8d91gu81cbjFoAhNZXfbW7KcA_-jeYptR660LVPrgbdL96bd9sKrsAl_g6uleUeuuO6Z7XvvYMrUw3bKOcctv__oqi6UASllYQHe0EKtm9NRLEFwFkM0CaBpUY3AC3kHK5wnBltE')"></div>
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">zoom_in</span>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="quick-actions absolute right-4 top-4 opacity-0 transform translate-x-2 transition-all flex gap-1 bg-surface-container-high/90 backdrop-blur rounded-lg p-1 border border-white/10 shadow-lg">
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Pin">
+<span class="material-symbols-outlined text-sm">keep</span>
+</button>
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Share via Telegram">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+<button class="p-1.5 rounded hover:bg-error/20 text-on-surface-variant hover:text-error transition-colors" title="Delete">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</div>
+<!-- Item 3: Plain Text (Link) -->
+<div class="clipboard-item glass-panel rounded-lg p-3 relative group cursor-pointer flex gap-3 border border-white/5">
+<div class="shrink-0 pt-1">
+<span class="material-symbols-outlined text-secondary-fixed text-xl">link</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">URL</span>
+<span class="font-mono-sm text-mono-sm text-outline-variant">1 hour ago</span>
+</div>
+<p class="font-body-lg text-body-lg text-primary-fixed truncate hover:underline">https://figma.com/file/telepick-design-system-v2?node-id=402-11</p>
+</div>
+<!-- Quick Actions -->
+<div class="quick-actions absolute right-4 top-4 opacity-0 transform translate-x-2 transition-all flex gap-1 bg-surface-container-high/90 backdrop-blur rounded-lg p-1 border border-white/10 shadow-lg">
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Pin">
+<span class="material-symbols-outlined text-sm">keep</span>
+</button>
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Share via Telegram">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+<button class="p-1.5 rounded hover:bg-error/20 text-on-surface-variant hover:text-error transition-colors" title="Delete">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</div>
+<!-- Item 4: File -->
+<div class="clipboard-item glass-panel rounded-lg p-3 relative group cursor-pointer flex gap-3 border border-white/5">
+<div class="shrink-0 pt-1">
+<span class="material-symbols-outlined text-surface-tint text-xl">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">PDF Document</span>
+<div class="flex items-center gap-2">
+<span class="font-mono-sm text-mono-sm text-outline-variant">Yesterday</span>
+<span class="font-mono-sm text-mono-sm text-outline-variant px-1.5 py-0.5 rounded bg-white/5">1.2 MB</span>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-white/5 rounded p-2 border border-white/5 w-max">
+<span class="material-symbols-outlined text-error text-lg">picture_as_pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">Q3_Financial_Report_Final.pdf</span>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="quick-actions absolute right-4 top-4 opacity-0 transform translate-x-2 transition-all flex gap-1 bg-surface-container-high/90 backdrop-blur rounded-lg p-1 border border-white/10 shadow-lg">
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Pin">
+<span class="material-symbols-outlined text-sm">keep</span>
+</button>
+<button class="p-1.5 rounded hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" title="Share via Telegram">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+<button class="p-1.5 rounded hover:bg-error/20 text-on-surface-variant hover:text-error transition-colors" title="Delete">
+<span class="material-symbols-outlined text-sm">delete</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav for Mobile (Hidden on md+) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-dim/95 backdrop-blur-xl border-t border-white/10 z-50">
+<div class="flex justify-around items-center p-2">
+<a class="flex flex-col items-center p-2 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">content_paste</span>
+<span class="font-label-caps text-[10px] mt-1">Clipboard</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">send</span>
+<span class="font-label-caps text-[10px] mt-1">Telegram</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">keyboard_command_key</span>
+<span class="font-label-caps text-[10px] mt-1">Hotkeys</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-[10px] mt-1">Settings</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

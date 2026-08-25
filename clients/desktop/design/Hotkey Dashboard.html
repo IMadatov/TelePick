@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TelePick - Hotkeys</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#e2e2e6",
+                    "surface-variant": "#333538",
+                    "inverse-primary": "#006591",
+                    "tertiary-fixed": "#bee9ff",
+                    "primary-fixed": "#c9e6ff",
+                    "surface-container": "#1e2023",
+                    "on-secondary-fixed-variant": "#42474b",
+                    "surface-dim": "#111317",
+                    "on-error-container": "#ffdad6",
+                    "background": "#111317",
+                    "on-background": "#e2e2e6",
+                    "tertiary-fixed-dim": "#68d3ff",
+                    "error": "#ffb4ab",
+                    "secondary-fixed": "#dfe3e7",
+                    "outline": "#88929b",
+                    "surface-bright": "#37393d",
+                    "surface-container-highest": "#333538",
+                    "tertiary-container": "#04aede",
+                    "surface-container-high": "#282a2d",
+                    "on-primary-fixed": "#001e2f",
+                    "on-tertiary-fixed-variant": "#004d64",
+                    "surface-container-low": "#1a1c1f",
+                    "secondary": "#c2c7cb",
+                    "secondary-container": "#42474b",
+                    "on-tertiary": "#003546",
+                    "primary": "#89ceff",
+                    "on-secondary-container": "#b1b6ba",
+                    "secondary-fixed-dim": "#c2c7cb",
+                    "primary-fixed-dim": "#89ceff",
+                    "on-primary-fixed-variant": "#004c6e",
+                    "on-primary-container": "#003c58",
+                    "surface-container-lowest": "#0c0e11",
+                    "tertiary": "#68d3ff",
+                    "on-tertiary-fixed": "#001f2a",
+                    "on-surface-variant": "#bec8d2",
+                    "surface": "#111317",
+                    "on-error": "#690005",
+                    "error-container": "#93000a",
+                    "on-primary": "#00344d",
+                    "surface-tint": "#89ceff",
+                    "outline-variant": "#3e4850",
+                    "on-surface": "#e2e2e6",
+                    "inverse-on-surface": "#2f3034",
+                    "primary-container": "#2aabee",
+                    "on-secondary-fixed": "#171c20",
+                    "on-secondary": "#2c3135",
+                    "on-tertiary-container": "#003d50"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "glass-padding": "12px",
+                    "item-gap": "8px",
+                    "container-padding": "16px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "mono-sm": [
+                            "JetBrains Mono"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "display-sm": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "body-sm": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "mono-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "11px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-sm": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "15px",
+                            {
+                                    "lineHeight": "22px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Base styles to handle custom fonts and crisp rendering */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Custom Keycap styling for Hotkey inputs */
+        .keycap {
+            box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset, 0 -2px 0 rgba(0,0,0,0.5) inset;
+        }
+        
+        /* Scrollbar styling for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #333538; /* surface-variant */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #42474b; /* on-secondary-fixed-variant */
+        }
+    </style>
+</head>
+<body class="flex h-screen bg-background text-on-background overflow-hidden selection:bg-primary/30 selection:text-primary-fixed">
+<!-- SideNavBar Container -->
+<nav class="h-screen w-64 flex-col bg-surface-dim/95 backdrop-blur-xl border-r border-white/10 shadow-none z-10 shrink-0 hidden md:flex">
+<div class="flex flex-col h-full py-container-padding">
+<!-- Header -->
+<div class="px-container-padding pb-6 mb-2 border-b border-white/5 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-inverse-primary flex items-center justify-center shadow-[0_0_15px_rgba(42,171,238,0.3)]">
+<span class="material-symbols-outlined text-on-primary font-variation-settings: 'FILL' 1;">dataset</span>
+</div>
+<div>
+<h1 class="font-display-sm text-display-sm text-primary tracking-tight">TelePick</h1>
+<span class="font-mono-sm text-mono-sm text-on-surface-variant opacity-70">v1.2.0</span>
+</div>
+</div>
+<!-- Main Tabs -->
+<ul class="flex-1 flex flex-col gap-1 px-3 mt-4">
+<!-- Tab 1: Clipboard (Inactive) -->
+<li>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-surface transition-colors">content_paste</span>
+<span class="font-body-lg text-body-lg group-hover:text-on-surface transition-colors">Clipboard</span>
+</a>
+</li>
+<!-- Tab 2: Telegram (Inactive) -->
+<li>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-surface transition-colors">send</span>
+<span class="font-body-lg text-body-lg group-hover:text-on-surface transition-colors">Telegram</span>
+</a>
+</li>
+<!-- Tab 3: Hotkeys (ACTIVE) -->
+<li>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/5 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">keyboard_command_key</span>
+<span class="font-body-lg text-body-lg">Hotkeys</span>
+</a>
+</li>
+<!-- Tab 4: Advanced (Inactive) -->
+<li>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-surface transition-colors">settings</span>
+<span class="font-body-lg text-body-lg group-hover:text-on-surface transition-colors">Advanced</span>
+</a>
+</li>
+</ul>
+<!-- Footer Tabs -->
+<ul class="px-3 pt-4 border-t border-white/5 flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-white/5 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-on-surface transition-colors">help</span>
+<span class="font-body-sm text-body-sm group-hover:text-on-surface transition-colors">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-error/80 font-medium hover:bg-error/10 transition-colors active:scale-95 duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-body-sm text-body-sm">Log Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- Decorative Background Element -->
+<div class="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Header -->
+<header class="px-8 pt-10 pb-6 shrink-0 relative z-10">
+<h2 class="font-display-sm text-display-sm text-on-surface">Global Hotkeys</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">
+                Configure keyboard shortcuts to trigger TelePick actions from anywhere in your operating system. Click an input to record a new shortcut.
+            </p>
+</header>
+<!-- Configuration List Container -->
+<div class="flex-1 overflow-y-auto px-8 pb-10 relative z-10">
+<div class="max-w-4xl flex flex-col gap-unit">
+<!-- Section Label -->
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2 mt-4 px-2">Core Actions</div>
+<!-- Action Card 1: Open Quick Paste -->
+<div class="group flex items-center justify-between p-4 bg-surface-container rounded-xl border border-white/5 hover:border-white/10 hover:bg-[#1f2226] transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-bright flex items-center justify-center text-on-surface border border-white/5 shadow-sm">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Open Quick Paste</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Summons the clipboard overlay at your cursor position.</p>
+</div>
+</div>
+<!-- Recorder Input -->
+<button class="relative flex items-center gap-3 bg-surface-dim border border-outline-variant rounded-lg px-4 py-2 hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all group-hover:bg-surface-lowest">
+<span class="font-mono-sm text-mono-sm text-on-surface flex items-center gap-1.5">
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">Ctrl</kbd>
+<span class="text-on-surface-variant">+</span>
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">Shift</kbd>
+<span class="text-on-surface-variant">+</span>
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">V</kbd>
+</span>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary transition-colors">keyboard</span>
+</button>
+</div>
+<!-- Action Card 2: Send to Telegram -->
+<div class="group flex items-center justify-between p-4 bg-surface-container rounded-xl border border-white/5 hover:border-white/10 hover:bg-[#1f2226] transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-bright flex items-center justify-center text-tertiary-container border border-white/5 shadow-sm">
+<span class="material-symbols-outlined">send</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Send to Telegram</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Instantly forward selected text or current clipboard to 'Saved Messages'.</p>
+</div>
+</div>
+<!-- Recorder Input -->
+<button class="relative flex items-center gap-3 bg-surface-dim border border-outline-variant rounded-lg px-4 py-2 hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all group-hover:bg-surface-lowest">
+<span class="font-mono-sm text-mono-sm text-on-surface flex items-center gap-1.5">
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">Ctrl</kbd>
+<span class="text-on-surface-variant">+</span>
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">T</kbd>
+</span>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary transition-colors">keyboard</span>
+</button>
+</div>
+<!-- Action Card 3: Search Clipboard -->
+<div class="group flex items-center justify-between p-4 bg-surface-container rounded-xl border border-white/5 hover:border-white/10 hover:bg-[#1f2226] transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-bright flex items-center justify-center text-on-surface border border-white/5 shadow-sm">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Global Search</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Open a spotlight-style search for your entire clipboard history.</p>
+</div>
+</div>
+<!-- Recorder Input -->
+<button class="relative flex items-center gap-3 bg-surface-dim border border-outline-variant rounded-lg px-4 py-2 hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all group-hover:bg-surface-lowest">
+<span class="font-mono-sm text-mono-sm text-on-surface flex items-center gap-1.5">
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">Ctrl</kbd>
+<span class="text-on-surface-variant">+</span>
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">Space</kbd>
+</span>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary transition-colors">keyboard</span>
+</button>
+</div>
+<!-- Section Label -->
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2 mt-8 px-2">Data Management</div>
+<!-- Action Card 4: Clear History -->
+<div class="group flex items-center justify-between p-4 bg-surface-container rounded-xl border border-white/5 hover:border-error/30 hover:bg-[#1f2226] transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-bright flex items-center justify-center text-error border border-white/5 shadow-sm">
+<span class="material-symbols-outlined">delete_sweep</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Clear History</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Purge all unpinned clipboard entries immediately.</p>
+</div>
+</div>
+<!-- Recorder Input (Empty State Example) -->
+<button class="relative flex items-center gap-3 bg-surface-dim border border-outline-variant border-dashed rounded-lg px-4 py-2 hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary focus:border-solid transition-all">
+<span class="font-mono-sm text-mono-sm text-on-surface-variant flex items-center h-[26px]">
+                            Click to record...
+                        </span>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary transition-colors">add_circle</span>
+</button>
+</div>
+<!-- Action Card 5: Pause Monitoring -->
+<div class="group flex items-center justify-between p-4 bg-surface-container rounded-xl border border-white/5 hover:border-white/10 hover:bg-[#1f2226] transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-bright flex items-center justify-center text-on-surface border border-white/5 shadow-sm">
+<span class="material-symbols-outlined">pause_circle</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Pause Monitoring</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Temporarily stop TelePick from recording new clipboard copies.</p>
+</div>
+</div>
+<!-- Recorder Input -->
+<button class="relative flex items-center gap-3 bg-surface-dim border border-outline-variant rounded-lg px-4 py-2 hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all group-hover:bg-surface-lowest">
+<span class="font-mono-sm text-mono-sm text-on-surface flex items-center gap-1.5">
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">Alt</kbd>
+<span class="text-on-surface-variant">+</span>
+<kbd class="keycap bg-surface-bright px-2 py-1 rounded text-on-surface border border-white/10">P</kbd>
+</span>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary transition-colors">keyboard</span>
+</button>
+</div>
+</div>
+<!-- Footer / Action Area -->
+<div class="max-w-4xl mt-8 pt-6 border-t border-white/5 flex justify-end gap-3">
+<button class="px-5 py-2.5 rounded-lg font-headline-md text-headline-md text-on-surface bg-surface-bright border border-white/10 hover:bg-surface-variant transition-colors">
+                    Reset to Defaults
+                </button>
+<button class="px-5 py-2.5 rounded-lg font-headline-md text-headline-md text-on-primary bg-primary border border-transparent hover:bg-primary/90 hover:shadow-[0_0_15px_rgba(42,171,238,0.4)] active:scale-95 transition-all">
+                    Save Changes
+                </button>
+</div>
+</div>
+</main>
+</body></html>

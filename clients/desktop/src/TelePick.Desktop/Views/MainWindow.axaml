@@ -4,332 +4,331 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-        mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
         x:Class="TelePick.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="TelePick"
-        Width="1024" Height="768"
+        Title="Settings Dashboard - TelePick"
+        Width="900" Height="700"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource Background}">
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        TransparencyLevelHint="Mica, AcrylicBlur"
+        Background="Transparent">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Window.Resources>
-        <!-- Color Palette based on Tailwind config -->
-        <SolidColorBrush x:Key="Background" Color="#111317" />
-        <SolidColorBrush x:Key="SurfaceContainerLowest" Color="#F20C0E11" /> <!-- 95% opacity -->
-        <SolidColorBrush x:Key="SurfaceContainerLow" Color="#1A1C1F" />
-        <SolidColorBrush x:Key="SurfaceContainer" Color="#1E2023" />
-        <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#282A2D" />
-        <SolidColorBrush x:Key="SurfaceVariant" Color="#333538" />
-        <SolidColorBrush x:Key="SurfaceBright" Color="#37393D" />
-        <SolidColorBrush x:Key="Primary" Color="#89CEFF" />
-        <SolidColorBrush x:Key="PrimaryContainer" Color="#2AABEE" />
-        <SolidColorBrush x:Key="OnPrimaryContainer" Color="#003C58" />
-        <SolidColorBrush x:Key="OnSurface" Color="#E2E2E6" />
-        <SolidColorBrush x:Key="OnSurfaceVariant" Color="#BEC8D2" />
-        <SolidColorBrush x:Key="OutlineVariant" Color="#3E4850" />
-        
-        <!-- Glass Card Backgrounds -->
-        <SolidColorBrush x:Key="GlassCardBackground" Color="#991C1F24" /> <!-- rgba(28, 31, 36, 0.6) -->
-        <SolidColorBrush x:Key="White5" Color="#0DFFFFFF" /> <!-- rgba(255, 255, 255, 0.05) -->
-        <SolidColorBrush x:Key="White10" Color="#1AFFFFFF" /> <!-- rgba(255, 255, 255, 0.1) -->
-    </Window.Resources>
-
     <Window.Styles>
-        <!-- Basic reset and typography -->
-        <Style Selector="TextBlock">
-            <Setter Property="FontFamily" Value="Inter, Arial, sans-serif" />
-        </Style>
-        
-        <Style Selector="TextBox">
+        <Style Selector="TextBox.SettingsInput">
             <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource White10}" />
+            <Setter Property="BorderBrush" Value="#1AFFFFFF" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
             <Setter Property="Padding" Value="16,12" />
-            <Setter Property="FontFamily" Value="JetBrains Mono, Consolas, monospace" />
+            <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
             <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
         </Style>
-        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Style Selector="TextBox.SettingsInput:focus /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource PrimaryContainer}" />
         </Style>
 
-        <Style Selector="Button.NavButton">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
-            <Setter Property="Padding" Value="16,12" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Cursor" Value="Hand" />
-        </Style>
-        <Style Selector="Button.NavButton:pointerover">
-            <Setter Property="Background" Value="#80333538" /> <!-- SurfaceVariant/50 -->
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-        </Style>
-        
-        <Style Selector="Button.NavButtonActive">
-            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Padding" Value="16,12" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-        </Style>
-
         <Style Selector="Button.PrimaryAction">
-            <Setter Property="Background" Value="#2AABEE" />
+            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="FontSize" Value="18" />
-            <Setter Property="Padding" Value="0,16" />
             <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Padding" Value="0,16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
         </Style>
         <Style Selector="Button.PrimaryAction:pointerover">
-            <Setter Property="Background" Value="#209DDC" />
+            <Setter Property="Background" Value="#209ddc" />
+        </Style>
+
+        <Style Selector="ListBox.SidebarNav">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem">
+            <Setter Property="Padding" Value="16,12" />
+            <Setter Property="Margin" Value="0,4" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#0DFFFFFF" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+        </Style>
+        
+        <Style Selector="ListBoxItem.SidebarItem TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem:selected TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem materialIcons|MaterialIcon">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+        </Style>
+        <Style Selector="ListBoxItem.SidebarItem:selected materialIcons|MaterialIcon">
+            <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
         </Style>
     </Window.Styles>
 
     <Grid ColumnDefinitions="256, *">
-        <!-- SideNavBar (Desktop) -->
+        
+        <!-- Sidebar -->
         <Border Grid.Column="0" 
-                Background="{DynamicResource SurfaceContainerLowest}" 
-                BorderBrush="{DynamicResource White5}" 
-                BorderThickness="0,0,1,0"
-                Padding="12"
-                ZIndex="40">
+                Background="#F20C0E11" 
+                BorderBrush="#0CFFFFFF" 
+                BorderThickness="0,0,1,0" 
+                Padding="12,40,12,12">
             <Grid RowDefinitions="Auto, *">
-                <StackPanel Grid.Row="0" Margin="8,16,8,32">
+                <StackPanel Grid.Row="0" Margin="8,0,8,32">
                     <TextBlock Text="TelePick Pro" 
-                               FontSize="18" 
                                FontWeight="SemiBold" 
+                               FontSize="18" 
                                Foreground="{DynamicResource Primary}" />
                     <TextBlock Text="V 2.1.0" 
                                FontSize="13" 
                                Foreground="{DynamicResource OnSurfaceVariant}" 
-                               Opacity="0.7" 
-                               Margin="0,4,0,0" />
+                               Opacity="0.7" />
                 </StackPanel>
-                
-                <StackPanel Grid.Row="1" Spacing="8">
-                    <Button Classes="NavButton">
+
+                <!-- Navigation -->
+                <ListBox Grid.Row="1" Classes="SidebarNav" SelectedIndex="1">
+                    <ListBoxItem Classes="SidebarItem">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <materialIcons:MaterialIcon Kind="ContentPaste" Width="20" Height="20" />
+                            <materialIcons:MaterialIcon Kind="ClipboardTextOutline" Width="20" Height="20" />
                             <TextBlock Text="Clipboard" VerticalAlignment="Center" FontSize="13" />
                         </StackPanel>
-                    </Button>
-                    <Button Classes="NavButtonActive">
+                    </ListBoxItem>
+                    <ListBoxItem Classes="SidebarItem">
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <materialIcons:MaterialIcon Kind="Send" Width="20" Height="20" />
                             <TextBlock Text="Telegram" VerticalAlignment="Center" FontSize="13" />
                         </StackPanel>
-                    </Button>
-                    <Button Classes="NavButton">
+                    </ListBoxItem>
+                    <ListBoxItem Classes="SidebarItem">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <materialIcons:MaterialIcon Kind="Keyboard" Width="20" Height="20" />
+                            <materialIcons:MaterialIcon Kind="KeyboardOutline" Width="20" Height="20" />
                             <TextBlock Text="Hotkeys" VerticalAlignment="Center" FontSize="13" />
                         </StackPanel>
-                    </Button>
-                    <Button Classes="NavButton">
+                    </ListBoxItem>
+                    <ListBoxItem Classes="SidebarItem">
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <materialIcons:MaterialIcon Kind="Tune" Width="20" Height="20" />
                             <TextBlock Text="Advanced" VerticalAlignment="Center" FontSize="13" />
                         </StackPanel>
-                    </Button>
-                </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
             </Grid>
         </Border>
 
-        <!-- Main Content -->
-        <ScrollViewer Grid.Column="1" Padding="32">
-            <StackPanel MaxWidth="896" Margin="0,0,0,32" Spacing="32">
-                <!-- Header -->
-                <Grid ColumnDefinitions="*, Auto">
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Telegram Integration" 
-                                   FontSize="24" 
-                                   FontWeight="Bold" 
-                                   Foreground="{DynamicResource OnSurface}" 
-                                   LetterSpacing="-0.02" 
-                                   Margin="0,0,0,8" />
-                        <TextBlock Text="Configure your connection to the TelePick bot for seamless clipboard syncing." 
-                                   FontSize="15" 
-                                   Foreground="{DynamicResource OnSurfaceVariant}" 
-                                   TextWrapping="Wrap" />
-                    </StackPanel>
+        <!-- Main Content Area -->
+        <Border Grid.Column="1" Background="{DynamicResource Background}">
+            <ScrollViewer>
+                <StackPanel Margin="32,48,32,32" MaxWidth="850" HorizontalAlignment="Stretch">
                     
-                    <Border Grid.Column="1" 
-                            Background="{DynamicResource SurfaceContainerHigh}" 
-                            BorderBrush="{DynamicResource White5}" 
-                            BorderThickness="1" 
-                            CornerRadius="16" 
-                            Padding="12,6" 
-                            VerticalAlignment="Bottom">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Ellipse Width="8" Height="8" Fill="{DynamicResource PrimaryContainer}" />
-                            <TextBlock Text="Connected" 
-                                       FontSize="13" 
+                    <!-- Header -->
+                    <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,32">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Telegram Integration" 
+                                       FontWeight="Bold" 
+                                       FontSize="24" 
                                        Foreground="{DynamicResource OnSurface}" 
-                                       VerticalAlignment="Center" />
+                                       Margin="0,0,0,8" />
+                            <TextBlock Text="Configure your connection to the TelePick bot for seamless clipboard syncing." 
+                                       FontSize="15" 
+                                       Foreground="{DynamicResource OnSurfaceVariant}" />
                         </StackPanel>
-                    </Border>
-                </Grid>
-
-                <Grid ShowGridLines="False">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="24" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Connection Settings Card -->
-                    <Border Grid.Column="0" 
-                            Background="{DynamicResource GlassCardBackground}" 
-                            BorderBrush="{DynamicResource White10}" 
-                            BorderThickness="1" 
-                            CornerRadius="12" 
-                            Padding="24">
-                        <Grid RowDefinitions="Auto, *, Auto">
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,24">
-                                <materialIcons:MaterialIcon Kind="Link" Width="24" Height="24" Foreground="{DynamicResource PrimaryContainer}" />
-                                <TextBlock Text="Bot Configuration" 
-                                           FontSize="18" 
-                                           FontWeight="SemiBold" 
+                        
+                        <Border Grid.Column="1" 
+                                Background="{DynamicResource SurfaceContainerHigh}" 
+                                BorderBrush="#0CFFFFFF" 
+                                BorderThickness="1" 
+                                CornerRadius="16" 
+                                Padding="12,6"
+                                VerticalAlignment="Bottom">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Ellipse Width="8" Height="8" Fill="{DynamicResource PrimaryContainer}" />
+                                <TextBlock Text="Connected" 
+                                           FontSize="13" 
                                            Foreground="{DynamicResource OnSurface}" 
                                            VerticalAlignment="Center" />
                             </StackPanel>
+                        </Border>
+                    </Grid>
 
-                            <StackPanel Grid.Row="1" Spacing="16">
-                                <StackPanel Spacing="8">
-                                    <TextBlock Text="BOT TOKEN" 
-                                               FontSize="11" 
-                                               FontWeight="Bold" 
-                                               Foreground="{DynamicResource OnSurfaceVariant}" 
-                                               LetterSpacing="0.05" />
-                                    <TextBox Text="{Binding BotToken}" 
-                                             PasswordChar="*" 
-                                             PlaceholderText="Enter Bot Token" />
-                                </StackPanel>
-                                
-                                <StackPanel Spacing="8">
-                                    <TextBlock Text="CHAT ID" 
-                                               FontSize="11" 
-                                               FontWeight="Bold" 
-                                               Foreground="{DynamicResource OnSurfaceVariant}" 
-                                               LetterSpacing="0.05" />
-                                    <TextBox Text="{Binding ChatId}" 
-                                             PlaceholderText="Enter Chat ID" />
-                                </StackPanel>
-                            </StackPanel>
-
-                            <Grid Grid.Row="2" ColumnDefinitions="*, 8, *" Margin="0,24,0,0">
-                                <Button Grid.Column="0" 
-                                        Command="{Binding SaveSettingsCommand}" 
-                                        Background="{DynamicResource PrimaryContainer}" 
-                                        Foreground="White" 
-                                        CornerRadius="8" 
-                                        Padding="16,8" 
-                                        HorizontalAlignment="Stretch" 
-                                        HorizontalContentAlignment="Center">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <materialIcons:MaterialIcon Kind="ContentSave" Width="20" Height="20" />
-                                        <TextBlock Text="Save" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                    </StackPanel>
-                                </Button>
-                                <Button Grid.Column="2" 
-                                        Background="{DynamicResource SurfaceContainer}" 
-                                        Foreground="{DynamicResource OnSurface}" 
-                                        BorderBrush="{DynamicResource White10}" 
-                                        BorderThickness="1" 
-                                        CornerRadius="8" 
-                                        Padding="16,8" 
-                                        HorizontalAlignment="Stretch" 
-                                        HorizontalContentAlignment="Center">
-                                    <TextBlock Text="Test" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                </Button>
-                            </Grid>
-                        </Grid>
+                    <!-- Status Message Banner -->
+                    <Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            Background="{DynamicResource SurfaceContainerLow}"
+                            BorderBrush="{Binding IsStatusError, Converter={StaticResource StatusColorConverter}}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            Margin="0,0,0,24">
+                        <TextBlock Text="{Binding StatusMessage}" 
+                                   Foreground="{DynamicResource OnSurface}"
+                                   TextWrapping="Wrap" />
                     </Border>
 
-                    <!-- Hotkeys & Actions -->
-                    <Grid Grid.Column="2" RowDefinitions="*, 24, Auto">
-                        <!-- Keyboard Shortcuts Card -->
-                        <Border Grid.Row="0" 
-                                Background="{DynamicResource GlassCardBackground}" 
-                                BorderBrush="{DynamicResource White10}" 
-                                BorderThickness="1" 
-                                CornerRadius="12" 
-                                Padding="24">
-                            <Grid RowDefinitions="Auto, Auto, *">
-                                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-                                    <materialIcons:MaterialIcon Kind="Keyboard" Width="24" Height="24" Foreground="{DynamicResource OnSurfaceVariant}" />
-                                    <TextBlock Text="Global Shortcut" 
-                                               FontSize="18" 
+                    <Grid ColumnDefinitions="*, *" Margin="0,0,0,24">
+                        
+                        <!-- Connection Settings Card -->
+                        <Border Grid.Column="0" 
+                                Background="#991C1F24"
+                                BorderBrush="#1AFFFFFF"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Padding="24"
+                                Margin="0,0,12,0">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,24">
+                                    <materialIcons:MaterialIcon Kind="Link" Width="24" Height="24" Foreground="{DynamicResource PrimaryContainer}" />
+                                    <TextBlock Text="Bot Configuration" 
                                                FontWeight="SemiBold" 
+                                               FontSize="18" 
                                                Foreground="{DynamicResource OnSurface}" 
                                                VerticalAlignment="Center" />
                                 </StackPanel>
-                                
-                                <TextBlock Grid.Row="1" 
-                                           Text="Set the combination to instantly send your current clipboard to Telegram from anywhere." 
-                                           FontSize="13" 
+
+                                <TextBlock Text="Bot Token" 
+                                           FontWeight="Bold" 
+                                           FontSize="11" 
+                                           LetterSpacing="0.05" 
                                            Foreground="{DynamicResource OnSurfaceVariant}" 
-                                           TextWrapping="Wrap" 
-                                           Margin="0,0,0,16" />
-                                           
-                                <Border Grid.Row="2" 
-                                        Background="{DynamicResource SurfaceContainerLow}" 
-                                        BorderBrush="{DynamicResource White10}" 
-                                        BorderThickness="1" 
-                                        CornerRadius="8" 
-                                        Padding="24" 
-                                        Cursor="Hand">
-                                    <Button Background="Transparent" 
-                                            Command="{Binding ChangeHotkeyCommand}" 
-                                            HorizontalAlignment="Stretch" 
-                                            VerticalAlignment="Stretch">
-                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
+                                           Margin="0,0,0,8" />
+                                <TextBox Classes="SettingsInput" 
+                                         Text="{Binding BotToken}" 
+                                         PasswordChar="*" 
+                                         PlaceholderText="Enter Bot Token" 
+                                         Margin="0,0,0,16" />
+
+                                <TextBlock Text="Chat ID" 
+                                           FontWeight="Bold" 
+                                           FontSize="11" 
+                                           LetterSpacing="0.05" 
+                                           Foreground="{DynamicResource OnSurfaceVariant}" 
+                                           Margin="0,0,0,8" />
+                                <TextBox Classes="SettingsInput" 
+                                         Text="{Binding ChatId}" 
+                                         PlaceholderText="Enter Chat ID" 
+                                         Margin="0,0,0,24" />
+
+                                <Grid ColumnDefinitions="*, *">
+                                    <Button Grid.Column="0" 
+                                            Command="{Binding SaveSettingsCommand}"
+                                            Background="{DynamicResource PrimaryContainer}"
+                                            Foreground="White"
+                                            FontWeight="SemiBold"
+                                            FontSize="15"
+                                            CornerRadius="8"
+                                            Padding="0,12"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Cursor="Hand"
+                                            Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                            <materialIcons:MaterialIcon Kind="ContentSave" Width="18" Height="18" />
+                                            <TextBlock Text="Save" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Grid.Column="1" 
+                                            Content="Test" 
+                                            Command="{Binding TestConnectionCommand}"
+                                            Background="{DynamicResource SurfaceContainer}"
+                                            Foreground="{DynamicResource OnSurface}"
+                                            BorderBrush="#1AFFFFFF"
+                                            BorderThickness="1"
+                                            FontWeight="SemiBold"
+                                            FontSize="15"
+                                            CornerRadius="8"
+                                            Padding="0,12"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Cursor="Hand"
+                                            Margin="6,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Right Column Stack -->
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="24">
+                            
+                            <!-- Global Shortcut Card -->
+                            <Border Background="#991C1F24"
+                                    BorderBrush="#1AFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="24">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                                        <materialIcons:MaterialIcon Kind="KeyboardOutline" Width="24" Height="24" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                        <TextBlock Text="Global Shortcut" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="18" 
+                                                   Foreground="{DynamicResource OnSurface}" 
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    
+                                    <TextBlock Text="Set the combination to instantly send your current clipboard to Telegram from anywhere." 
+                                               FontSize="13" 
+                                               Foreground="{DynamicResource OnSurfaceVariant}"
+                                               TextWrapping="Wrap"
+                                               Margin="0,0,0,16" />
+
+                                    <Button Command="{Binding ChangeHotkeyCommand}"
+                                            Background="{DynamicResource SurfaceContainerLow}"
+                                            BorderBrush="#1AFFFFFF"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="24"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Cursor="Hand">
+                                        <StackPanel>
                                             <TextBlock Text="{Binding ClipboardPopupHotkey}" 
-                                                       FontFamily="JetBrains Mono, Consolas, monospace" 
-                                                       FontSize="16" 
-                                                       Foreground="{DynamicResource OnSurface}" 
-                                                       HorizontalAlignment="Center" />
-                                            <TextBlock Text="Click to record new shortcut" 
-                                                       FontSize="13" 
-                                                       Foreground="{DynamicResource PrimaryContainer}" 
+                                                       FontFamily="{StaticResource MonoFontFamily}"
+                                                       FontSize="16"
+                                                       Foreground="{DynamicResource OnSurface}"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,8"/>
+                                            <TextBlock Text="Click to record new shortcut"
+                                                       FontSize="13"
+                                                       Foreground="{DynamicResource PrimaryContainer}"
                                                        HorizontalAlignment="Center" />
                                         </StackPanel>
                                     </Button>
-                                </Border>
-                            </Grid>
-                        </Border>
+                                </StackPanel>
+                            </Border>
 
-                        <!-- Primary Action -->
-                        <Button Grid.Row="2" 
-                                Classes="PrimaryAction"
-                                Command="{Binding ReadClipboardCommand}">
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <materialIcons:MaterialIcon Kind="Send" Width="24" Height="24" />
-                                <TextBlock Text="Send Current Clipboard to Telegram" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Button>
+                            <!-- Primary Action Button -->
+                            <Button Classes="PrimaryAction" Command="{Binding SendToTelegramCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                                    <materialIcons:MaterialIcon Kind="Send" Width="20" Height="20" />
+                                    <TextBlock Text="Send Current Clipboard to Telegram" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                     </Grid>
-                </Grid>
-                
-                <!-- Status Bar (moved down) -->
-                <TextBlock Text="{Binding StatusMessage}" 
-                           Foreground="Red" 
-                           HorizontalAlignment="Center" />
-            </StackPanel>
-        </ScrollViewer>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
     </Grid>
 </Window>

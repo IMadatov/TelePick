@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Floating Desktop Notification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#c2c7cb",
+                        "surface-bright": "#37393d",
+                        "on-tertiary-container": "#003d50",
+                        "outline": "#88929b",
+                        "on-tertiary": "#003546",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "secondary-container": "#42474b",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "surface-container-highest": "#333538",
+                        "error-container": "#93000a",
+                        "surface-container": "#1e2023",
+                        "outline-variant": "#3e4850",
+                        "on-primary-fixed": "#001e2f",
+                        "surface-dim": "#111317",
+                        "primary-fixed": "#c9e6ff",
+                        "tertiary-fixed": "#bee9ff",
+                        "on-primary-container": "#003c58",
+                        "background": "#111317",
+                        "on-secondary-container": "#b1b6ba",
+                        "surface-tint": "#89ceff",
+                        "on-background": "#e2e2e6",
+                        "tertiary-container": "#04aede",
+                        "tertiary": "#68d3ff",
+                        "on-secondary": "#2c3135",
+                        "primary-fixed-dim": "#89ceff",
+                        "surface": "#111317",
+                        "on-tertiary-fixed": "#001f2a",
+                        "surface-container-low": "#1a1c1f",
+                        "on-surface": "#e2e2e6",
+                        "surface-container-high": "#282a2d",
+                        "error": "#ffb4ab",
+                        "on-primary": "#00344d",
+                        "on-secondary-fixed-variant": "#42474b",
+                        "inverse-surface": "#e2e2e6",
+                        "surface-variant": "#333538",
+                        "primary": "#89ceff",
+                        "primary-container": "#2aabee",
+                        "on-secondary-fixed": "#171c20",
+                        "inverse-primary": "#006591",
+                        "inverse-on-surface": "#2f3034",
+                        "secondary-fixed-dim": "#c2c7cb",
+                        "surface-container-lowest": "#0c0e11",
+                        "on-surface-variant": "#bec8d2",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "secondary-fixed": "#dfe3e7",
+                        "success": "#34d399",
+                        "success-container": "#064e3b",
+                        "on-success-container": "#a7f3d0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem",
+                        "2xl": "1rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "container-padding": "16px",
+                        "glass-padding": "12px",
+                        "item-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter", "sans-serif"],
+                        "label-caps": ["Inter", "sans-serif"],
+                        "body-sm": ["Inter", "sans-serif"],
+                        "mono-sm": ["JetBrains Mono", "monospace"],
+                        "display-sm": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "display-sm": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    },
+                    "boxShadow": {
+                        "glass": "0 8px 32px 0 rgba(0, 0, 0, 0.37)"
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            /* Simulate a desktop background to showcase the floating notification */
+            background: linear-gradient(135deg, #111317 0%, #1e2023 100%);
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+        }
+        
+        .notification-enter {
+            animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="p-8">
+<!-- Desktop Notification Container -->
+<div class="fixed bottom-8 right-8 z-50 flex flex-col gap-4">
+<!-- Success Notification Toast -->
+<div class="notification-enter bg-surface-dim/95 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-glass w-80 p-glass-padding flex items-start gap-3 relative overflow-hidden group">
+<!-- Subtle accent glow -->
+<div class="absolute -left-10 -top-10 w-24 h-24 bg-success/20 blur-2xl rounded-full pointer-events-none"></div>
+<!-- Icon Container -->
+<div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-success/10 border border-success/20">
+<span class="material-symbols-outlined text-success" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Content -->
+<div class="flex-col flex flex-grow pt-0.5 min-w-0">
+<h4 class="font-body-lg text-body-lg text-on-surface truncate">Sent to Telegram</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mt-0.5">1 file successfully delivered</p>
+</div>
+<!-- Dismiss Action -->
+<button class="flex-shrink-0 text-on-surface-variant hover:text-on-surface hover:bg-white/5 rounded-full p-1 transition-colors flex items-center justify-center h-7 w-7 focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</body></html>
