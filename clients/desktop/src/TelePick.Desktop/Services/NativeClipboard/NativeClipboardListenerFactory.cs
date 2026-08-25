@@ -17,7 +17,17 @@ public static class NativeClipboardListenerFactory
             return new MacClipboardListener();
         }
 
-        // Fallback for Linux and others
+        // Linux: try X11 XFixes first, fall back to polling
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            var x11Listener = new LinuxX11ClipboardListener();
+            if (x11Listener.TryInitialize())
+            {
+                return x11Listener;
+            }
+            x11Listener.Dispose();
+        }
+
         return new FallbackClipboardListener();
     }
 }
