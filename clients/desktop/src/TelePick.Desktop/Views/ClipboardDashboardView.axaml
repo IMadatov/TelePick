@@ -31,22 +31,47 @@
             <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
         </Style>
         
-        <Style Selector="Button.FilterChip">
+        <Style Selector="RadioButton.FilterChip">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
             <Setter Property="CornerRadius" Value="16" />
-            <Setter Property="Padding" Value="12,4" />
+            <Setter Property="Padding" Value="16,6" />
             <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Medium" />
             <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        <Style Selector="Button.FilterChip:pointerover">
+        <Style Selector="RadioButton.FilterChip:pointerover">
             <Setter Property="BorderBrush" Value="#c2c7cb" />
             <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Background" Value="#0DFFFFFF" />
         </Style>
-        <Style Selector="Button.FilterChip:pressed">
-            <Setter Property="Background" Value="#1A89CEFF" />
+        <Style Selector="RadioButton.FilterChip:checked">
+            <Setter Property="Background" Value="#1A2AABEE" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="Foreground" Value="{DynamicResource Primary}" />
         </Style>
 
         <Style Selector="Border.ClipboardItemCard">
@@ -112,28 +137,28 @@
         <Border Grid.Row="1" Margin="16,12" BorderBrush="#0DFFFFFF" BorderThickness="0,0,0,1" Padding="0,0,0,12">
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                    <Button Classes="FilterChip" 
-                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=All}" 
+                    <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
+                            IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=All, Mode=OneWay}" 
                             Content="All" 
                             Command="{Binding SetFilterCommand}" 
                             CommandParameter="All" />
-                    <Button Classes="FilterChip" 
-                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Text}" 
+                    <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
+                            IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Text, Mode=OneWay}" 
                             Content="Text" 
                             Command="{Binding SetFilterCommand}" 
                             CommandParameter="Text" />
-                    <Button Classes="FilterChip" 
-                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Images}" 
+                    <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
+                            IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Images, Mode=OneWay}" 
                             Content="Images" 
                             Command="{Binding SetFilterCommand}" 
                             CommandParameter="Images" />
-                    <Button Classes="FilterChip" 
-                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Files}" 
+                    <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
+                            IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Files, Mode=OneWay}" 
                             Content="Files" 
                             Command="{Binding SetFilterCommand}" 
                             CommandParameter="Files" />
-                    <Button Classes="FilterChip" 
-                            Classes.Active="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Links}" 
+                    <RadioButton Classes="FilterChip" GroupName="DashboardFilter"
+                            IsChecked="{Binding FilterCategory, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Links, Mode=OneWay}" 
                             Content="Links" 
                             Command="{Binding SetFilterCommand}" 
                             CommandParameter="Links" />
