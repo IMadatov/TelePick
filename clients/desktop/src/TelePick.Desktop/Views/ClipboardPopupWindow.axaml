@@ -77,20 +77,28 @@
                 </ControlTemplate>
             </Setter>
         </Style>
-        <Style Selector="RadioButton.FilterChip:pointerover">
+        <Style Selector="RadioButton.FilterChip:pointerover /template/ Border#RootBorder">
             <Setter Property="Background" Value="{DynamicResource SurfaceBright}" />
             <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+        </Style>
+        <Style Selector="RadioButton.FilterChip:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
         </Style>
-        <Style Selector="RadioButton.FilterChip:checked">
+        
+        <Style Selector="RadioButton.FilterChip:checked /template/ Border#RootBorder">
             <Setter Property="Background" Value="{StaticResource ChipSelectedBackground}" />
             <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+        </Style>
+        <Style Selector="RadioButton.FilterChip:checked">
             <Setter Property="Foreground" Value="{DynamicResource Primary}" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
-        <Style Selector="RadioButton.FilterChip:checked:pointerover">
+        
+        <Style Selector="RadioButton.FilterChip:checked:pointerover /template/ Border#RootBorder">
             <Setter Property="Background" Value="#332AABEE" />
             <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+        </Style>
+        <Style Selector="RadioButton.FilterChip:checked:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource Primary}" />
         </Style>
 
