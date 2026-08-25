@@ -20,4 +20,5 @@ public class Settings
     public string GlobalSearchHotkey { get; set; } = "Control+Space";
     public string ClearHistoryHotkey { get; set; } = "";
     public string PauseMonitoringHotkey { get; set; } = "Alt+P";
+    public string LocalSearchFocusHotkey { get; set; } = "Control+K";
 }

@@ -15,14 +15,19 @@ namespace TelePick.Desktop.Views
 
         private void OnViewKeyDown(object? sender, KeyEventArgs e)
         {
-            bool isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-            var modifier = isMac ? KeyModifiers.Meta : KeyModifiers.Control;
-
-            if (e.Key == Key.K && e.KeyModifiers.HasFlag(modifier))
+            if (this.DataContext is ViewModels.MainWindowViewModel vm && !string.IsNullOrEmpty(vm.LocalSearchFocusHotkey))
             {
-                var searchBox = this.FindControl<TextBox>("SearchTextBox");
-                searchBox?.Focus();
-                e.Handled = true;
+                try
+                {
+                    var gesture = KeyGesture.Parse(vm.LocalSearchFocusHotkey);
+                    if (gesture.Matches(e))
+                    {
+                        var searchBox = this.FindControl<TextBox>("SearchTextBox");
+                        searchBox?.Focus();
+                        e.Handled = true;
+                    }
+                }
+                catch { }
             }
         }
 

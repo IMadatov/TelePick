@@ -17,7 +17,25 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IClipboardMonitorService _clipboardMonitorService;
     private readonly IGlobalHotkeyService _globalHotkeyService;
     
-    public string SearchShortcutHint => System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) ? "⌘K" : "Ctrl+K";
+    public string SearchShortcutHint 
+    {
+        get
+        {
+            var key = LocalSearchFocusHotkey;
+            if (string.IsNullOrEmpty(key)) return "";
+            
+            bool isMac = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
+            if (isMac)
+            {
+                key = key.Replace("Control", "⌘").Replace("Alt", "⌥").Replace("Shift", "⇧").Replace("+", "");
+            }
+            else
+            {
+                key = key.Replace("Control", "Ctrl");
+            }
+            return key;
+        }
+    }
     
     public System.Collections.ObjectModel.ObservableCollection<ClipboardItem> History => _clipboardMonitorService.History;
 
@@ -128,6 +146,10 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _pauseMonitoringHotkey = "Alt+P";
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SearchShortcutHint))]
+    private string _localSearchFocusHotkey = "Control+K";
+
     private List<Recipient> _recipients = [];
 
     public MainWindowViewModel(
@@ -162,6 +184,7 @@ public partial class MainWindowViewModel : ViewModelBase
         GlobalSearchHotkey = settings.GlobalSearchHotkey;
         ClearHistoryHotkey = settings.ClearHistoryHotkey;
         PauseMonitoringHotkey = settings.PauseMonitoringHotkey;
+        LocalSearchFocusHotkey = settings.LocalSearchFocusHotkey;
         _recipients = settings.Recipients;
         
         // Re-register hotkeys through App.axaml.cs or a separate initialization method.
@@ -181,7 +204,8 @@ public partial class MainWindowViewModel : ViewModelBase
         SendToTelegramHotkey = SendToTelegramHotkey,
         GlobalSearchHotkey = GlobalSearchHotkey,
         ClearHistoryHotkey = ClearHistoryHotkey,
-        PauseMonitoringHotkey = PauseMonitoringHotkey
+        PauseMonitoringHotkey = PauseMonitoringHotkey,
+        LocalSearchFocusHotkey = LocalSearchFocusHotkey
     };
 
     [RelayCommand]
@@ -214,6 +238,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     case "GlobalSearchHotkey": GlobalSearchHotkey = result; break;
                     case "ClearHistoryHotkey": ClearHistoryHotkey = result; break;
                     case "PauseMonitoringHotkey": PauseMonitoringHotkey = result; break;
+                    case "LocalSearchFocusHotkey": LocalSearchFocusHotkey = result; break;
                 }
                 
                 await SaveSettingsAsync();
