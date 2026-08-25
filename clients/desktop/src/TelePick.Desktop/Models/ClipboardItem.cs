@@ -55,7 +55,7 @@ public partial class ClipboardItem : ObservableObject, IDisposable
         set => SetProperty(ref _isLikelyCode, value);
     }
 
-    private void DetermineIfCode()
+    public void DetermineIfCode()
     {
         if (Type != ClipboardItemType.Text || string.IsNullOrWhiteSpace(PreviewText))
         {

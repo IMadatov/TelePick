@@ -8,7 +8,7 @@ namespace TelePick.Desktop.Services;
 public interface ITelegramService
 {
     Task<SendResult> SendMessageAsync(
-        string text,
+        ClipboardItem item,
         string note,
         Settings settings,
         List<Destination>? selectedDestinations = null);
