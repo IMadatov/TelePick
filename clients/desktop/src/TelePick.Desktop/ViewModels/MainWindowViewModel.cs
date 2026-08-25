@@ -96,6 +96,22 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _clipboardPopupHotkey = "Control+Shift+V";
+    
+    // Advanced Settings
+    [ObservableProperty]
+    private int _selectedPageIndex = 1;
+
+    [ObservableProperty]
+    private bool _launchOnStartup = true;
+
+    [ObservableProperty]
+    private bool _syncAcrossDevices = false;
+
+    [ObservableProperty]
+    private string _historyLimit = "500";
+
+    [ObservableProperty]
+    private bool _verboseLogging = false;
 
     private List<Recipient> _recipients = [];
 
@@ -129,6 +145,10 @@ public partial class MainWindowViewModel : ViewModelBase
         BotToken = settings.BotToken;
         ChatId = settings.ChatId;
         ClipboardPopupHotkey = settings.ClipboardPopupHotkey;
+        LaunchOnStartup = settings.LaunchOnStartup;
+        SyncAcrossDevices = settings.SyncAcrossDevices;
+        HistoryLimit = settings.HistoryLimit;
+        VerboseLogging = settings.VerboseLogging;
         _recipients = settings.Recipients;
         _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
     }
@@ -138,7 +158,11 @@ public partial class MainWindowViewModel : ViewModelBase
         BotToken = BotToken,
         ChatId = ChatId,
         Recipients = _recipients,
-        ClipboardPopupHotkey = ClipboardPopupHotkey
+        ClipboardPopupHotkey = ClipboardPopupHotkey,
+        LaunchOnStartup = LaunchOnStartup,
+        SyncAcrossDevices = SyncAcrossDevices,
+        HistoryLimit = HistoryLimit,
+        VerboseLogging = VerboseLogging
     };
 
     [RelayCommand]
@@ -237,6 +261,13 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             SetStatus(result.ErrorMessage ?? "Connection test failed.", true);
         }
+    }
+
+    [RelayCommand]
+    private void ClearLocalCache()
+    {
+        History.Clear();
+        SetStatus("Local cache cleared.", false);
     }
 
     private void SetStatus(string message, bool isError)

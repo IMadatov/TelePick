@@ -12,6 +12,7 @@
     </Application.DataTemplates>
     <Application.Resources>
         <conv:StatusColorConverter x:Key="StatusColorConverter"/>
+        <conv:EqualityConverter x:Key="EqualityConverter"/>
 
         <!-- Typography -->
         <FontFamily x:Key="AppFontFamily">avares://Avalonia.Fonts.Inter/Assets#Inter, Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif</FontFamily>

@@ -88,6 +88,26 @@
         <Style Selector="ListBoxItem.SidebarItem:selected materialIcons|MaterialIcon">
             <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainer}" />
         </Style>
+        
+        <!-- ToggleSwitch Style -->
+        <Style Selector="ToggleSwitch">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="OnContent" Value="{x:Null}" />
+            <Setter Property="OffContent" Value="{x:Null}" />
+        </Style>
+        
+        <!-- Custom ComboBox -->
+        <Style Selector="ComboBox.SettingsCombo">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}" />
+            <Setter Property="BorderBrush" Value="#1AFFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16,10" />
+            <Setter Property="FontFamily" Value="{StaticResource MonoFontFamily}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
     </Window.Styles>
 
     <Grid ColumnDefinitions="256, *">
@@ -111,7 +131,7 @@
                 </StackPanel>
 
                 <!-- Navigation -->
-                <ListBox Grid.Row="1" Classes="SidebarNav" SelectedIndex="1">
+                <ListBox Grid.Row="1" Classes="SidebarNav" SelectedIndex="{Binding SelectedPageIndex}">
                     <ListBoxItem Classes="SidebarItem">
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <materialIcons:MaterialIcon Kind="ClipboardTextOutline" Width="20" Height="20" />
@@ -143,9 +163,12 @@
         <!-- Main Content Area -->
         <Border Grid.Column="1" Background="{DynamicResource Background}">
             <ScrollViewer>
-                <StackPanel Margin="32,48,32,32" MaxWidth="850" HorizontalAlignment="Stretch">
+                <Grid Margin="32,48,32,32" MaxWidth="850" HorizontalAlignment="Stretch">
                     
-                    <!-- Header -->
+                    <!-- Telegram Integration Page (Index 1) -->
+                    <StackPanel IsVisible="{Binding SelectedPageIndex, Converter={StaticResource EqualityConverter}, ConverterParameter=1}">
+                        
+                        <!-- Header -->
                     <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,32">
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Telegram Integration" 
@@ -327,7 +350,175 @@
                             </Button>
                         </StackPanel>
                     </Grid>
-                </StackPanel>
+                    </StackPanel>
+
+                    <!-- Advanced Settings Page (Index 3) -->
+                    <StackPanel IsVisible="{Binding SelectedPageIndex, Converter={StaticResource EqualityConverter}, ConverterParameter=3}">
+                        <!-- Header -->
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,32">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Advanced Settings" 
+                                           FontWeight="Bold" 
+                                           FontSize="24" 
+                                           Foreground="{DynamicResource OnSurface}" 
+                                           Margin="0,0,0,8" />
+                                <TextBlock Text="Manage system integration and core technical preferences." 
+                                           FontSize="15" 
+                                           Foreground="{DynamicResource OnSurfaceVariant}" />
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" 
+                                    Content="Apply Changes" 
+                                    Command="{Binding SaveSettingsCommand}"
+                                    Background="{DynamicResource PrimaryContainer}"
+                                    Foreground="{DynamicResource OnPrimary}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    CornerRadius="8"
+                                    Padding="20,10"
+                                    VerticalAlignment="Bottom"
+                                    Cursor="Hand" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="2*, 1*" Margin="0,0,0,24" ColumnSpacing="24">
+                            
+                            <!-- System Integration Module -->
+                            <Border Grid.Column="0" 
+                                    Background="#991C1F24"
+                                    BorderBrush="#1AFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="24">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,16">
+                                        <materialIcons:MaterialIcon Kind="Cog" Width="24" Height="24" Foreground="{DynamicResource Primary}" />
+                                        <TextBlock Text="System Integration" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="18" 
+                                                   Foreground="{DynamicResource OnSurface}" 
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    
+                                    <Border BorderBrush="#0CFFFFFF" BorderThickness="0,0,0,1" Margin="0,0,0,16" Padding="0,0,0,16">
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="Launch on Startup" FontWeight="SemiBold" FontSize="15" Foreground="{DynamicResource OnSurface}" Margin="0,0,0,4" />
+                                                <TextBlock Text="Automatically start TelePick in the background when your system boots." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding LaunchOnStartup}" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                    
+                                    <Border BorderBrush="#0CFFFFFF" BorderThickness="0,0,0,0" Padding="0,0,0,0">
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="Sync Across Devices" FontWeight="SemiBold" FontSize="15" Foreground="{DynamicResource OnSurface}" Margin="0,0,0,4" />
+                                                <TextBlock Text="Keep your clipboard history and snippets synchronized via Telegram secure cloud." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                            </StackPanel>
+                                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding SyncAcrossDevices}" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Data Limits Module -->
+                            <Border Grid.Column="1" 
+                                    Background="#991C1F24"
+                                    BorderBrush="#1AFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="24">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,16">
+                                        <materialIcons:MaterialIcon Kind="Memory" Width="24" Height="24" Foreground="{DynamicResource Primary}" />
+                                        <TextBlock Text="Data Limits" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="18" 
+                                                   Foreground="{DynamicResource OnSurface}" 
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <TextBlock Text="Clipboard History Limit" 
+                                               FontWeight="SemiBold" 
+                                               FontSize="13" 
+                                               Foreground="{DynamicResource OnSurface}" 
+                                               Margin="0,0,0,8" />
+                                    <ComboBox Classes="SettingsCombo" SelectedItem="{Binding HistoryLimit}" Margin="0,0,0,4">
+                                        <ComboBoxItem Content="50" />
+                                        <ComboBoxItem Content="100" />
+                                        <ComboBoxItem Content="500" />
+                                        <ComboBoxItem Content="1000" />
+                                        <ComboBoxItem Content="unlimited" />
+                                    </ComboBox>
+                                    <TextBlock Text="Higher limits increase RAM usage." 
+                                               FontSize="11" 
+                                               Foreground="{DynamicResource OnSurfaceVariant}" 
+                                               Margin="0,0,0,24" />
+
+                                    <TextBlock Text="Maintenance" 
+                                               FontWeight="SemiBold" 
+                                               FontSize="13" 
+                                               Foreground="{DynamicResource OnSurface}" 
+                                               Margin="0,0,0,12" />
+                                    <Button Command="{Binding ClearLocalCacheCommand}"
+                                            Background="{DynamicResource SurfaceContainerHighest}"
+                                            Foreground="{DynamicResource OnSurface}"
+                                            BorderBrush="#0CFFFFFF"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="16,10"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <materialIcons:MaterialIcon Kind="DeleteSweep" Width="18" Height="18" />
+                                            <TextBlock Text="Clear Local Cache" VerticalAlignment="Center" FontSize="13" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Developer Options Module -->
+                        <Border Background="#991C1F24"
+                                BorderBrush="#1AFFFFFF"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Padding="24">
+                            <StackPanel>
+                                <Grid ColumnDefinitions="Auto, *, Auto">
+                                    <materialIcons:MaterialIcon Grid.Column="0" Kind="Terminal" Width="24" Height="24" Foreground="{DynamicResource TertiaryContainer}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Developer Options" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource OnSurface}" />
+                                        <TextBlock Text="Debug logging and experimental features." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <Border BorderBrush="#0CFFFFFF" BorderThickness="0,1,0,0" Margin="0,16,0,0" Padding="0,16,0,0">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <TextBlock Grid.Column="0" Text="Enable Verbose Logging" FontFamily="{StaticResource MonoFontFamily}" FontWeight="SemiBold" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding VerboseLogging}" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+                                
+                                <Border Background="{DynamicResource SurfaceContainerLowest}" 
+                                        BorderBrush="#0CFFFFFF" 
+                                        BorderThickness="1" 
+                                        CornerRadius="8" 
+                                        Padding="12" 
+                                        Margin="0,16,0,0"
+                                        IsVisible="{Binding VerboseLogging}">
+                                    <TextBlock Text="> TelePick Engine v1.2.0 initialized.&#x0a;> Loading user config... OK.&#x0a;> Connecting to local IPC socket..." 
+                                               FontFamily="{StaticResource MonoFontFamily}" 
+                                               FontSize="12" 
+                                               Foreground="{DynamicResource OnSurfaceVariant}" />
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                </Grid>
             </ScrollViewer>
         </Border>
     </Grid>
