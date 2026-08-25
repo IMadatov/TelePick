@@ -13,7 +13,10 @@ public static class TextEditorAttached
     {
         TextProperty.Changed.AddClassHandler<TextEditor>((editor, e) =>
         {
-            if (e.NewValue is string newText)
+            // In Avalonia 11, we should just get the value from the property to be safe
+            string? newText = editor.GetValue(TextProperty);
+            
+            if (newText != null)
             {
                 if (editor.Document == null)
                 {

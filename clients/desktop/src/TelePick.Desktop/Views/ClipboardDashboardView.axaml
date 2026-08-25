@@ -246,7 +246,7 @@
                                             ClipToBounds="True"
                                             IsVisible="{Binding IsLikelyCode}">
                                         
-                                        <avaloniaEdit:TextEditor Document="{Binding Document}"
+                                        <avaloniaEdit:TextEditor helpers:TextEditorAttached.Text="{Binding PreviewText}"
                                                                  IsReadOnly="True"
                                                                  ShowLineNumbers="False"
                                                                  FontFamily="JetBrains Mono, Consolas, monospace"

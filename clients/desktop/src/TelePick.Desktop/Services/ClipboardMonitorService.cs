@@ -176,7 +176,6 @@ public class ClipboardMonitorService : IClipboardMonitorService
                     var item = new ClipboardItem
                     {
                         Type = ClipboardItemType.Text,
-                        Title = GetTextTitle(text),
                         PreviewText = text,
                         RawData = text,
                         IconKind = "TextSubject",
