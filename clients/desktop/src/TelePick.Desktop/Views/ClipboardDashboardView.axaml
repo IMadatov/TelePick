@@ -247,7 +247,6 @@
                                             IsVisible="{Binding IsLikelyCode}">
                                         
                                         <avaloniaEdit:TextEditor Document="{Binding Document}"
-                                                                 SyntaxHighlighting="C#"
                                                                  IsReadOnly="True"
                                                                  ShowLineNumbers="False"
                                                                  FontFamily="JetBrains Mono, Consolas, monospace"
