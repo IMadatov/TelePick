@@ -275,7 +275,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         SetStatus("Sending...", false);
 
-        var item = new ClipboardItem 
+        using var item = new ClipboardItem 
         { 
             Type = ClipboardItemType.Text, 
             PreviewText = ClipboardText 
@@ -431,7 +431,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             else
             {
-                var pathsItem = new ClipboardItem 
+                using var pathsItem = new ClipboardItem 
                 { 
                     Type = ClipboardItemType.Text, 
                     PreviewText = string.Join("\n", filePaths) 

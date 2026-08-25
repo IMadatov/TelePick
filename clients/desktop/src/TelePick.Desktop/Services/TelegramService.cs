@@ -28,7 +28,7 @@ public class TelegramService : ITelegramService
     // ── Public API ──────────────────────────────────────────────
 
     public async Task<SendResult> SendMessageAsync(
-        ClipboardItem item,
+        ClipboardItem? item,
         string note,
         Settings settings,
         List<Destination>? selectedDestinations = null)
@@ -36,8 +36,8 @@ public class TelegramService : ITelegramService
         if (string.IsNullOrWhiteSpace(settings.BotToken))
             return SendResult.Fail("Bot token is not configured.");
 
-        if (string.IsNullOrWhiteSpace(item.PreviewText))
-            return SendResult.Fail("Text is empty.");
+        if (item == null || string.IsNullOrWhiteSpace(item.PreviewText))
+            return SendResult.Fail("Item or text is empty.");
 
         MigrateSettings(settings);
 
@@ -104,7 +104,7 @@ public class TelegramService : ITelegramService
             destinations.Select(dest =>
             {
                 var label = ResolveDestinationLabel(dest, settings.Recipients);
-                var testItem = new ClipboardItem { Type = ClipboardItemType.Text, PreviewText = $"TelePick test message — target: {label}" };
+                using var testItem = new ClipboardItem { Type = ClipboardItemType.Text, PreviewText = $"TelePick test message — target: {label}" };
                 var testMessage = BuildMessage(testItem, "");
                 return SendMessageSingleAsync(settings.BotToken, dest, testMessage);
             }));
