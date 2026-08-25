@@ -19,9 +19,80 @@
     <Window.Resources>
         <!-- Translucent surface for glassmorphic window backing -->
         <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#E6282A2D" />
+        <SolidColorBrush x:Key="ChipSelectedBackground" Color="#262AABEE" />
     </Window.Resources>
 
     <Window.Styles>
+        <!-- TextBox SearchBox Styles -->
+        <Style Selector="TextBox.SearchBox">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Padding" Value="4,7" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBox.SearchBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}" />
+        </Style>
+        <Style Selector="TextBox.SearchBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}" />
+        </Style>
+        <Style Selector="TextBox.SearchBox /template/ TextBlock#PART_PlaceholderText">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+
+        <!-- Filter Chip RadioButton Styles -->
+        <Style Selector="RadioButton.FilterChip">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+            <Setter Property="Padding" Value="12,5" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="RootBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          RecognizesAccessKey="True"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.FilterChip:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBright}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+        <Style Selector="RadioButton.FilterChip:checked">
+            <Setter Property="Background" Value="{StaticResource ChipSelectedBackground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="Foreground" Value="{DynamicResource Primary}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="RadioButton.FilterChip:checked:pointerover">
+            <Setter Property="Background" Value="#332AABEE" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="Foreground" Value="{DynamicResource Primary}" />
+        </Style>
+
         <Style Selector="ListBoxItem">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,2" />
@@ -53,11 +124,46 @@
                     Background="Transparent"
                     BorderBrush="{DynamicResource OutlineVariant}" 
                     BorderThickness="0,0,0,1" 
-                    Padding="16,12,16,12">
-                <TextBlock Text="Quick Paste" 
-                           FontWeight="SemiBold" 
-                           FontSize="14" 
-                           Foreground="{DynamicResource OnSurface}" />
+                    Padding="16,14,16,12">
+                <StackPanel Spacing="10">
+                    <!-- Search Input -->
+                    <TextBox Classes="SearchBox" 
+                             PlaceholderText="Search clipboard...">
+                        <TextBox.InnerLeftContent>
+                            <materialIcons:MaterialIcon Kind="Magnify" 
+                                                        Width="18" 
+                                                        Height="18" 
+                                                        Margin="10,0,6,0" 
+                                                        Foreground="{DynamicResource OnSurfaceVariant}" />
+                        </TextBox.InnerLeftContent>
+                        <TextBox.InnerRightContent>
+                            <Border Background="{DynamicResource SurfaceVariant}"
+                                    Opacity="0.7"
+                                    BorderBrush="{DynamicResource OutlineVariant}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="5,2"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="⌘K" 
+                                           FontSize="10" 
+                                           FontFamily="{StaticResource MonoFontFamily}" 
+                                           Foreground="{DynamicResource OnSurfaceVariant}" 
+                                           VerticalAlignment="Center" />
+                            </Border>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+
+                    <!-- Filter Chips -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="All Items" IsChecked="True" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Text" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Images" />
+                            <RadioButton Classes="FilterChip" GroupName="ClipboardFilter" Content="Files" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
             </Border>
 
             <!-- List (Clipboard Items Area) -->
