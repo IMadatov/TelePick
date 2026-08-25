@@ -275,7 +275,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
         SetStatus("Sending...", false);
 
-        var result = await _telegramService.SendMessageAsync(ClipboardText, Note, settings);
+        var item = new ClipboardItem 
+        { 
+            Type = ClipboardItemType.Text, 
+            PreviewText = ClipboardText 
+        };
+        item.DetermineIfCode();
+
+        var result = await _telegramService.SendMessageAsync(item, Note, settings);
         
         if (result.Success)
         {
@@ -406,7 +413,7 @@ public partial class MainWindowViewModel : ViewModelBase
         SendResult result;
         if (item.Type == ClipboardItemType.Text)
         {
-            result = await _telegramService.SendMessageAsync(item.PreviewText, Note, settings);
+            result = await _telegramService.SendMessageAsync(item, Note, settings);
         }
         else if (item.Type == ClipboardItemType.Image && item.RawData is string imagePath && File.Exists(imagePath))
         {
@@ -424,12 +431,17 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             else
             {
-                result = await _telegramService.SendMessageAsync(string.Join("\n", filePaths), Note, settings);
+                var pathsItem = new ClipboardItem 
+                { 
+                    Type = ClipboardItemType.Text, 
+                    PreviewText = string.Join("\n", filePaths) 
+                };
+                result = await _telegramService.SendMessageAsync(pathsItem, Note, settings);
             }
         }
         else
         {
-            result = await _telegramService.SendMessageAsync(item.PreviewText, Note, settings);
+            result = await _telegramService.SendMessageAsync(item, Note, settings);
         }
 
         if (result.Success)
