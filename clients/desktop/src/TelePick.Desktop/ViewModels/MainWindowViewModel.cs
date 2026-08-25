@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TelePick.Desktop.Models;
 using TelePick.Desktop.Services;
@@ -38,6 +39,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _clipboardPopupHotkey = "Control+Shift+V";
 
+    private List<Recipient> _recipients = [];
+
     public MainWindowViewModel(
         IClipboardService clipboardService,
         ITelegramService telegramService,
@@ -66,18 +69,22 @@ public partial class MainWindowViewModel : ViewModelBase
         BotToken = settings.BotToken;
         ChatId = settings.ChatId;
         ClipboardPopupHotkey = settings.ClipboardPopupHotkey;
+        _recipients = settings.Recipients;
         _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
     }
+
+    private Settings BuildCurrentSettings() => new()
+    {
+        BotToken = BotToken,
+        ChatId = ChatId,
+        Recipients = _recipients,
+        ClipboardPopupHotkey = ClipboardPopupHotkey
+    };
 
     [RelayCommand]
     private async Task SaveSettingsAsync()
     {
-        var settings = new Settings
-        {
-            BotToken = this.BotToken,
-            ChatId = this.ChatId,
-            ClipboardPopupHotkey = this.ClipboardPopupHotkey
-        };
+        var settings = BuildCurrentSettings();
         await _settingsService.SaveSettingsAsync(settings);
         _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
         SetStatus("Settings saved successfully.", false);
@@ -119,11 +126,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task SendToTelegramAsync()
     {
-        var settings = new Settings
-        {
-            BotToken = this.BotToken,
-            ChatId = this.ChatId
-        };
+        var settings = BuildCurrentSettings();
 
         if (!_settingsService.IsConfigured(settings))
         {
@@ -137,13 +140,40 @@ public partial class MainWindowViewModel : ViewModelBase
         
         if (result.Success)
         {
-            SetStatus("Sent successfully!", false);
+            var countInfo = result.TotalCount > 1 ? $" ({result.SuccessCount}/{result.TotalCount})" : "";
+            SetStatus($"Sent successfully!{countInfo}", false);
             ClipboardText = string.Empty;
             Note = string.Empty;
         }
         else
         {
             SetStatus(result.ErrorMessage ?? "Failed to send.", true);
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestConnectionAsync()
+    {
+        var settings = BuildCurrentSettings();
+
+        if (!_settingsService.IsConfigured(settings))
+        {
+            SetStatus("Please configure Bot Token and Chat ID in Settings.", true);
+            return;
+        }
+
+        SetStatus("Testing connection...", false);
+
+        var result = await _telegramService.TestConnectionAsync(settings);
+
+        if (result.Success)
+        {
+            var countInfo = result.TotalCount > 1 ? $" ({result.SuccessCount}/{result.TotalCount})" : "";
+            SetStatus($"Connection test passed!{countInfo}", false);
+        }
+        else
+        {
+            SetStatus(result.ErrorMessage ?? "Connection test failed.", true);
         }
     }
 
