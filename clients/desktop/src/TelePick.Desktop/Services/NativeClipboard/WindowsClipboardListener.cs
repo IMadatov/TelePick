@@ -68,7 +68,7 @@ public class WindowsClipboardListener : INativeClipboardListener, IDisposable
                 cbSize = (uint)Marshal.SizeOf(typeof(WNDCLASSEX)),
                 lpfnWndProc = _wndProcDelegate,
                 lpszClassName = "TelePickClipboardListenerClass_" + Guid.NewGuid().ToString("N"),
-                hInstance = Marshal.GetHINSTANCE(typeof(WindowsClipboardListener).Module)
+                hInstance = System.Diagnostics.Process.GetCurrentProcess().Handle
             };
             
             RegisterClassEx(ref wndClass);
