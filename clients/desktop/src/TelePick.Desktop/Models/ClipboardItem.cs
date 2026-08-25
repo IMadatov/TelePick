@@ -19,9 +19,7 @@ public partial class ClipboardItem : ObservableObject, IDisposable
             if (!string.IsNullOrWhiteSpace(_title)) return _title;
             return Type switch
             {
-                ClipboardItemType.Text => !string.IsNullOrWhiteSpace(PreviewText)
-                    ? (PreviewText.Length > 40 ? PreviewText[..37] + "..." : PreviewText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Text Snippet")
-                    : "Text Snippet",
+                ClipboardItemType.Text => IsLikelyCode ? "Code" : "Text",
                 ClipboardItemType.Image => "Image",
                 ClipboardItemType.Files => "Files",
                 _ => "Clipboard Item"
@@ -67,6 +65,8 @@ public partial class ClipboardItem : ObservableObject, IDisposable
 
         // If high symbol density or contains multiple keywords, treat as code
         IsLikelyCode = (symbolCount > 5) || (keywordCount >= 2) || PreviewText.Contains("=>") || PreviewText.Contains("==") || PreviewText.Contains("</");
+        
+        OnPropertyChanged(nameof(Title));
     }
 
     partial void OnPreviewTextChanged(string value)
