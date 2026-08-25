@@ -17,6 +17,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IClipboardMonitorService _clipboardMonitorService;
     private readonly IGlobalHotkeyService _globalHotkeyService;
     
+    public string SearchShortcutHint => System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX) ? "⌘K" : "Ctrl+K";
+    
     public System.Collections.ObjectModel.ObservableCollection<ClipboardItem> History => _clipboardMonitorService.History;
 
     public IEnumerable<ClipboardItem> FilteredHistory 

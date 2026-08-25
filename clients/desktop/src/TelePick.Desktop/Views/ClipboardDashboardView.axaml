@@ -99,7 +99,7 @@
                         HorizontalAlignment="Right" 
                         Margin="0,0,12,0"
                         VerticalAlignment="Center">
-                    <TextBlock Text="Ctrl+K" 
+                    <TextBlock Text="{Binding SearchShortcutHint}" 
                                FontFamily="JetBrains Mono, monospace" 
                                FontSize="12" 
                                Foreground="{DynamicResource OutlineVariant}" />
