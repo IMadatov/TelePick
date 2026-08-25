@@ -8,4 +8,4 @@ obj/
 # Avalonia
 *.ide/
 /graphify-out/*
-*.zip
+*.zip.worktrees/
