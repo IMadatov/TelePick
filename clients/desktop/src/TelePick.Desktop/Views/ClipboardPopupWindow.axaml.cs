@@ -20,12 +20,22 @@ public partial class ClipboardPopupWindow : Window
         // Hide window when it loses focus
         this.Deactivated += (s, e) => this.Close();
 
-        // Close on Escape
+        // Close on Escape, Focus Search on Ctrl+K
         this.KeyDown += (s, e) =>
         {
             if (e.Key == Avalonia.Input.Key.Escape)
             {
                 this.Close();
+            }
+
+            bool isMac = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
+            var modifier = isMac ? Avalonia.Input.KeyModifiers.Meta : Avalonia.Input.KeyModifiers.Control;
+
+            if (e.Key == Avalonia.Input.Key.K && e.KeyModifiers.HasFlag(modifier))
+            {
+                var searchBox = this.FindControl<TextBox>("SearchTextBox");
+                searchBox?.Focus();
+                e.Handled = true;
             }
         };
 

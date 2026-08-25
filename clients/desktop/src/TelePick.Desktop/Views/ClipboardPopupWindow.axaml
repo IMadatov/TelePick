@@ -213,7 +213,8 @@
                     Padding="16,14,16,12">
                 <StackPanel Spacing="10">
                     <!-- Search Input -->
-                    <TextBox Classes="SearchBox" 
+                    <TextBox x:Name="SearchTextBox"
+                             Classes="SearchBox" 
                              PlaceholderText="Search clipboard..."
                              Text="{Binding SearchText, Mode=TwoWay}"
                              TabIndex="1">
@@ -233,7 +234,7 @@
                                     Padding="5,2"
                                     Margin="0,0,8,0"
                                     VerticalAlignment="Center">
-                                <TextBlock Text="⌘K" 
+                                <TextBlock Text="{Binding SearchShortcutHint}" 
                                            FontSize="10" 
                                            FontFamily="{StaticResource MonoFontFamily}" 
                                            Foreground="{DynamicResource OnSurfaceVariant}" 

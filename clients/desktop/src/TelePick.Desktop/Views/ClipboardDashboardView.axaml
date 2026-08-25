@@ -81,7 +81,8 @@
         <!-- Top Bar / Search -->
         <Border Grid.Row="0" BorderBrush="#0DFFFFFF" BorderThickness="0,0,0,1" Padding="16,16">
             <Grid>
-                <TextBox Classes="SearchInput" 
+                <TextBox x:Name="SearchTextBox"
+                         Classes="SearchInput" 
                          Text="{Binding SearchText}" 
                          PlaceholderText="Search clipboard history..." />
                 
