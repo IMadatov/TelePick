@@ -28,6 +28,19 @@ public partial class ClipboardPopupWindow : Window
                 this.Close();
             }
         };
+
+        this.Opened += (s, e) =>
+        {
+            var listBox = this.FindControl<ListBox>("ClipboardListBox");
+            if (listBox != null)
+            {
+                if (listBox.ItemCount > 0)
+                {
+                    listBox.SelectedIndex = 0;
+                }
+                listBox.Focus();
+            }
+        };
     }
 
     private async void OnItemTapped(object? sender, Avalonia.Input.TappedEventArgs e)

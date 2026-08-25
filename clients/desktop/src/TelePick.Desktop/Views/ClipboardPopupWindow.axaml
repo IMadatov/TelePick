@@ -246,7 +246,8 @@
             </Border>
 
             <!-- List (Clipboard Items Area) -->
-            <ListBox Grid.Row="1" 
+            <ListBox x:Name="ClipboardListBox"
+                     Grid.Row="1" 
                      ItemsSource="{Binding FilteredHistory}" 
                      Margin="8" 
                      Background="Transparent" 
