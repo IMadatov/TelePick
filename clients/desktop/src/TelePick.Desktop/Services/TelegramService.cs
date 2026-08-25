@@ -28,7 +28,7 @@ public class TelegramService : ITelegramService
     // ── Public API ──────────────────────────────────────────────
 
     public async Task<SendResult> SendMessageAsync(
-        string text,
+        ClipboardItem item,
         string note,
         Settings settings,
         List<Destination>? selectedDestinations = null)
@@ -36,7 +36,7 @@ public class TelegramService : ITelegramService
         if (string.IsNullOrWhiteSpace(settings.BotToken))
             return SendResult.Fail("Bot token is not configured.");
 
-        if (string.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrWhiteSpace(item.PreviewText))
             return SendResult.Fail("Text is empty.");
 
         MigrateSettings(settings);
@@ -45,7 +45,7 @@ public class TelegramService : ITelegramService
         if (destinations.Count == 0)
             return SendResult.Fail("No destinations configured. Add at least one recipient in Settings.");
 
-        var message = BuildMessage(text, note);
+        var message = BuildMessage(item, note);
         message = Truncate(message, MaxMessageLength);
 
         var results = await Task.WhenAll(
@@ -104,7 +104,8 @@ public class TelegramService : ITelegramService
             destinations.Select(dest =>
             {
                 var label = ResolveDestinationLabel(dest, settings.Recipients);
-                var testMessage = BuildMessage($"TelePick test message — target: {label}", "");
+                var testItem = new ClipboardItem { Type = ClipboardItemType.Text, PreviewText = $"TelePick test message — target: {label}" };
+                var testMessage = BuildMessage(testItem, "");
                 return SendMessageSingleAsync(settings.BotToken, dest, testMessage);
             }));
 
@@ -186,9 +187,19 @@ public class TelegramService : ITelegramService
 
     // ── Message formatting ──────────────────────────────────────
 
-    private static string BuildMessage(string text, string note)
+    private static string BuildMessage(ClipboardItem item, string note)
     {
-        var parts = new List<string> { $"\"{EscapeHtml(text)}\"" };
+        var parts = new List<string>();
+        string escapedText = EscapeHtml(item.PreviewText);
+        
+        if (item.IsLikelyCode)
+        {
+            parts.Add($"<pre><code>{escapedText}</code></pre>");
+        }
+        else
+        {
+            parts.Add(escapedText);
+        }
 
         if (!string.IsNullOrWhiteSpace(note))
             parts.Add($"\n📝 Note: {EscapeHtml(note.Trim())}");
