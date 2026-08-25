@@ -189,6 +189,12 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var settings = BuildCurrentSettings();
         await _settingsService.SaveSettingsAsync(settings);
+
+        if (Avalonia.Application.Current is App app)
+        {
+            app.RegisterAllHotkeys(settings);
+        }
+
         SetStatus("Settings saved successfully.", false);
     }
 

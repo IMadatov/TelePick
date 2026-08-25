@@ -53,57 +53,9 @@ public partial class App : Application
         Task.Run(async () => 
         {
             var settings = await settingsService.LoadSettingsAsync();
-            
-            // Quick Paste
-            hotkeyService.RegisterHotkey("QuickPaste", settings.ClipboardPopupHotkey, () =>
-            {
-                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                {
-                    var window = new ClipboardPopupWindow 
-                    { 
-                        DataContext = viewModel
-                    };
-                    
-                    window.Position = new Avalonia.PixelPoint(hotkeyService.LastMouseX, hotkeyService.LastMouseY);
-                    window.Show();
-                    window.Activate();
-                });
-            });
-
-            // Send to Telegram
-            hotkeyService.RegisterHotkey("SendToTelegram", settings.SendToTelegramHotkey, () =>
-            {
-                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                {
-                    if (viewModel.SendToTelegramCommand.CanExecute(null))
-                    {
-                        viewModel.SendToTelegramCommand.Execute(null);
-                    }
-                });
-            });
-
-            // Global Search
-            hotkeyService.RegisterHotkey("GlobalSearch", settings.GlobalSearchHotkey, () =>
-            {
-                // Placeholder
-            });
-
-            // Clear History
-            hotkeyService.RegisterHotkey("ClearHistory", settings.ClearHistoryHotkey, () =>
-            {
-                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                {
-                    monitorService.History.Clear();
-                });
-            });
-
-            // Pause Monitoring
-            hotkeyService.RegisterHotkey("PauseMonitoring", settings.PauseMonitoringHotkey, () =>
-            {
-                monitorService.IsPaused = !monitorService.IsPaused;
-            });
+            RegisterAllHotkeys(settings);
         });
-
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Keep running when main window is closed (tray mode)
@@ -130,6 +82,77 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    public void RegisterAllHotkeys(TelePick.Desktop.Models.Settings settings)
+    {
+        if (_serviceProvider == null) return;
+
+        var hotkeyService = _serviceProvider.GetRequiredService<IGlobalHotkeyService>();
+        var monitorService = _serviceProvider.GetRequiredService<IClipboardMonitorService>();
+        var viewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+
+        // Clear existing hotkeys first to avoid conflicts if they are reassigned
+        hotkeyService.UnregisterHotkey("QuickPaste");
+        hotkeyService.UnregisterHotkey("SendToTelegram");
+        hotkeyService.UnregisterHotkey("GlobalSearch");
+        hotkeyService.UnregisterHotkey("ClearHistory");
+        hotkeyService.UnregisterHotkey("PauseMonitoring");
+
+        // Quick Paste
+        hotkeyService.RegisterHotkey("QuickPaste", settings.ClipboardPopupHotkey, () =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var window = new ClipboardPopupWindow 
+                { 
+                    DataContext = viewModel
+                };
+                
+                window.Position = new Avalonia.PixelPoint(hotkeyService.LastMouseX, hotkeyService.LastMouseY);
+                window.Show();
+                window.Activate();
+            });
+        });
+
+        // Send to Telegram
+        hotkeyService.RegisterHotkey("SendToTelegram", settings.SendToTelegramHotkey, () =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                if (viewModel.SendToTelegramCommand.CanExecute(null))
+                {
+                    viewModel.SendToTelegramCommand.Execute(null);
+                }
+            });
+        });
+
+        // Global Search
+        hotkeyService.RegisterHotkey("GlobalSearch", settings.GlobalSearchHotkey, () =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                ShowMainWindow();
+                viewModel.SelectedPageIndex = 0; // Navigate to Clipboard Dashboard
+            });
+        });
+
+        // Clear History
+        hotkeyService.RegisterHotkey("ClearHistory", settings.ClearHistoryHotkey, () =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                monitorService.History.Clear();
+            });
+        });
+
+        // Pause Monitoring
+        hotkeyService.RegisterHotkey("PauseMonitoring", settings.PauseMonitoringHotkey, () =>
+        {
+            monitorService.IsPaused = !monitorService.IsPaused;
+        });
+    }
+
+
 
     private void ShowMainWindow()
     {

@@ -401,7 +401,7 @@
                                     <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="ClipboardPopupHotkey"
                                             Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
-                                            <TextBlock Text="{Binding ClipboardPopupHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding ClipboardPopupHotkey, Converter={StaticResource EmptyStringConverter}, ConverterParameter='Click to record...'}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
                                             <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
                                             <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
                                         </StackPanel>
@@ -428,7 +428,7 @@
                                     <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="SendToTelegramHotkey"
                                             Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
-                                            <TextBlock Text="{Binding SendToTelegramHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding SendToTelegramHotkey, Converter={StaticResource EmptyStringConverter}, ConverterParameter='Click to record...'}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
                                             <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
                                             <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
                                         </StackPanel>
@@ -455,7 +455,7 @@
                                     <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="GlobalSearchHotkey"
                                             Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
-                                            <TextBlock Text="{Binding GlobalSearchHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding GlobalSearchHotkey, Converter={StaticResource EmptyStringConverter}, ConverterParameter='Click to record...'}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
                                             <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
                                             <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
                                         </StackPanel>
@@ -489,7 +489,7 @@
                                     <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="ClearHistoryHotkey"
                                             Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
-                                            <TextBlock Text="{Binding ClearHistoryHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding ClearHistoryHotkey, Converter={StaticResource EmptyStringConverter}, ConverterParameter='Click to record...'}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
                                             <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
                                             <materialIcons:MaterialIcon Kind="PlusCircle" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
                                         </StackPanel>
@@ -516,7 +516,7 @@
                                     <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="PauseMonitoringHotkey"
                                             Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" Spacing="12">
-                                            <TextBlock Text="{Binding PauseMonitoringHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding PauseMonitoringHotkey, Converter={StaticResource EmptyStringConverter}, ConverterParameter='Click to record...'}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
                                             <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
                                             <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
                                         </StackPanel>
