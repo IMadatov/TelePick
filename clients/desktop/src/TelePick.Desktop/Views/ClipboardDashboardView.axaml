@@ -247,17 +247,14 @@
                                             ClipToBounds="True"
                                             IsVisible="{Binding IsLikelyCode}">
                                         
-                                        <controls:BindableTextEditor TextContent="{Binding PreviewText}"
-                                                                 IsReadOnly="True"
-                                                                 ShowLineNumbers="False"
-                                                                 FontFamily="JetBrains Mono, Consolas, monospace"
-                                                                 FontSize="13"
-                                                                 Foreground="#D4D4D4"
-                                                                 Background="Transparent"
-                                                                 Padding="12"
-                                                                 MinHeight="80"
-                                                                 HorizontalScrollBarVisibility="Auto"
-                                                                 VerticalScrollBarVisibility="Auto" />
+                                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                            <TextBlock Text="{Binding PreviewText}" 
+                                                       FontFamily="JetBrains Mono, Consolas, monospace" 
+                                                       FontSize="13" 
+                                                       Foreground="#D4D4D4" 
+                                                       Padding="12"
+                                                       Background="Transparent" />
+                                        </ScrollViewer>
                                     </Border>
                                 </StackPanel>
                                 
