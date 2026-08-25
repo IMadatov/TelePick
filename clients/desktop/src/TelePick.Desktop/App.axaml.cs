@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,6 +7,7 @@ using TelePick.Desktop.Services;
 using TelePick.Desktop.ViewModels;
 using TelePick.Desktop.Views;
 using System;
+using System.Windows.Input;
 
 namespace TelePick.Desktop;
 
@@ -13,10 +15,23 @@ public partial class App : Application
 {
     public static IServiceProvider? Services { get; private set; }
     private IServiceProvider? _serviceProvider;
+    private MainWindow? _mainWindow;
+
+    public ICommand ShowWindowCommand { get; }
+    public ICommand QuitCommand { get; }
+
+    public App()
+    {
+        ShowWindowCommand = new SimpleCommand(ShowMainWindow);
+        QuitCommand = new SimpleCommand(QuitApplication);
+    }
 
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        // Set DataContext for TrayIcon bindings
+        DataContext = this;
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -46,19 +61,58 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var mainWindow = new MainWindow
+            // Keep running when main window is closed (tray mode)
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            _mainWindow = new MainWindow
             {
                 DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>(),
             };
-            desktop.MainWindow = mainWindow;
-            var monitorService = _serviceProvider.GetRequiredService<IClipboardMonitorService>();
-            if (mainWindow.Clipboard != null)
+            desktop.MainWindow = _mainWindow;
+
+            // Hide to tray instead of quitting when close button is clicked
+            _mainWindow.Closing += (s, e) =>
             {
-                monitorService.StartMonitoring(mainWindow.Clipboard);
+                e.Cancel = true;
+                _mainWindow.Hide();
+            };
+
+            var monitorService = _serviceProvider.GetRequiredService<IClipboardMonitorService>();
+            if (_mainWindow.Clipboard != null)
+            {
+                monitorService.StartMonitoring(_mainWindow.Clipboard);
             }
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void ShowMainWindow()
+    {
+        if (_mainWindow != null)
+        {
+            _mainWindow.Show();
+            _mainWindow.Activate();
+            _mainWindow.WindowState = WindowState.Normal;
+        }
+    }
+
+    private void QuitApplication()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            // Detach closing handler so we can actually close
+            if (_mainWindow != null)
+            {
+                _mainWindow.Closing -= null!;
+                _mainWindow.Close();
+            }
+
+            var monitorService = _serviceProvider?.GetService<IClipboardMonitorService>();
+            monitorService?.StopMonitoring();
+
+            desktop.Shutdown();
+        }
     }
 
     private void ConfigureServices(IServiceCollection services)
@@ -75,4 +129,20 @@ public partial class App : Application
         // Register ViewModels
         services.AddTransient<MainWindowViewModel>();
     }
+}
+
+/// <summary>
+/// Simple ICommand implementation for tray icon commands.
+/// </summary>
+internal class SimpleCommand : ICommand
+{
+    private readonly Action _execute;
+
+    public SimpleCommand(Action execute) => _execute = execute;
+
+#pragma warning disable CS0067
+    public event EventHandler? CanExecuteChanged;
+#pragma warning restore CS0067
+    public bool CanExecute(object? parameter) => true;
+    public void Execute(object? parameter) => _execute();
 }

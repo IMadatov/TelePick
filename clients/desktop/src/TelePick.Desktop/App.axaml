@@ -19,4 +19,18 @@
     <Application.Resources>
         <conv:StatusColorConverter x:Key="StatusColorConverter"/>
     </Application.Resources>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/avalonia-logo.ico" ToolTipText="TelePick" Command="{ReflectionBinding ShowWindowCommand}">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Show TelePick" Command="{ReflectionBinding ShowWindowCommand}" />
+                        <NativeMenuItemSeparator />
+                        <NativeMenuItem Header="Quit" Command="{ReflectionBinding QuitCommand}" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 </Application>
