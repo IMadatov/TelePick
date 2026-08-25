@@ -255,6 +255,7 @@
                                                                  Foreground="#D4D4D4"
                                                                  Background="Transparent"
                                                                  Padding="12"
+                                                                 MinHeight="80"
                                                                  HorizontalScrollBarVisibility="Auto"
                                                                  VerticalScrollBarVisibility="Auto" />
                                     </Border>
