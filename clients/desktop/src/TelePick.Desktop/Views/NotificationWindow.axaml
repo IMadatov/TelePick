@@ -1,0 +1,98 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        x:Class="TelePick.Desktop.Views.NotificationWindow"
+        Width="320" Height="84"
+        WindowDecorations="None"
+        Topmost="True"
+        ShowInTaskbar="False"
+        Background="Transparent"
+        TransparencyLevelHint="Mica, AcrylicBlur">
+
+    <Window.Resources>
+        <!-- Success Colors -->
+        <SolidColorBrush x:Key="SuccessColor" Color="#34D399" />
+        <SolidColorBrush x:Key="SuccessBackground" Color="#1A34D399" /> <!-- 10% opacity -->
+        <SolidColorBrush x:Key="SuccessBorder" Color="#3334D399" /> <!-- 20% opacity -->
+        
+        <!-- Surface Colors -->
+        <SolidColorBrush x:Key="SurfaceDim" Color="#F2111317" /> <!-- 95% opacity #111317 -->
+        <SolidColorBrush x:Key="White10" Color="#1AFFFFFF" />
+        <SolidColorBrush x:Key="White5" Color="#0DFFFFFF" />
+        <SolidColorBrush x:Key="OnSurface" Color="#E2E2E6" />
+        <SolidColorBrush x:Key="OnSurfaceVariant" Color="#BEC8D2" />
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="Button.DismissBtn">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.DismissBtn:pointerover">
+            <Setter Property="Background" Value="{DynamicResource White5}" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+    </Window.Styles>
+
+    <Border Background="{DynamicResource SurfaceDim}" 
+            BorderBrush="{DynamicResource White10}" 
+            BorderThickness="1" 
+            CornerRadius="16" 
+            ClipToBounds="True"
+            BoxShadow="0 8 32 0 #5E000000"> <!-- Approx shadow-glass -->
+        <Panel>
+            <!-- Subtle accent glow - not a perfect blur due to Avalonia limitations, but we can simulate with an Ellipse + Blur effect or linear gradient -->
+            <!-- We'll skip the heavy blur for performance and stick to a clean background unless strictly needed -->
+
+            <!-- Main Content -->
+            <Grid ColumnDefinitions="Auto, *, Auto" Margin="12">
+                <!-- Icon Container -->
+                <Border Grid.Column="0" 
+                        Width="40" Height="40" 
+                        CornerRadius="20" 
+                        Background="{DynamicResource SuccessBackground}" 
+                        BorderBrush="{DynamicResource SuccessBorder}" 
+                        BorderThickness="1"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Top">
+                    <materialIcons:MaterialIcon Kind="CheckCircle" 
+                                                Width="24" Height="24" 
+                                                Foreground="{DynamicResource SuccessColor}" />
+                </Border>
+
+                <!-- Text Content -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock x:Name="TitleTextBlock" 
+                               Text="Sent to Telegram" 
+                               FontFamily="Inter, Arial, sans-serif" 
+                               FontSize="15" 
+                               Foreground="{DynamicResource OnSurface}" 
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock x:Name="MessageTextBlock" 
+                               Text="1 file successfully delivered" 
+                               FontFamily="Inter, Arial, sans-serif" 
+                               FontSize="13" 
+                               Foreground="{DynamicResource OnSurfaceVariant}" 
+                               TextTrimming="CharacterEllipsis" 
+                               Margin="0,2,0,0" />
+                </StackPanel>
+
+                <!-- Dismiss Action -->
+                <Button Grid.Column="2" 
+                        Classes="DismissBtn" 
+                        VerticalAlignment="Top" 
+                        Margin="4,0,0,0"
+                        Click="OnDismissClick">
+                    <materialIcons:MaterialIcon Kind="Close" Width="18" Height="18" />
+                </Button>
+            </Grid>
+        </Panel>
+    </Border>
+</Window>

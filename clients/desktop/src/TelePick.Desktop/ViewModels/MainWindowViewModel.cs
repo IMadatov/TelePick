@@ -202,6 +202,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             var countInfo = result.TotalCount > 1 ? $" ({result.SuccessCount}/{result.TotalCount})" : "";
             SetStatus($"Sent successfully!{countInfo}", false);
+            NotificationService.ShowSuccess("Sent to Telegram", $"Successfully delivered{countInfo}");
             ClipboardText = string.Empty;
             Note = string.Empty;
         }
@@ -230,6 +231,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             var countInfo = result.TotalCount > 1 ? $" ({result.SuccessCount}/{result.TotalCount})" : "";
             SetStatus($"Connection test passed!{countInfo}", false);
+            NotificationService.ShowSuccess("Connection Test Passed", $"Settings are working{countInfo}");
         }
         else
         {
@@ -328,6 +330,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (result.Success)
         {
             SetStatus("Item sent to Telegram successfully!", false);
+            NotificationService.ShowSuccess("Sent to Telegram", "1 item successfully delivered");
         }
         else
         {
