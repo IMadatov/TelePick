@@ -9,3 +9,4 @@ obj/
 *.ide/
 /graphify-out/*
 *.zip.worktrees/
+.worktrees/
