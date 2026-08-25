@@ -11,6 +11,18 @@ namespace TelePick.Desktop.Views
         {
             InitializeComponent();
             this.KeyDown += OnViewKeyDown;
+
+            this.PropertyChanged += (s, e) =>
+            {
+                if (e.Property == Control.IsVisibleProperty && this.IsVisible)
+                {
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        var searchBox = this.FindControl<TextBox>("SearchTextBox");
+                        searchBox?.Focus();
+                    });
+                }
+            };
         }
 
         private void OnViewKeyDown(object? sender, KeyEventArgs e)
