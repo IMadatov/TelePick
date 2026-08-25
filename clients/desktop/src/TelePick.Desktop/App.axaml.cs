@@ -7,6 +7,7 @@ using TelePick.Desktop.Services;
 using TelePick.Desktop.ViewModels;
 using TelePick.Desktop.Views;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace TelePick.Desktop;
@@ -42,22 +43,66 @@ public partial class App : Application
         Services = _serviceProvider;
 
         var hotkeyService = _serviceProvider.GetRequiredService<IGlobalHotkeyService>();
+        var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+        var monitorService = _serviceProvider.GetRequiredService<IClipboardMonitorService>();
+        var viewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+
         hotkeyService.Start();
-        hotkeyService.ClipboardPopupHotkeyPressed += (s, e) =>
+        
+        // Wait for settings to load before registering hotkeys
+        Task.Run(async () => 
         {
-            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            var settings = await settingsService.LoadSettingsAsync();
+            
+            // Quick Paste
+            hotkeyService.RegisterHotkey("QuickPaste", settings.ClipboardPopupHotkey, () =>
             {
-                var window = new ClipboardPopupWindow 
-                { 
-                    DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>() 
-                };
-                
-                // Set position near cursor
-                window.Position = new Avalonia.PixelPoint(hotkeyService.LastMouseX, hotkeyService.LastMouseY);
-                window.Show();
-                window.Activate();
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    var window = new ClipboardPopupWindow 
+                    { 
+                        DataContext = viewModel
+                    };
+                    
+                    window.Position = new Avalonia.PixelPoint(hotkeyService.LastMouseX, hotkeyService.LastMouseY);
+                    window.Show();
+                    window.Activate();
+                });
             });
-        };
+
+            // Send to Telegram
+            hotkeyService.RegisterHotkey("SendToTelegram", settings.SendToTelegramHotkey, () =>
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    if (viewModel.SendToTelegramCommand.CanExecute(null))
+                    {
+                        viewModel.SendToTelegramCommand.Execute(null);
+                    }
+                });
+            });
+
+            // Global Search
+            hotkeyService.RegisterHotkey("GlobalSearch", settings.GlobalSearchHotkey, () =>
+            {
+                // Placeholder
+            });
+
+            // Clear History
+            hotkeyService.RegisterHotkey("ClearHistory", settings.ClearHistoryHotkey, () =>
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    monitorService.History.Clear();
+                });
+            });
+
+            // Pause Monitoring
+            hotkeyService.RegisterHotkey("PauseMonitoring", settings.PauseMonitoringHotkey, () =>
+            {
+                monitorService.IsPaused = !monitorService.IsPaused;
+            });
+        });
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -77,7 +122,6 @@ public partial class App : Application
                 _mainWindow.Hide();
             };
 
-            var monitorService = _serviceProvider.GetRequiredService<IClipboardMonitorService>();
             if (_mainWindow.Clipboard != null)
             {
                 monitorService.StartMonitoring(_mainWindow.Clipboard);

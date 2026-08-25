@@ -6,12 +6,12 @@ public interface IGlobalHotkeyService : IDisposable
 {
     void Start();
     void Stop();
-    event EventHandler? HotkeyPressed;
-    event EventHandler? ClipboardPopupHotkeyPressed;
 
     int LastMouseX { get; }
     int LastMouseY { get; }
 
     void SimulatePaste();
-    void SetPopupHotkey(string hotkey);
+    
+    void RegisterHotkey(string id, string hotkey, Action callback);
+    void UnregisterHotkey(string id);
 }

@@ -14,4 +14,10 @@ public class Settings
     public bool SyncAcrossDevices { get; set; } = false;
     public string HistoryLimit { get; set; } = "500";
     public bool VerboseLogging { get; set; } = false;
+
+    // Hotkeys
+    public string SendToTelegramHotkey { get; set; } = "Control+T";
+    public string GlobalSearchHotkey { get; set; } = "Control+Space";
+    public string ClearHistoryHotkey { get; set; } = "";
+    public string PauseMonitoringHotkey { get; set; } = "Alt+P";
 }

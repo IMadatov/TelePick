@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SharpHook;
@@ -12,27 +13,26 @@ public class SharpHookGlobalHotkeyService : IGlobalHotkeyService
     private readonly TaskPoolGlobalHook _hook;
     private readonly EventSimulator _simulator;
     
-    // Status tracking for Ctrl+Shift+Alt+C
     private bool _ctrlPressed;
     private bool _shiftPressed;
-    private bool _tPressed; // Wait, previous code used VcT? The prompt said Ctrl+Shift+Alt+C but the code used Ctrl+Shift+T! Let's keep VcT.
-
-    // Status tracking for Clipboard Popup
-    private bool _popupCtrlRequired;
-    private bool _popupShiftRequired;
-    private bool _popupAltRequired;
-    private bool _popupMetaRequired;
-    private KeyCode? _popupKeyRequired;
-    private bool _popupKeyPressed;
-
     private bool _altPressed;
     private bool _metaPressed;
 
     public int LastMouseX { get; private set; }
     public int LastMouseY { get; private set; }
 
-    public event EventHandler? HotkeyPressed;
-    public event EventHandler? ClipboardPopupHotkeyPressed;
+    private class RegisteredHotkey
+    {
+        public bool CtrlRequired { get; set; }
+        public bool ShiftRequired { get; set; }
+        public bool AltRequired { get; set; }
+        public bool MetaRequired { get; set; }
+        public KeyCode? KeyRequired { get; set; }
+        public Action Callback { get; set; } = null!;
+        public bool IsCurrentlyPressed { get; set; }
+    }
+
+    private readonly Dictionary<string, RegisteredHotkey> _hotkeys = new();
 
     public SharpHookGlobalHotkeyService()
     {
@@ -58,36 +58,42 @@ public class SharpHookGlobalHotkeyService : IGlobalHotkeyService
         _hook.Dispose();
     }
 
-    public void SetPopupHotkey(string hotkey)
+    public void RegisterHotkey(string id, string hotkeyString, Action callback)
     {
-        _popupCtrlRequired = false;
-        _popupShiftRequired = false;
-        _popupAltRequired = false;
-        _popupMetaRequired = false;
-        _popupKeyRequired = null;
+        if (string.IsNullOrWhiteSpace(hotkeyString))
+        {
+            _hotkeys.Remove(id);
+            return;
+        }
 
-        if (string.IsNullOrWhiteSpace(hotkey)) return;
-
-        var parts = hotkey.Split('+').Select(p => p.Trim().ToLowerInvariant()).ToArray();
+        var hotkey = new RegisteredHotkey { Callback = callback };
+        var parts = hotkeyString.Split('+').Select(p => p.Trim().ToLowerInvariant()).ToArray();
         foreach (var part in parts)
         {
-            if (part == "control" || part == "ctrl") _popupCtrlRequired = true;
-            else if (part == "shift") _popupShiftRequired = true;
-            else if (part == "alt") _popupAltRequired = true;
-            else if (part == "win" || part == "meta" || part == "super" || part == "cmd") _popupMetaRequired = true;
+            if (part == "control" || part == "ctrl") hotkey.CtrlRequired = true;
+            else if (part == "shift") hotkey.ShiftRequired = true;
+            else if (part == "alt") hotkey.AltRequired = true;
+            else if (part == "win" || part == "meta" || part == "super" || part == "cmd") hotkey.MetaRequired = true;
+            else if (part == "space") hotkey.KeyRequired = KeyCode.VcSpace;
             else if (part.Length == 1 && part[0] >= 'a' && part[0] <= 'z')
             {
-                // Map 'a'-'z' to KeyCode.VcA - VcZ
-                _popupKeyRequired = (KeyCode)((int)KeyCode.VcA + (part[0] - 'a'));
+                hotkey.KeyRequired = (KeyCode)((int)KeyCode.VcA + (part[0] - 'a'));
             }
         }
+
+        _hotkeys[id] = hotkey;
+    }
+
+    public void UnregisterHotkey(string id)
+    {
+        _hotkeys.Remove(id);
     }
 
     public void SimulatePaste()
     {
         Task.Run(async () =>
         {
-            await Task.Delay(100); // Wait for popup to close and target app to gain focus
+            await Task.Delay(100);
             
             var modifier = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? KeyCode.VcLeftMeta : KeyCode.VcLeftControl;
             
@@ -111,26 +117,18 @@ public class SharpHookGlobalHotkeyService : IGlobalHotkeyService
     {
         UpdateModifierState(e.Data.KeyCode, true);
 
-        // Check original Hotkey (Ctrl+Shift+T)
-        if (e.Data.KeyCode == KeyCode.VcT && !_tPressed)
+        foreach (var hotkey in _hotkeys.Values)
         {
-            _tPressed = true;
-            if (_ctrlPressed && _shiftPressed)
+            if (hotkey.KeyRequired.HasValue && e.Data.KeyCode == hotkey.KeyRequired.Value && !hotkey.IsCurrentlyPressed)
             {
-                HotkeyPressed?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        // Check Popup Hotkey
-        if (_popupKeyRequired.HasValue && e.Data.KeyCode == _popupKeyRequired.Value && !_popupKeyPressed)
-        {
-            _popupKeyPressed = true;
-            if (_ctrlPressed == _popupCtrlRequired &&
-                _shiftPressed == _popupShiftRequired &&
-                _altPressed == _popupAltRequired &&
-                _metaPressed == _popupMetaRequired)
-            {
-                ClipboardPopupHotkeyPressed?.Invoke(this, EventArgs.Empty);
+                hotkey.IsCurrentlyPressed = true;
+                if (_ctrlPressed == hotkey.CtrlRequired &&
+                    _shiftPressed == hotkey.ShiftRequired &&
+                    _altPressed == hotkey.AltRequired &&
+                    _metaPressed == hotkey.MetaRequired)
+                {
+                    hotkey.Callback?.Invoke();
+                }
             }
         }
     }
@@ -139,11 +137,13 @@ public class SharpHookGlobalHotkeyService : IGlobalHotkeyService
     {
         UpdateModifierState(e.Data.KeyCode, false);
 
-        if (e.Data.KeyCode == KeyCode.VcT) 
-            _tPressed = false;
-
-        if (e.Data.KeyCode == _popupKeyRequired)
-            _popupKeyPressed = false;
+        foreach (var hotkey in _hotkeys.Values)
+        {
+            if (e.Data.KeyCode == hotkey.KeyRequired)
+            {
+                hotkey.IsCurrentlyPressed = false;
+            }
+        }
     }
 
     private void UpdateModifierState(KeyCode key, bool pressed)

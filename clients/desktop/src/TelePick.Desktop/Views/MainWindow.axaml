@@ -320,7 +320,7 @@
                                                TextWrapping="Wrap"
                                                Margin="0,0,0,16" />
 
-                                    <Button Command="{Binding ChangeHotkeyCommand}"
+                                    <Button Command="{Binding ChangeHotkeyCommand}" CommandParameter="ClipboardPopupHotkey"
                                             Background="{DynamicResource SurfaceContainerLow}"
                                             BorderBrush="#1AFFFFFF"
                                             BorderThickness="1"
@@ -354,6 +354,176 @@
                             </Button>
                         </StackPanel>
                     </Grid>
+                    </StackPanel>
+
+                    <!-- Hotkeys Page (Index 2) -->
+                    <StackPanel IsVisible="{Binding SelectedPageIndex, Converter={StaticResource EqualityConverter}, ConverterParameter=2}">
+                        <!-- Header -->
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,32">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Global Hotkeys" 
+                                           FontWeight="Bold" 
+                                           FontSize="24" 
+                                           Foreground="{DynamicResource OnSurface}" 
+                                           Margin="0,0,0,8" />
+                                <TextBlock Text="Configure keyboard shortcuts to trigger TelePick actions from anywhere in your operating system." 
+                                           FontSize="15" 
+                                           Foreground="{DynamicResource OnSurfaceVariant}"
+                                           TextWrapping="Wrap" MaxWidth="600" HorizontalAlignment="Left" />
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="CORE ACTIONS" 
+                                       FontWeight="Bold" 
+                                       FontSize="11" 
+                                       LetterSpacing="0.05" 
+                                       Foreground="{DynamicResource OnSurfaceVariant}" 
+                                       Margin="8,16,8,8" />
+
+                            <!-- Quick Paste Action -->
+                            <Border Background="{DynamicResource SurfaceContainer}"
+                                    BorderBrush="#0CFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="{DynamicResource SurfaceBright}" BorderBrush="#0CFFFFFF" BorderThickness="1">
+                                            <materialIcons:MaterialIcon Kind="LightningBolt" Width="20" Height="20" Foreground="{DynamicResource OnSurface}" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Open Quick Paste" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource OnSurface}" />
+                                            <TextBlock Text="Summons the clipboard overlay at your cursor position." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="ClipboardPopupHotkey"
+                                            Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <TextBlock Text="{Binding ClipboardPopupHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
+                                            <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <!-- Send to Telegram Action -->
+                            <Border Background="{DynamicResource SurfaceContainer}"
+                                    BorderBrush="#0CFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="{DynamicResource SurfaceBright}" BorderBrush="#0CFFFFFF" BorderThickness="1">
+                                            <materialIcons:MaterialIcon Kind="Send" Width="20" Height="20" Foreground="{DynamicResource TertiaryContainer}" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Send to Telegram" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource OnSurface}" />
+                                            <TextBlock Text="Instantly forward selected text or current clipboard to 'Saved Messages'." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="SendToTelegramHotkey"
+                                            Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <TextBlock Text="{Binding SendToTelegramHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
+                                            <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <!-- Global Search Action -->
+                            <Border Background="{DynamicResource SurfaceContainer}"
+                                    BorderBrush="#0CFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="{DynamicResource SurfaceBright}" BorderBrush="#0CFFFFFF" BorderThickness="1">
+                                            <materialIcons:MaterialIcon Kind="Magnify" Width="20" Height="20" Foreground="{DynamicResource OnSurface}" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Global Search" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource OnSurface}" />
+                                            <TextBlock Text="Open a spotlight-style search for your entire clipboard history." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="GlobalSearchHotkey"
+                                            Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <TextBlock Text="{Binding GlobalSearchHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
+                                            <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="DATA MANAGEMENT" 
+                                       FontWeight="Bold" 
+                                       FontSize="11" 
+                                       LetterSpacing="0.05" 
+                                       Foreground="{DynamicResource OnSurfaceVariant}" 
+                                       Margin="8,24,8,8" />
+
+                            <!-- Clear History Action -->
+                            <Border Background="{DynamicResource SurfaceContainer}"
+                                    BorderBrush="#0CFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="{DynamicResource SurfaceBright}" BorderBrush="#0CFFFFFF" BorderThickness="1">
+                                            <materialIcons:MaterialIcon Kind="DeleteSweep" Width="20" Height="20" Foreground="{DynamicResource Error}" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Clear History" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource OnSurface}" />
+                                            <TextBlock Text="Purge all unpinned clipboard entries immediately." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="ClearHistoryHotkey"
+                                            Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <TextBlock Text="{Binding ClearHistoryHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
+                                            <materialIcons:MaterialIcon Kind="PlusCircle" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <!-- Pause Monitoring Action -->
+                            <Border Background="{DynamicResource SurfaceContainer}"
+                                    BorderBrush="#0CFFFFFF"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16">
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="{DynamicResource SurfaceBright}" BorderBrush="#0CFFFFFF" BorderThickness="1">
+                                            <materialIcons:MaterialIcon Kind="PauseCircle" Width="20" Height="20" Foreground="{DynamicResource OnSurface}" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="Pause Monitoring" FontWeight="SemiBold" FontSize="18" Foreground="{DynamicResource OnSurface}" />
+                                            <TextBlock Text="Temporarily stop TelePick from recording new clipboard copies." FontSize="13" Foreground="{DynamicResource OnSurfaceVariant}" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Command="{Binding ChangeHotkeyCommand}" CommandParameter="PauseMonitoringHotkey"
+                                            Background="{DynamicResource SurfaceDim}" BorderBrush="{DynamicResource OutlineVariant}" BorderThickness="1" CornerRadius="8" Padding="16,8" Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <TextBlock Text="{Binding PauseMonitoringHotkey}" FontFamily="{StaticResource MonoFontFamily}" FontSize="12" Foreground="{DynamicResource OnSurface}" VerticalAlignment="Center" />
+                                            <Border Width="1" Height="16" Background="{DynamicResource OutlineVariant}" />
+                                            <materialIcons:MaterialIcon Kind="Keyboard" Width="18" Height="18" Foreground="{DynamicResource OnSurfaceVariant}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                        </StackPanel>
                     </StackPanel>
 
                     <!-- Advanced Settings Page (Index 3) -->

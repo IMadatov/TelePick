@@ -114,6 +114,18 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool _verboseLogging = false;
 
+    [ObservableProperty]
+    private string _sendToTelegramHotkey = "Control+T";
+
+    [ObservableProperty]
+    private string _globalSearchHotkey = "Control+Space";
+
+    [ObservableProperty]
+    private string _clearHistoryHotkey = "";
+
+    [ObservableProperty]
+    private string _pauseMonitoringHotkey = "Alt+P";
+
     private List<Recipient> _recipients = [];
 
     public MainWindowViewModel(
@@ -131,12 +143,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
         _ = LoadSettingsAsync();
         
-        globalHotkeyService.HotkeyPressed += async (s, e) =>
-        {
-            await ReadClipboardAsync();
-            await SendToTelegramAsync();
-        };
-
         _clipboardMonitorService.History.CollectionChanged += (s, e) => OnPropertyChanged(nameof(FilteredHistory));
     }
 
@@ -150,8 +156,14 @@ public partial class MainWindowViewModel : ViewModelBase
         SyncAcrossDevices = settings.SyncAcrossDevices;
         HistoryLimit = settings.HistoryLimit;
         VerboseLogging = settings.VerboseLogging;
+        SendToTelegramHotkey = settings.SendToTelegramHotkey;
+        GlobalSearchHotkey = settings.GlobalSearchHotkey;
+        ClearHistoryHotkey = settings.ClearHistoryHotkey;
+        PauseMonitoringHotkey = settings.PauseMonitoringHotkey;
         _recipients = settings.Recipients;
-        _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
+        
+        // Re-register hotkeys through App.axaml.cs or a separate initialization method.
+        // For now, setting the property is enough; App.axaml.cs will handle registration.
     }
 
     private Settings BuildCurrentSettings() => new()
@@ -163,7 +175,11 @@ public partial class MainWindowViewModel : ViewModelBase
         LaunchOnStartup = LaunchOnStartup,
         SyncAcrossDevices = SyncAcrossDevices,
         HistoryLimit = HistoryLimit,
-        VerboseLogging = VerboseLogging
+        VerboseLogging = VerboseLogging,
+        SendToTelegramHotkey = SendToTelegramHotkey,
+        GlobalSearchHotkey = GlobalSearchHotkey,
+        ClearHistoryHotkey = ClearHistoryHotkey,
+        PauseMonitoringHotkey = PauseMonitoringHotkey
     };
 
     [RelayCommand]
@@ -171,23 +187,28 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var settings = BuildCurrentSettings();
         await _settingsService.SaveSettingsAsync(settings);
-        _globalHotkeyService.SetPopupHotkey(ClipboardPopupHotkey);
         SetStatus("Settings saved successfully.", false);
     }
 
     [RelayCommand]
-    private async Task ChangeHotkeyAsync()
+    private async Task ChangeHotkey(string hotkeyName)
     {
         if (Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null)
         {
-            var dialog = new Views.HotkeyRecorderWindow();
-            var result = await dialog.ShowDialog<string>(desktop.MainWindow);
-            
-            if (!string.IsNullOrWhiteSpace(result))
+            var window = new Views.HotkeyRecorderWindow();
+            var result = await window.ShowDialog<string?>(desktop.MainWindow);
+            if (!string.IsNullOrEmpty(result))
             {
-                ClipboardPopupHotkey = result;
-                // Auto-save setting when changed via dialog
-                SaveSettingsCommand.Execute(null);
+                switch (hotkeyName)
+                {
+                    case "ClipboardPopupHotkey": ClipboardPopupHotkey = result; break;
+                    case "SendToTelegramHotkey": SendToTelegramHotkey = result; break;
+                    case "GlobalSearchHotkey": GlobalSearchHotkey = result; break;
+                    case "ClearHistoryHotkey": ClearHistoryHotkey = result; break;
+                    case "PauseMonitoringHotkey": PauseMonitoringHotkey = result; break;
+                }
+                
+                await SaveSettingsAsync();
             }
         }
     }

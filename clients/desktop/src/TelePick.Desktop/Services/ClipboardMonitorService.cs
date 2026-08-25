@@ -24,6 +24,8 @@ public class ClipboardMonitorService : IClipboardMonitorService
     private long _memoryBudget;
     private long _currentUsage;
 
+    public bool IsPaused { get; set; } = false;
+
     public ObservableCollection<ClipboardItem> History { get; } = new();
 
     public void StartMonitoring(Avalonia.Input.Platform.IClipboard clipboard)
@@ -75,7 +77,7 @@ public class ClipboardMonitorService : IClipboardMonitorService
 
     private async Task ProcessClipboardAsync()
     {
-        if (_clipboard == null) return;
+        if (_clipboard == null || IsPaused) return;
 
         try
         {
