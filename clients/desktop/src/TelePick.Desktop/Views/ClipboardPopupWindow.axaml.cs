@@ -29,7 +29,7 @@ public partial class ClipboardPopupWindow : Window
             }
         };
 
-        this.Opened += (s, e) =>
+        this.Opened += async (s, e) =>
         {
             var listBox = this.FindControl<ListBox>("ClipboardListBox");
             if (listBox != null)
@@ -38,10 +38,15 @@ public partial class ClipboardPopupWindow : Window
                 {
                     listBox.SelectedIndex = 0;
                 }
-                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                {
-                    listBox.Focus();
-                }, Avalonia.Threading.DispatcherPriority.Loaded);
+                
+                // Wait for Avalonia's initial layout and default focus to finish
+                await Task.Delay(10);
+                
+                listBox.Focus();
+                
+                // Also attempt to focus the container if it exists
+                var container = listBox.ContainerFromIndex(0) as Control;
+                container?.Focus();
             }
         };
     }

@@ -207,7 +207,8 @@
                     <!-- Search Input -->
                     <TextBox Classes="SearchBox" 
                              PlaceholderText="Search clipboard..."
-                             Text="{Binding SearchText, Mode=TwoWay}">
+                             Text="{Binding SearchText, Mode=TwoWay}"
+                             TabIndex="1">
                         <TextBox.InnerLeftContent>
                             <materialIcons:MaterialIcon Kind="Magnify" 
                                                         Width="18" 
@@ -251,7 +252,8 @@
                      ItemsSource="{Binding FilteredHistory}" 
                      Margin="8" 
                      Background="Transparent" 
-                     KeyUp="OnListBoxKeyUp">
+                     KeyUp="OnListBoxKeyUp"
+                     TabIndex="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="m:ClipboardItem">
                         <Border Classes="ItemCard" 
