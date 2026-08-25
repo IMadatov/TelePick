@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Input.Platform;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.VisualTree;
 
 namespace TelePick.Desktop.Views;
 
@@ -31,6 +32,11 @@ public partial class ClipboardPopupWindow : Window
 
     private async void OnItemTapped(object? sender, Avalonia.Input.TappedEventArgs e)
     {
+        if (e.Source is Avalonia.Controls.Control ctrl && (ctrl is Button || ctrl.FindAncestorOfType<Button>() != null))
+        {
+            return;
+        }
+
         if (sender is Avalonia.Controls.Control control && control.DataContext is ClipboardItem selectedItem)
         {
             await PasteItemAsync(selectedItem);

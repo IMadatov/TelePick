@@ -1,15 +1,46 @@
 using System;
 using System.IO;
+using System.Linq;
 using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace TelePick.Desktop.Models;
 
-public class ClipboardItem : IDisposable
+public partial class ClipboardItem : ObservableObject, IDisposable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public ClipboardItemType Type { get; set; }
-    public string PreviewText { get; set; } = string.Empty;
-    public DateTime Timestamp { get; set; } = DateTime.Now;
+
+    private string? _title;
+    public string Title
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(_title)) return _title;
+            return Type switch
+            {
+                ClipboardItemType.Text => !string.IsNullOrWhiteSpace(PreviewText)
+                    ? (PreviewText.Length > 40 ? PreviewText[..37] + "..." : PreviewText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Text Snippet")
+                    : "Text Snippet",
+                ClipboardItemType.Image => "Image",
+                ClipboardItemType.Files => "Files",
+                _ => "Clipboard Item"
+            };
+        }
+        set => SetProperty(ref _title, value);
+    }
+
+    [ObservableProperty]
+    private string _previewText = string.Empty;
+
+    [ObservableProperty]
+    private DateTime _timestamp = DateTime.Now;
+
+    public string FormattedTimestamp => Timestamp.ToString("HH:mm");
+
+    [ObservableProperty]
+    private bool _isPinned;
+
     public object? RawData { get; set; }
     public Bitmap? Thumbnail { get; set; }
     public string DataHash { get; set; } = string.Empty;
@@ -52,3 +83,4 @@ public class ClipboardItem : IDisposable
         GC.SuppressFinalize(this);
     }
 }
+

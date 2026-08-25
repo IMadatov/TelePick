@@ -98,6 +98,7 @@ public class ClipboardMonitorService : IClipboardMonitorService
                         var item = new ClipboardItem
                         {
                             Type = ClipboardItemType.Files,
+                            Title = filePaths.Count == 1 ? Path.GetFileName(filePaths.First()) : $"{filePaths.Count} Files",
                             PreviewText = preview,
                             RawData = filePaths,
                             DataHash = dataHash
@@ -173,6 +174,7 @@ public class ClipboardMonitorService : IClipboardMonitorService
                     var item = new ClipboardItem
                     {
                         Type = ClipboardItemType.Text,
+                        Title = GetTextTitle(text),
                         PreviewText = text,
                         RawData = text,
                         IconKind = "TextSubject",
@@ -206,6 +208,7 @@ public class ClipboardMonitorService : IClipboardMonitorService
                     var item = new ClipboardItem
                     {
                         Type = ClipboardItemType.Image,
+                        Title = "Image Screenshot",
                         PreviewText = Path.GetFileName(filePath),
                         RawData = filePath,
                         DataHash = hash,
@@ -293,6 +296,16 @@ public class ClipboardMonitorService : IClipboardMonitorService
         var pathBytes = paths.Sum(p => (long)p.Length * 2) + 100;
         var thumbBytes = EstimateImageSize(thumbnail);
         return pathBytes + thumbBytes;
+    }
+
+    private static string GetTextTitle(string text)
+    {
+        var firstLine = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
+        if (!string.IsNullOrEmpty(firstLine))
+        {
+            return firstLine.Length > 40 ? firstLine.Substring(0, 37) + "..." : firstLine;
+        }
+        return "Text Snippet";
     }
 
     private static void CleanupStaleScreenshots()

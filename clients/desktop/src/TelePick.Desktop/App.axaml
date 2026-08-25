@@ -10,15 +10,6 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
-    <Application.Styles>
-        <FluentTheme />
-        <materialIcons:MaterialIconStyles />
-        <Style Selector="Window">
-            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}" />
-        </Style>
-    </Application.Styles>
-
     <Application.Resources>
         <conv:StatusColorConverter x:Key="StatusColorConverter"/>
 
@@ -71,6 +62,13 @@
         <SolidColorBrush x:Key="Tertiary" Color="{StaticResource TertiaryColor}" />
     </Application.Resources>
 
+    <Application.Styles>
+        <FluentTheme />
+        <materialIcons:MaterialIconStyles />
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}" />
+        </Style>
+    </Application.Styles>
     <TrayIcon.Icons>
         <TrayIcons>
             <TrayIcon Icon="/Assets/avalonia-logo.ico" ToolTipText="TelePick" Command="{ReflectionBinding ShowWindowCommand}">

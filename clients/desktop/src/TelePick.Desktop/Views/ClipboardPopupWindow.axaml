@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:TelePick.Desktop.ViewModels"
+        xmlns:m="using:TelePick.Desktop.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
@@ -93,22 +94,99 @@
             <Setter Property="Foreground" Value="{DynamicResource Primary}" />
         </Style>
 
+        <!-- ListBox & ListBoxItem Styles -->
+        <Style Selector="ListBox">
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        </Style>
         <Style Selector="ListBoxItem">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Cursor" Value="Hand" />
         </Style>
-        <Style Selector="ListBoxItem Border.ItemCard">
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}" />
-        </Style>
-        <Style Selector="ListBoxItem:selected Border.ItemCard">
-            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+        <Style Selector="ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
         </Style>
         <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
         </Style>
         <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- ItemCard Container -->
+        <Style Selector="ListBoxItem Border.ItemCard">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.12" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem:pointerover Border.ItemCard">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+        </Style>
+        <Style Selector="ListBoxItem:selected Border.ItemCard">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+        </Style>
+
+        <!-- Quick Actions Panel & Hover State -->
+        <Style Selector="StackPanel.QuickActions">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem:pointerover StackPanel.QuickActions">
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="IsHitTestVisible" Value="True" />
+        </Style>
+        <Style Selector="ListBoxItem:selected StackPanel.QuickActions">
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="IsHitTestVisible" Value="True" />
+        </Style>
+
+        <!-- Timestamp Fade on Hover -->
+        <Style Selector="StackPanel.ItemTimestamp">
+            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem:pointerover StackPanel.ItemTimestamp">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="ListBoxItem:selected StackPanel.ItemTimestamp">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <!-- Quick Action Buttons -->
+        <Style Selector="Button.QuickActionButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.QuickActionButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBright}" />
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+        <Style Selector="Button.QuickActionButton.DeleteButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ErrorContainer}" />
+            <Setter Property="Foreground" Value="{DynamicResource Error}" />
         </Style>
     </Window.Styles>
 
@@ -173,14 +251,107 @@
                      Background="Transparent" 
                      KeyUp="OnListBoxKeyUp">
                 <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border Classes="ItemCard" Background="{DynamicResource SurfaceContainerLow}" CornerRadius="8" Padding="10" Margin="0,2" Tapped="OnItemTapped">
-                            <Grid ColumnDefinitions="Auto, *">
-                                <Panel Grid.Column="0" Width="40" Height="40" Margin="0,0,10,0">
-                                    <Image Source="{Binding Thumbnail}" MaxWidth="40" MaxHeight="40" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                    <materialIcons:MaterialIcon Kind="{Binding IconKind}" Width="24" Height="24" IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNull}}" Foreground="{DynamicResource OnSurfaceVariant}" />
+                    <DataTemplate DataType="m:ClipboardItem">
+                        <Border Classes="ItemCard" 
+                                CornerRadius="8" 
+                                Padding="10,8" 
+                                Margin="0,2" 
+                                Tapped="OnItemTapped">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <!-- Type Icon / Thumbnail -->
+                                <Border Grid.Column="0" 
+                                        Width="38" 
+                                        Height="38" 
+                                        CornerRadius="6" 
+                                        Background="{DynamicResource SurfaceVariant}" 
+                                        Margin="0,0,10,0" 
+                                        ClipToBounds="True"
+                                        VerticalAlignment="Center">
+                                    <Panel>
+                                        <Image Source="{Binding Thumbnail}" 
+                                               Stretch="UniformToFill" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center" 
+                                               IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        <materialIcons:MaterialIcon Kind="{Binding IconKind}" 
+                                                                    Width="20" 
+                                                                    Height="20" 
+                                                                    Foreground="{DynamicResource Primary}" 
+                                                                    HorizontalAlignment="Center" 
+                                                                    VerticalAlignment="Center" 
+                                                                    IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNull}}" />
+                                    </Panel>
+                                </Border>
+
+                                <!-- Item Details (Title, Preview) -->
+                                <StackPanel Grid.Column="1" 
+                                            VerticalAlignment="Center" 
+                                            Spacing="2">
+                                    <TextBlock Text="{Binding Title}" 
+                                               FontWeight="SemiBold" 
+                                               FontSize="13" 
+                                               Foreground="{DynamicResource OnSurface}" 
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding PreviewText}" 
+                                               FontSize="12" 
+                                               Foreground="{DynamicResource OnSurfaceVariant}" 
+                                               TextTrimming="CharacterEllipsis" 
+                                               MaxLines="2" 
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!-- Right Column: Timestamp (idle) and Quick Actions (hover/selected) -->
+                                <Panel Grid.Column="2" 
+                                       VerticalAlignment="Center" 
+                                       Margin="6,0,0,0">
+                                    <!-- Timestamp & Pin Indicator (Visible when idle) -->
+                                    <StackPanel Classes="ItemTimestamp" 
+                                                Orientation="Horizontal" 
+                                                Spacing="4" 
+                                                VerticalAlignment="Center" 
+                                                HorizontalAlignment="Right">
+                                        <materialIcons:MaterialIcon Kind="Pin" 
+                                                                    Width="14" 
+                                                                    Height="14" 
+                                                                    Foreground="{DynamicResource Primary}" 
+                                                                    IsVisible="{Binding IsPinned}" 
+                                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding FormattedTimestamp}" 
+                                                   FontSize="11" 
+                                                   FontFamily="{StaticResource MonoFontFamily}" 
+                                                   Foreground="{DynamicResource OnSurfaceVariant}" 
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <!-- Quick Actions Bar (Visible on hover/selected) -->
+                                    <StackPanel Classes="QuickActions" 
+                                                Orientation="Horizontal" 
+                                                Spacing="2" 
+                                                VerticalAlignment="Center" 
+                                                HorizontalAlignment="Right">
+                                        <Button Classes="QuickActionButton" 
+                                                ToolTip.Tip="Pin to top" 
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TogglePinItemCommand}" 
+                                                CommandParameter="{Binding}">
+                                            <Panel>
+                                                <materialIcons:MaterialIcon Kind="Pin" Width="15" Height="15" Foreground="{DynamicResource Primary}" IsVisible="{Binding IsPinned}" />
+                                                <materialIcons:MaterialIcon Kind="PinOutline" Width="15" Height="15" IsVisible="{Binding !IsPinned}" />
+                                            </Panel>
+                                        </Button>
+                                        <Button Classes="QuickActionButton" 
+                                                ToolTip.Tip="Send to Telegram" 
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ShareClipboardItemCommand}" 
+                                                CommandParameter="{Binding}">
+                                            <materialIcons:MaterialIcon Kind="SendOutline" Width="15" Height="15" />
+                                        </Button>
+                                        <Button Classes="QuickActionButton DeleteButton" 
+                                                ToolTip.Tip="Delete item" 
+                                                Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).DeleteClipboardItemCommand}" 
+                                                CommandParameter="{Binding}">
+                                            <materialIcons:MaterialIcon Kind="DeleteOutline" Width="15" Height="15" />
+                                        </Button>
+                                    </StackPanel>
                                 </Panel>
-                                <TextBlock Grid.Column="1" Text="{Binding PreviewText}" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" MaxHeight="40" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource OnSurface}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

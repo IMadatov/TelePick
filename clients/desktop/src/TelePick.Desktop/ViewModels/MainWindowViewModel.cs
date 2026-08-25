@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TelePick.Desktop.Models;
 using TelePick.Desktop.Services;
@@ -190,6 +192,87 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             ClipboardText = item.PreviewText;
             SetStatus("Clipboard item selected.", false);
+        }
+    }
+
+    [RelayCommand]
+    private void TogglePinItem(ClipboardItem? item)
+    {
+        if (item == null) return;
+        item.IsPinned = !item.IsPinned;
+
+        if (item.IsPinned && History.Contains(item))
+        {
+            var index = History.IndexOf(item);
+            if (index > 0)
+            {
+                History.Move(index, 0);
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void DeleteClipboardItem(ClipboardItem? item)
+    {
+        if (item == null) return;
+        if (History.Contains(item))
+        {
+            History.Remove(item);
+            item.Dispose();
+            SetStatus("Item removed from history.", false);
+        }
+    }
+
+    [RelayCommand]
+    private async Task ShareClipboardItemAsync(ClipboardItem? item)
+    {
+        if (item == null) return;
+        var settings = BuildCurrentSettings();
+
+        if (!_settingsService.IsConfigured(settings))
+        {
+            SetStatus("Please configure Bot Token and Chat ID in Settings.", true);
+            return;
+        }
+
+        SetStatus("Sending item to Telegram...", false);
+
+        SendResult result;
+        if (item.Type == ClipboardItemType.Text)
+        {
+            result = await _telegramService.SendMessageAsync(item.PreviewText, Note, settings);
+        }
+        else if (item.Type == ClipboardItemType.Image && item.RawData is string imagePath && File.Exists(imagePath))
+        {
+            using var fileStream = File.OpenRead(imagePath);
+            result = await _telegramService.SendPhotoAsync(fileStream, Path.GetFileName(imagePath), Note, settings);
+        }
+        else if (item.Type == ClipboardItemType.Files && item.RawData is List<string> filePaths && filePaths.Count > 0)
+        {
+            var firstFile = filePaths.First();
+            var ext = Path.GetExtension(firstFile).ToLowerInvariant();
+            if ((ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp") && File.Exists(firstFile))
+            {
+                using var fileStream = File.OpenRead(firstFile);
+                result = await _telegramService.SendPhotoAsync(fileStream, Path.GetFileName(firstFile), Note, settings);
+            }
+            else
+            {
+                result = await _telegramService.SendMessageAsync(string.Join("\n", filePaths), Note, settings);
+            }
+        }
+        else
+        {
+            result = await _telegramService.SendMessageAsync(item.PreviewText, Note, settings);
+        }
+
+        if (result.Success)
+        {
+            SetStatus("Item sent to Telegram successfully!", false);
+        }
+        else
+        {
+            SetStatus(result.ErrorMessage ?? "Failed to send item.", true);
         }
     }
 }
