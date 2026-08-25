@@ -6,6 +6,8 @@
              xmlns:vm="using:TelePick.Desktop.ViewModels"
              xmlns:models="using:TelePick.Desktop.Models"
              xmlns:conv="using:TelePick.Desktop.Converters"
+             xmlns:helpers="using:TelePick.Desktop.Helpers"
+             xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
              x:Class="TelePick.Desktop.Views.ClipboardDashboardView"
              x:DataType="vm:MainWindowViewModel">
@@ -244,19 +246,17 @@
                                             ClipToBounds="True"
                                             IsVisible="{Binding IsLikelyCode}">
                                         
-                                        <!-- Note: AvaloniaEdit requires setting the text via code-behind or a custom behavior typically, 
-                                             but for a simple readonly display, we can use Document property binding with a converter or just 
-                                             fallback to a TextBlock styled like code if AvaloniaEdit gets complicated in DataTemplates.
-                                             We will use a styled TextBlock for now to simulate the code editor look, since AvaloniaEdit 
-                                             doesn't support direct Text binding out of the box without a behavior. -->
-                                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                            <TextBlock Text="{Binding PreviewText}" 
-                                                       FontFamily="JetBrains Mono, Consolas, monospace" 
-                                                       FontSize="13" 
-                                                       Foreground="#D4D4D4" 
-                                                       Padding="12"
-                                                       Background="Transparent" />
-                                        </ScrollViewer>
+                                        <avaloniaEdit:TextEditor helpers:TextEditorAttached.Text="{Binding PreviewText}"
+                                                                 SyntaxHighlighting="C#"
+                                                                 IsReadOnly="True"
+                                                                 ShowLineNumbers="False"
+                                                                 FontFamily="JetBrains Mono, Consolas, monospace"
+                                                                 FontSize="13"
+                                                                 Foreground="#D4D4D4"
+                                                                 Background="Transparent"
+                                                                 Padding="12"
+                                                                 HorizontalScrollBarVisibility="Auto"
+                                                                 VerticalScrollBarVisibility="Auto" />
                                     </Border>
                                 </StackPanel>
                                 
