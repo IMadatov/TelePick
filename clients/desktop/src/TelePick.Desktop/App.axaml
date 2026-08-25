@@ -14,10 +14,61 @@
     <Application.Styles>
         <FluentTheme />
         <materialIcons:MaterialIconStyles />
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}" />
+        </Style>
     </Application.Styles>
 
     <Application.Resources>
         <conv:StatusColorConverter x:Key="StatusColorConverter"/>
+
+        <!-- Typography -->
+        <FontFamily x:Key="AppFontFamily">avares://Avalonia.Fonts.Inter/Assets#Inter, Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif</FontFamily>
+        <FontFamily x:Key="DefaultFontFamily">avares://Avalonia.Fonts.Inter/Assets#Inter, Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif</FontFamily>
+        <FontFamily x:Key="CodeFontFamily">JetBrains Mono, Cascadia Code, Consolas, Courier New, monospace</FontFamily>
+        <FontFamily x:Key="MonoFontFamily">JetBrains Mono, Cascadia Code, Consolas, Courier New, monospace</FontFamily>
+
+        <!-- Color Definitions -->
+        <Color x:Key="BackgroundColor">#111317</Color>
+        <Color x:Key="SurfaceContainerLowestColor">#0C0E11</Color>
+        <Color x:Key="SurfaceContainerLowColor">#1A1C1F</Color>
+        <Color x:Key="SurfaceContainerColor">#1E2023</Color>
+        <Color x:Key="SurfaceContainerHighColor">#282A2D</Color>
+        <Color x:Key="SurfaceContainerHighestColor">#333538</Color>
+        <Color x:Key="SurfaceVariantColor">#333538</Color>
+        <Color x:Key="SurfaceBrightColor">#37393D</Color>
+        <Color x:Key="PrimaryColor">#2AABEE</Color>
+        <Color x:Key="PrimaryVariantColor">#89CEFF</Color>
+        <Color x:Key="PrimaryContainerColor">#2AABEE</Color>
+        <Color x:Key="OnPrimaryColor">#00344D</Color>
+        <Color x:Key="OnSurfaceColor">#E2E2E6</Color>
+        <Color x:Key="OnSurfaceVariantColor">#BEC8D2</Color>
+        <Color x:Key="OutlineColor">#88929B</Color>
+        <Color x:Key="OutlineVariantColor">#3E4850</Color>
+        <Color x:Key="ErrorColor">#FFB4AB</Color>
+        <Color x:Key="ErrorContainerColor">#93000A</Color>
+        <Color x:Key="TertiaryColor">#68D3FF</Color>
+
+        <!-- SolidColorBrushes -->
+        <SolidColorBrush x:Key="Background" Color="{StaticResource BackgroundColor}" />
+        <SolidColorBrush x:Key="SurfaceContainerLowest" Color="{StaticResource SurfaceContainerLowestColor}" />
+        <SolidColorBrush x:Key="SurfaceContainerLow" Color="{StaticResource SurfaceContainerLowColor}" />
+        <SolidColorBrush x:Key="SurfaceContainer" Color="{StaticResource SurfaceContainerColor}" />
+        <SolidColorBrush x:Key="SurfaceContainerHigh" Color="{StaticResource SurfaceContainerHighColor}" />
+        <SolidColorBrush x:Key="SurfaceContainerHighest" Color="{StaticResource SurfaceContainerHighestColor}" />
+        <SolidColorBrush x:Key="SurfaceVariant" Color="{StaticResource SurfaceVariantColor}" />
+        <SolidColorBrush x:Key="SurfaceBright" Color="{StaticResource SurfaceBrightColor}" />
+        <SolidColorBrush x:Key="Primary" Color="{StaticResource PrimaryColor}" />
+        <SolidColorBrush x:Key="PrimaryVariant" Color="{StaticResource PrimaryVariantColor}" />
+        <SolidColorBrush x:Key="PrimaryContainer" Color="{StaticResource PrimaryContainerColor}" />
+        <SolidColorBrush x:Key="OnPrimary" Color="{StaticResource OnPrimaryColor}" />
+        <SolidColorBrush x:Key="OnSurface" Color="{StaticResource OnSurfaceColor}" />
+        <SolidColorBrush x:Key="OnSurfaceVariant" Color="{StaticResource OnSurfaceVariantColor}" />
+        <SolidColorBrush x:Key="Outline" Color="{StaticResource OutlineColor}" />
+        <SolidColorBrush x:Key="OutlineVariant" Color="{StaticResource OutlineVariantColor}" />
+        <SolidColorBrush x:Key="Error" Color="{StaticResource ErrorColor}" />
+        <SolidColorBrush x:Key="ErrorContainer" Color="{StaticResource ErrorContainerColor}" />
+        <SolidColorBrush x:Key="Tertiary" Color="{StaticResource TertiaryColor}" />
     </Application.Resources>
 
     <TrayIcon.Icons>
