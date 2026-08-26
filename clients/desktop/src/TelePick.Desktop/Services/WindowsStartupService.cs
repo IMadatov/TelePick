@@ -4,6 +4,7 @@ using Microsoft.Win32;
 
 namespace TelePick.Desktop.Services;
 
+[SupportedOSPlatform("windows")]
 public class WindowsStartupService : IStartupService
 {
     private const string RegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
@@ -17,13 +18,10 @@ public class WindowsStartupService : IStartupService
 
     public bool IsEnabled()
     {
+        if (string.IsNullOrEmpty(_executablePath)) return false;
+
         try
         {
-            if (!OperatingSystem.IsWindows())
-            {
-                return false;
-            }
-
             using var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath, false);
             var value = key?.GetValue(AppName) as string;
             return !string.IsNullOrEmpty(value) && value.Contains(_executablePath, StringComparison.OrdinalIgnoreCase);
@@ -40,11 +38,6 @@ public class WindowsStartupService : IStartupService
 
         try
         {
-            if (!OperatingSystem.IsWindows())
-            {
-                return;
-            }
-
             using var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath, true);
             key?.SetValue(AppName, $"\"{_executablePath}\"");
         }
@@ -58,11 +51,6 @@ public class WindowsStartupService : IStartupService
     {
         try
         {
-            if (!OperatingSystem.IsWindows())
-            {
-                return;
-            }
-
             using var key = Registry.CurrentUser.OpenSubKey(RegistryKeyPath, true);
             key?.DeleteValue(AppName, false);
         }

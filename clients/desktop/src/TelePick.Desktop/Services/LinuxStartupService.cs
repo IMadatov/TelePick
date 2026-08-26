@@ -23,6 +23,8 @@ public class LinuxStartupService : IStartupService
 
     public bool IsEnabled()
     {
+        if (string.IsNullOrEmpty(_executablePath)) return false;
+
         return File.Exists(_desktopFilePath);
     }
 
