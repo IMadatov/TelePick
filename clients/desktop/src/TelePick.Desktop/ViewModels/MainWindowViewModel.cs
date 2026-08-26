@@ -134,7 +134,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (value) _startupService.Enable();
                 else _startupService.Disable();
                 
-                _ = SaveSettingsAsync(); // Optional: or just _settingsService.SaveSettingsAsync
+                _ = SaveSettingsAsync();
             }
         }
     }
@@ -193,8 +193,9 @@ public partial class MainWindowViewModel : ViewModelBase
         ChatId = settings.ChatId;
         ClipboardPopupHotkey = settings.ClipboardPopupHotkey;
         
-        // Override LaunchOnStartup with actual OS reality
-        LaunchOnStartup = _startupService.IsEnabled();
+        // Override LaunchOnStartup with actual OS reality without triggering side-effects
+        _launchOnStartup = _startupService.IsEnabled();
+        OnPropertyChanged(nameof(LaunchOnStartup));
         
         SyncAcrossDevices = settings.SyncAcrossDevices;
         HistoryLimit = settings.HistoryLimit;
