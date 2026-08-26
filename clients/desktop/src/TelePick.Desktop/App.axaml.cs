@@ -192,6 +192,7 @@ public partial class App : Application
         services.AddSingleton<ITelegramService, TelegramService>();
         services.AddSingleton<IClipboardMonitorService, ClipboardMonitorService>();
         services.AddSingleton<IGlobalHotkeyService, SharpHookGlobalHotkeyService>();
+        services.AddSingleton<IStartupService>(StartupServiceFactory.Create());
 
         // Register ViewModels
         services.AddTransient<MainWindowViewModel>();
