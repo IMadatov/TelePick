@@ -12,8 +12,7 @@ public static class StartupServiceFactory
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            // WindowsStartupService to be created in Task 3
-            return new DummyStartupService();
+            return new WindowsStartupService();
         }
         
         return new DummyStartupService();
