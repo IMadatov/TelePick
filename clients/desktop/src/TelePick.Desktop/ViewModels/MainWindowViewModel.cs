@@ -16,6 +16,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ISettingsService _settingsService;
     private readonly IClipboardMonitorService _clipboardMonitorService;
     private readonly IGlobalHotkeyService _globalHotkeyService;
+    private readonly IStartupService _startupService;
     
     public string SearchShortcutHint 
     {
@@ -122,8 +123,21 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private int _selectedPageIndex = 1;
 
-    [ObservableProperty]
     private bool _launchOnStartup = true;
+    public bool LaunchOnStartup
+    {
+        get => _launchOnStartup;
+        set
+        {
+            if (SetProperty(ref _launchOnStartup, value))
+            {
+                if (value) _startupService.Enable();
+                else _startupService.Disable();
+                
+                _ = SaveSettingsAsync(); // Optional: or just _settingsService.SaveSettingsAsync
+            }
+        }
+    }
 
     [ObservableProperty]
     private bool _syncAcrossDevices = false;
@@ -157,13 +171,15 @@ public partial class MainWindowViewModel : ViewModelBase
         ITelegramService telegramService,
         ISettingsService settingsService,
         IClipboardMonitorService clipboardMonitorService,
-        IGlobalHotkeyService globalHotkeyService)
+        IGlobalHotkeyService globalHotkeyService,
+        IStartupService startupService)
     {
         _clipboardService = clipboardService;
         _telegramService = telegramService;
         _settingsService = settingsService;
         _clipboardMonitorService = clipboardMonitorService;
         _globalHotkeyService = globalHotkeyService;
+        _startupService = startupService;
 
         _ = LoadSettingsAsync();
         
@@ -176,7 +192,10 @@ public partial class MainWindowViewModel : ViewModelBase
         BotToken = settings.BotToken;
         ChatId = settings.ChatId;
         ClipboardPopupHotkey = settings.ClipboardPopupHotkey;
-        LaunchOnStartup = settings.LaunchOnStartup;
+        
+        // Override LaunchOnStartup with actual OS reality
+        LaunchOnStartup = _startupService.IsEnabled();
+        
         SyncAcrossDevices = settings.SyncAcrossDevices;
         HistoryLimit = settings.HistoryLimit;
         VerboseLogging = settings.VerboseLogging;
