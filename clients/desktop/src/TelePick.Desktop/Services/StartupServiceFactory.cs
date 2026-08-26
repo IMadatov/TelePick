@@ -8,8 +8,7 @@ public static class StartupServiceFactory
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            // LinuxStartupService to be created in Task 2
-            return new DummyStartupService();
+            return new LinuxStartupService();
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
