@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using TelePick.Desktop.Services;
+using TelePick.Desktop.Services.LanguageDetection;
 using TelePick.Desktop.ViewModels;
 using TelePick.Desktop.Views;
 using System;
@@ -190,6 +191,7 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
         services.AddSingleton<ITelegramService, TelegramService>();
+        services.AddSingleton<ILanguageDetectorService, HeuristicLanguageDetectorService>();
         services.AddSingleton<IClipboardMonitorService, ClipboardMonitorService>();
         services.AddSingleton<IGlobalHotkeyService, SharpHookGlobalHotkeyService>();
         services.AddSingleton<IStartupService>(StartupServiceFactory.Create());

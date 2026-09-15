@@ -11,6 +11,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using TelePick.Desktop.Models;
 using TelePick.Desktop.Services.NativeClipboard;
+using TelePick.Desktop.Services.LanguageDetection;
 
 namespace TelePick.Desktop.Services;
 
@@ -21,8 +22,17 @@ public class ClipboardMonitorService : IClipboardMonitorService
 
     private Avalonia.Input.Platform.IClipboard? _clipboard;
     private INativeClipboardListener? _listener;
+    private readonly ILanguageDetectorService _languageDetector;
     private long _memoryBudget;
     private long _currentUsage;
+
+    private string? _lastProcessedText;
+    private string? _lastProcessedHash;
+
+    public ClipboardMonitorService(ILanguageDetectorService languageDetector)
+    {
+        _languageDetector = languageDetector;
+    }
 
     public bool IsPaused { get; set; } = false;
 
@@ -88,6 +98,11 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 if (filePaths.Any())
                 {
                     var dataHash = string.Join("|", filePaths);
+                    
+                    if (_lastProcessedHash == dataHash) return;
+                    _lastProcessedHash = dataHash;
+                    _lastProcessedText = null;
+
                     var preview = filePaths.Count == 1 ? Path.GetFileName(filePaths.First()) : $"{filePaths.Count} files copied";
                     
                     var existingItem = History.FirstOrDefault(x => x.Type == ClipboardItemType.Files && x.DataHash == dataHash);
@@ -166,6 +181,10 @@ public class ClipboardMonitorService : IClipboardMonitorService
             var text = await _clipboard.TryGetTextAsync();
             if (!string.IsNullOrWhiteSpace(text))
             {
+                if (_lastProcessedText == text) return;
+                _lastProcessedText = text;
+                _lastProcessedHash = null;
+
                 bool isLink = Uri.TryCreate(text.Trim(), UriKind.Absolute, out var uriResult) 
                               && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
                 
@@ -178,11 +197,22 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 }
                 else
                 {
+                    var isCode = false;
+                    string? lang = null;
+                    if (!isLink)
+                    {
+                        var detection = _languageDetector.Detect(text);
+                        isCode = detection.IsCode;
+                        lang = detection.Language;
+                    }
+
                     var item = new ClipboardItem
                     {
                         Type = itemType,
                         PreviewText = text,
                         RawData = text,
+                        IsLikelyCode = isCode,
+                        Language = lang,
                         IconKind = isLink ? "Link" : "TextSubject",
                         EstimatedSizeBytes = EstimateTextSize(text)
                     };
@@ -198,6 +228,10 @@ public class ClipboardMonitorService : IClipboardMonitorService
                 bitmap.Save(ms);
                 var bytes = ms.ToArray();
                 var hash = Convert.ToBase64String(MD5.HashData(bytes));
+
+                if (_lastProcessedHash == hash) return;
+                _lastProcessedHash = hash;
+                _lastProcessedText = null;
 
                 var existingItem = History.FirstOrDefault(x => x.Type == ClipboardItemType.Image && x.DataHash == hash);
                 if (existingItem != null)

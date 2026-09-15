@@ -20,7 +20,7 @@ public partial class ClipboardItem : ObservableObject, IDisposable
             if (!string.IsNullOrWhiteSpace(_title)) return _title;
             return Type switch
             {
-                ClipboardItemType.Text => IsLikelyCode ? "Code" : "Text",
+                ClipboardItemType.Text => IsLikelyCode ? (string.IsNullOrWhiteSpace(Language) ? "Code" : $"Code | {Language}") : "Text",
                 ClipboardItemType.Link => "Link",
                 ClipboardItemType.Image => "Image",
                 ClipboardItemType.Files => "Files",
@@ -28,6 +28,19 @@ public partial class ClipboardItem : ObservableObject, IDisposable
             };
         }
         set => SetProperty(ref _title, value);
+    }
+
+    private string? _language;
+    public string? Language
+    {
+        get => _language;
+        set 
+        {
+            if (SetProperty(ref _language, value))
+            {
+                OnPropertyChanged(nameof(Title));
+            }
+        }
     }
 
     [ObservableProperty]
@@ -52,29 +65,16 @@ public partial class ClipboardItem : ObservableObject, IDisposable
     public bool IsLikelyCode 
     {
         get => _isLikelyCode;
-        set => SetProperty(ref _isLikelyCode, value);
-    }
-
-    public void DetermineIfCode()
-    {
-        if (Type != ClipboardItemType.Text || string.IsNullOrWhiteSpace(PreviewText))
+        set
         {
-            IsLikelyCode = false;
-            return;
+            if (SetProperty(ref _isLikelyCode, value))
+            {
+                OnPropertyChanged(nameof(Title));
+            }
         }
-
-        // Basic heuristic: density of programming symbols and keywords
-        var codeChars = new[] { '{', '}', ';', '<', '>', '=', '(', ')', '[', ']' };
-        int symbolCount = PreviewText.Count(c => codeChars.Contains(c));
-        
-        string[] keywords = { "class ", "public ", "private ", "void ", "function ", "const ", "let ", "var ", "using ", "import ", "def ", "return ", "if ", "else ", "for " };
-        int keywordCount = keywords.Count(kw => PreviewText.Contains(kw, StringComparison.OrdinalIgnoreCase));
-
-        // If high symbol density or contains multiple keywords, treat as code
-        IsLikelyCode = (symbolCount > 5) || (keywordCount >= 2) || PreviewText.Contains("=>") || PreviewText.Contains("==") || PreviewText.Contains("</");
-        
-        OnPropertyChanged(nameof(Title));
     }
+
+
 
     private TextDocument? _document;
     public TextDocument Document
@@ -91,7 +91,6 @@ public partial class ClipboardItem : ObservableObject, IDisposable
 
     partial void OnPreviewTextChanged(string value)
     {
-        DetermineIfCode();
         if (_document != null && _document.Text != value)
         {
             _document.Text = value;

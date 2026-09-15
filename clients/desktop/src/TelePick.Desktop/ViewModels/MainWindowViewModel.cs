@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TelePick.Desktop.Models;
 using TelePick.Desktop.Services;
+using TelePick.Desktop.Services.LanguageDetection;
 
 namespace TelePick.Desktop.ViewModels;
 
@@ -17,6 +18,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IClipboardMonitorService _clipboardMonitorService;
     private readonly IGlobalHotkeyService _globalHotkeyService;
     private readonly IStartupService _startupService;
+    private readonly ILanguageDetectorService _languageDetector;
     
     public string SearchShortcutHint 
     {
@@ -172,7 +174,8 @@ public partial class MainWindowViewModel : ViewModelBase
         ISettingsService settingsService,
         IClipboardMonitorService clipboardMonitorService,
         IGlobalHotkeyService globalHotkeyService,
-        IStartupService startupService)
+        IStartupService startupService,
+        ILanguageDetectorService languageDetector)
     {
         _clipboardService = clipboardService;
         _telegramService = telegramService;
@@ -180,6 +183,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _clipboardMonitorService = clipboardMonitorService;
         _globalHotkeyService = globalHotkeyService;
         _startupService = startupService;
+        _languageDetector = languageDetector;
 
         _ = LoadSettingsAsync();
         
@@ -295,12 +299,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
         SetStatus("Sending...", false);
 
+        var detection = _languageDetector.Detect(ClipboardText);
         using var item = new ClipboardItem 
         { 
             Type = ClipboardItemType.Text, 
-            PreviewText = ClipboardText 
+            PreviewText = ClipboardText,
+            IsLikelyCode = detection.IsCode,
+            Language = detection.Language
         };
-        item.DetermineIfCode();
 
         var result = await _telegramService.SendMessageAsync(item, Note, settings);
         
