@@ -1,16 +1,16 @@
 # Clipboard History (Buffer System) Design
 
 ## Objective
-Implement an in-memory, cross-platform clipboard history manager (similar to Windows Win+V) inside the TelePick application. It must capture and hold Text, Images, and File paths copied to the system clipboard while the application is running.
+Implement an in-memory, cross-platform clipboard history manager (similar to Windows Win+V) inside the iM.TelePick application. It must capture and hold Text, Images, and File paths copied to the system clipboard while the application is running.
 
 ## Chosen Approach
 **Polling (Timer-based):** A background service will poll the clipboard every 500ms to detect changes, ensuring 100% cross-platform compatibility without native OS hooks.
 
 ## Architecture
 
-To ensure separation of concerns, the core history logic will be built as a separate class library module (`TelePick.Clipboard`), which the main desktop app will reference.
+To ensure separation of concerns, the core history logic will be built as a separate class library module (`iM.TelePick.Clipboard`), which the main desktop app will reference.
 
-### 1. `TelePick.Clipboard` (New Module)
+### 1. `iM.TelePick.Clipboard` (New Module)
 
 **Models**
    - `ClipboardItem`: Represents a single historical entry.
@@ -30,7 +30,7 @@ To ensure separation of concerns, the core history logic will be built as a sepa
    - Pushes new distinct items to an in-memory `ObservableCollection<ClipboardItem>`.
    - Enforces a maximum limit (e.g., keeping only the last 50 items) to prevent RAM bloat, especially with images.
 
-### 2. `TelePick.Desktop` (UI Integration)
+### 2. `iM.TelePick.Desktop` (UI Integration)
    - A new **"History"** tab or side-panel will be added.
    - Uses an Avalonia `ListBox` bound to the history collection.
    - **DataTemplates**:

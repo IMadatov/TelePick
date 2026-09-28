@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Implement a kross-platform RAM-based clipboard history monitor in a separate module (`TelePick.Clipboard`), and a cross-platform global hotkey (`SharpHook`) to directly send clipboard content to Telegram.
+**Goal:** Implement a kross-platform RAM-based clipboard history monitor in a separate module (`iM.TelePick.Clipboard`), and a cross-platform global hotkey (`SharpHook`) to directly send clipboard content to Telegram.
 
-**Architecture:** A separate `TelePick.Clipboard` library handles monitoring (using a 500ms `PeriodicTimer`). The main `TelePick.Desktop` app provides the UI (History tab) and integrates `SharpHook` for background OS shortcuts.
+**Architecture:** A separate `iM.TelePick.Clipboard` library handles monitoring (using a 500ms `PeriodicTimer`). The main `iM.TelePick.Desktop` app provides the UI (History tab) and integrates `SharpHook` for background OS shortcuts.
 
 **Tech Stack:** Avalonia 12, .NET 8, `SharpHook`
 
@@ -20,15 +20,15 @@
 ### Task 1: Implement Clipboard History Core Models
 
 **Files:**
-- Create: `clients/desktop/src/TelePick.Desktop/Models/ClipboardItem.cs`
-- Create: `clients/desktop/src/TelePick.Desktop/Models/ClipboardItemType.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Models/ClipboardItem.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Models/ClipboardItemType.cs`
 
 **Interfaces:**
 - Produces: `ClipboardItem` (Id, Type, PreviewText, Timestamp, RawData).
 
 - [ ] **Step 1: Write `ClipboardItemType.cs`**
 ```csharp
-namespace TelePick.Desktop.Models;
+namespace iM.TelePick.Desktop.Models;
 
 public enum ClipboardItemType
 {
@@ -42,7 +42,7 @@ public enum ClipboardItemType
 ```csharp
 using System;
 
-namespace TelePick.Desktop.Models;
+namespace iM.TelePick.Desktop.Models;
 
 public class ClipboardItem
 {
@@ -65,8 +65,8 @@ git commit -m "feat: add clipboard item models"
 ### Task 2: Implement ClipboardMonitorService
 
 **Files:**
-- Create: `clients/desktop/src/TelePick.Desktop/Services/IClipboardMonitorService.cs`
-- Create: `clients/desktop/src/TelePick.Desktop/Services/ClipboardMonitorService.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/IClipboardMonitorService.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/ClipboardMonitorService.cs`
 
 **Interfaces:**
 - Consumes: Avalonia 12 `IClipboard` API.
@@ -76,9 +76,9 @@ git commit -m "feat: add clipboard item models"
 ```csharp
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using TelePick.Desktop.Models;
+using iM.TelePick.Desktop.Models;
 
-namespace TelePick.Desktop.Services;
+namespace iM.TelePick.Desktop.Services;
 
 public interface IClipboardMonitorService
 {
@@ -102,12 +102,12 @@ git commit -m "feat: implement clipboard monitor service"
 ### Task 3: Integrate Clipboard History into UI
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/App.axaml.cs`
-- Modify: `clients/desktop/src/TelePick.Desktop/ViewModels/MainWindowViewModel.cs`
-- Modify: `clients/desktop/src/TelePick.Desktop/Views/MainWindow.axaml`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/App.axaml.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/ViewModels/MainWindowViewModel.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Views/MainWindow.axaml`
 
 **Interfaces:**
-- Consumes: Models and Services in `TelePick.Desktop`
+- Consumes: Models and Services in `iM.TelePick.Desktop`
 
 - [ ] **Step 1: Register in DI & ViewModel**
 Register `IClipboardMonitorService` in DI. Inject it into `MainWindowViewModel` and bind the `History` collection. Expose a command to set an item as the active clipboard text. Start monitoring using the main window's clipboard.
@@ -126,16 +126,16 @@ git commit -m "feat: add clipboard history UI"
 ### Task 4: Global Hotkey via SharpHook
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/TelePick.Desktop.csproj`
-- Create: `clients/desktop/src/TelePick.Desktop/Services/IGlobalHotkeyService.cs`
-- Create: `clients/desktop/src/TelePick.Desktop/Services/SharpHookGlobalHotkeyService.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/iM.TelePick.Desktop.csproj`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/IGlobalHotkeyService.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/SharpHookGlobalHotkeyService.cs`
 
 **Interfaces:**
 - Produces: Background hotkey triggering `SendToTelegramAsync` directly.
 
 - [ ] **Step 1: Add SharpHook package**
 ```bash
-cd clients/desktop/src/TelePick.Desktop
+cd clients/desktop/src/iM.TelePick.Desktop
 dotnet add package SharpHook -v 5.3.0
 ```
 

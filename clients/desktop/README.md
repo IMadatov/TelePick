@@ -1,6 +1,6 @@
-# TelePick Desktop
+# iM.TelePick Desktop
 
-Cross-platform desktop client for TelePick, built with .NET 8 and Avalonia UI.
+Cross-platform desktop client for iM.TelePick, built with .NET 8 and Avalonia UI.
 
 > **Status:** Minimal MVP available on Linux — settings, clipboard capture, note, and Telegram send.
 
@@ -25,7 +25,7 @@ dotnet new install Avalonia.Templates
 cd clients/desktop
 dotnet build
 dotnet test
-dotnet run --project src/TelePick.Desktop
+dotnet run --project src/iM.TelePick.Desktop
 ```
 
 ## Usage
@@ -37,48 +37,48 @@ dotnet run --project src/TelePick.Desktop
    - Press the key combination you want (e.g. `Alt+C`)
    - Click **Save** to apply
 4. Click **Send test message** to verify the connection.
-5. Anywhere on the desktop: use your shortcut to copy the current selection, open TelePick, and load clipboard text.
+5. Anywhere on the desktop: use your shortcut to copy the current selection, open iM.TelePick, and load clipboard text.
 6. Add an optional note and click **Send to Telegram**.
 
-Settings are stored at `~/.config/TelePick/settings.json` (XDG config directory).
+Settings are stored at `~/.config/iM.TelePick/settings.json` (XDG config directory).
 
 ### Global shortcut notes
 
-- Works system-wide while TelePick is running (X11 recommended on Linux).
+- Works system-wide while iM.TelePick is running (X11 recommended on Linux).
 - On **Linux X11**, selected text is read from the native **PRIMARY** selection first (`xclip` or `xsel`); no simulated Ctrl+C when that works.
 - Install one helper if missing: `sudo apt install xclip` (or `xsel`).
-- On **Wayland**, PRIMARY may be unavailable; TelePick falls back to simulated copy, then clipboard.
+- On **Wayland**, PRIMARY may be unavailable; iM.TelePick falls back to simulated copy, then clipboard.
 - After changing the shortcut in Settings, click **Save** to re-register it.
 
 ## Project structure
 
 ```
 clients/desktop/
-  TelePick.sln
+  iM.TelePick.sln
   Directory.Build.props
   src/
-    TelePick.Core/           # Telegram API, message composition, settings validation
-    TelePick.Platform/       # Linux settings store, platform abstractions
-    TelePick.Desktop/        # Avalonia MVVM UI
+    iM.TelePick.Core/           # Telegram API, message composition, settings validation
+    iM.TelePick.Platform/       # Linux settings store, platform abstractions
+    iM.TelePick.Desktop/        # Avalonia MVVM UI
   tests/
-    TelePick.Core.Tests/
+    iM.TelePick.Core.Tests/
 ```
 
 ## Architecture
 
-### TelePick.Core
+### iM.TelePick.Core
 
 - `MessageComposer` — same HTML message format as the browser extension
 - `TelegramBotClient` — `sendMessage` via Telegram Bot API
 - `SettingsService` — bot token and chat ID validation
 - `NoteSendService` — orchestrates clipboard text → Telegram send
 
-### TelePick.Platform
+### iM.TelePick.Platform
 
-- `JsonSettingsStore` — persists settings to `~/.config/TelePick/settings.json`
+- `JsonSettingsStore` — persists settings to `~/.config/iM.TelePick/settings.json`
 - `IClipboardService` — clipboard abstraction (Avalonia implementation in Desktop)
 
-### TelePick.Desktop
+### iM.TelePick.Desktop
 
 - **MainWindow** — clipboard preview, note input, send
 - **SettingsWindow** — bot token, chat ID, save, test message
@@ -96,6 +96,6 @@ clients/desktop/
 | Concern | Extension | Desktop (MVP) |
 |---------|-----------|---------------|
 | Text capture | Browser selection | Clipboard |
-| Settings storage | `chrome.storage.sync` | `~/.config/TelePick/settings.json` |
-| Telegram API | `background.js` | `TelePick.Core` |
+| Settings storage | `chrome.storage.sync` | `~/.config/iM.TelePick/settings.json` |
+| Telegram API | `background.js` | `iM.TelePick.Core` |
 | UI | HTML popup + options | Avalonia windows |

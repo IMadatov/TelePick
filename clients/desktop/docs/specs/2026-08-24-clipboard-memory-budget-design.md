@@ -4,7 +4,7 @@
 
 ClipboardMonitorService stores up to 50 clipboard items in memory with no memory awareness:
 - `Bitmap Thumbnail` is `IDisposable` but never disposed on eviction
-- Screenshot temp files (`/tmp/TelePick/Screenshots/`) accumulate without cleanup
+- Screenshot temp files (`/tmp/iM.TelePick/Screenshots/`) accumulate without cleanup
 - No memory budget — a single large screenshot can consume several MB, 50 items can consume hundreds of MB
 - Text items with large content (e.g. pasted log files) also accumulate unchecked
 
@@ -53,7 +53,7 @@ Introduce a memory budget calculated as a percentage of system RAM. Track each i
   2. Subtract its `EstimatedSizeBytes` from `_currentUsage`
   3. Call `item.Dispose()`
 - `StopMonitoring()`: Dispose all items in History, clear collection
-- `StartMonitoring()`: Clean up stale `/tmp/TelePick/Screenshots/` directory from previous sessions
+- `StartMonitoring()`: Clean up stale `/tmp/iM.TelePick/Screenshots/` directory from previous sessions
 
 ### Temp File Lifecycle
 

@@ -18,8 +18,8 @@
 ### Task 1: Expose Code Detection and Update Service Interface
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/Models/ClipboardItem.cs`
-- Modify: `clients/desktop/src/TelePick.Desktop/Services/ITelegramService.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Models/ClipboardItem.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Services/ITelegramService.cs`
 
 **Interfaces:**
 - Produces: `public void DetermineIfCode()`
@@ -43,7 +43,7 @@ Modify `ITelegramService.cs` to change `SendMessageAsync`:
 - [ ] **Step 3: Commit**
 
 ```bash
-git add clients/desktop/src/TelePick.Desktop/Models/ClipboardItem.cs clients/desktop/src/TelePick.Desktop/Services/ITelegramService.cs
+git add clients/desktop/src/iM.TelePick.Desktop/Models/ClipboardItem.cs clients/desktop/src/iM.TelePick.Desktop/Services/ITelegramService.cs
 git commit -m "refactor(desktop): update interface to accept ClipboardItem for formatting"
 ```
 
@@ -52,7 +52,7 @@ git commit -m "refactor(desktop): update interface to accept ClipboardItem for f
 ### Task 2: Implement Formatting Logic in TelegramService
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/Services/TelegramService.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Services/TelegramService.cs`
 
 **Interfaces:**
 - Consumes: `SendMessageAsync(ClipboardItem item, ...)`
@@ -94,7 +94,7 @@ In `SendMessageAsync`, update the call to `BuildMessage(item, note);`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add clients/desktop/src/TelePick.Desktop/Services/TelegramService.cs
+git add clients/desktop/src/iM.TelePick.Desktop/Services/TelegramService.cs
 git commit -m "feat(desktop): format Telegram messages based on ClipboardItem type"
 ```
 
@@ -103,7 +103,7 @@ git commit -m "feat(desktop): format Telegram messages based on ClipboardItem ty
 ### Task 3: Update ViewModels to Pass ClipboardItem
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/ViewModels/MainWindowViewModel.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/ViewModels/MainWindowViewModel.cs`
 
 **Interfaces:**
 - Consumes: `SendMessageAsync(ClipboardItem item, ...)` and `DetermineIfCode()`
@@ -141,11 +141,11 @@ In `SendItemAsync` for `ClipboardItemType.Files` (around line 427), where it sen
 
 - [ ] **Step 4: Build and Verify**
 
-Run `dotnet build clients/desktop/TelePick.slnx` to ensure everything compiles without errors.
+Run `dotnet build clients/desktop/iM.TelePick.slnx` to ensure everything compiles without errors.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add clients/desktop/src/TelePick.Desktop/ViewModels/MainWindowViewModel.cs
+git add clients/desktop/src/iM.TelePick.Desktop/ViewModels/MainWindowViewModel.cs
 git commit -m "refactor(desktop): pass ClipboardItem to TelegramService for rich formatting"
 ```

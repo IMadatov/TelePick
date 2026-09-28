@@ -1,6 +1,6 @@
-# TelePick - Additional UI Design Briefs
+# iM.TelePick - Additional UI Design Briefs
 
-This document contains design requirements and prompts for two additional UI components for TelePick, ready to be used in Stitch or similar UI generation tools.
+This document contains design requirements and prompts for two additional UI components for iM.TelePick, ready to be used in Stitch or similar UI generation tools.
 
 ---
 
@@ -10,7 +10,7 @@ This document contains design requirements and prompts for two additional UI com
 **Key Elements:**
 - **Container**: A small, focused modal window overlaying the main settings.
 - **Title**: "Set Global Shortcut"
-- **Instruction Text**: "Press the combination of keys you want to use to open TelePick."
+- **Instruction Text**: "Press the combination of keys you want to use to open iM.TelePick."
 - **Capture Area**: A large, visually distinct area in the center. When active, it pulses or glows slightly.
   - Default state: shows current hotkey (e.g., `Ctrl + Shift + V`)
   - Active/Recording state: "Listening for input..."

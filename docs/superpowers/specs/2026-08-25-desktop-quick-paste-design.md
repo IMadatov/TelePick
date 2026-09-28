@@ -1,7 +1,7 @@
-# TelePick Desktop - Quick Paste UI Design Specification
+# iM.TelePick Desktop - Quick Paste UI Design Specification
 
 ## Overview
-This document outlines the architectural and UI design for implementing the "Quick Paste Popup" in the TelePick Desktop Avalonia application. The design is based on a provided HTML/Tailwind mockup (`design/quick_paste_popup.html`) and aims to reproduce the modern, glassmorphic UI natively in Avalonia XAML.
+This document outlines the architectural and UI design for implementing the "Quick Paste Popup" in the iM.TelePick Desktop Avalonia application. The design is based on a provided HTML/Tailwind mockup (`design/quick_paste_popup.html`) and aims to reproduce the modern, glassmorphic UI natively in Avalonia XAML.
 
 ## Approach
 We will use **Native Avalonia XAML** to build the UI components. This ensures maximum performance and seamless integration with the existing MVVM architecture.
@@ -56,7 +56,7 @@ To match the Tailwind CSS design, we will define global resources:
 - The existing MVVM setup will be expanded:
   - `MainViewModel` will hold the `ObservableCollection<ClipboardItem>`.
   - Commands for filtering, searching, and quick actions (Pin, Delete, Share) will be added to the ViewModel.
-  - The `ClipboardService` (from `TelePick.Platform`) will be responsible for fetching and populating real clipboard data into the list (future implementation step).
+  - The `ClipboardService` (from `iM.TelePick.Platform`) will be responsible for fetching and populating real clipboard data into the list (future implementation step).
 
 ## Spec Self-Review Checklist
 - [x] Placeholders resolved? Yes, concrete colors and controls are mapped.

@@ -451,7 +451,7 @@
     panel.style.pointerEvents = "auto";
 
     panel.innerHTML = `
-      <div class="telepick-panel-header">TelePick Screenshot</div>
+      <div class="telepick-panel-header">iM.TelePick Screenshot</div>
       <img class="telepick-shot-preview" alt="Screenshot preview" />
       ${createOptionsSection(
         createDestinationSelector(destinationGroups, savedDestinations),
@@ -661,7 +661,7 @@
     panel.style.pointerEvents = "auto";
 
     panel.innerHTML = `
-      <div class="telepick-panel-header">TelePick</div>
+      <div class="telepick-panel-header">iM.TelePick</div>
       <p class="telepick-preview"></p>
       ${createOptionsSection(
         createDestinationSelector(destinationGroups, savedDestinations),

@@ -1,12 +1,12 @@
-# Privacy Policy for TelePick
+# Privacy Policy for iM.TelePick
 
 **Effective date:** June 2, 2026
 
-TelePick ("extension", "we", "our") is a Chrome extension that allows users to send selected webpage text and selected-area screenshots to their own Telegram chat using their own Telegram bot credentials.
+iM.TelePick ("extension", "we", "our") is a Chrome extension that allows users to send selected webpage text and selected-area screenshots to their own Telegram chat using their own Telegram bot credentials.
 
 ## 1. Data We Process
 
-TelePick may process the following data only to provide its core functionality:
+iM.TelePick may process the following data only to provide its core functionality:
 
 - User-provided Telegram Bot Token
 - User-provided Telegram Chat ID
@@ -22,27 +22,27 @@ Data is used only to:
 - save user configuration locally in Chrome storage
 - send user-selected content to Telegram via the official Telegram Bot API (`https://api.telegram.org/*`) when the user explicitly clicks Send/Test
 
-TelePick does not use collected data for advertising, profiling, analytics, or any unrelated purpose.
+iM.TelePick does not use collected data for advertising, profiling, analytics, or any unrelated purpose.
 
 ## 3. Data Storage
 
 - Bot Token and Chat ID are stored in `chrome.storage.sync` (or Chrome-managed extension storage).
-- TelePick does not operate its own backend server.
-- TelePick does not permanently store selected text, screenshots, or notes outside the user's browser and Telegram delivery flow.
+- iM.TelePick does not operate its own backend server.
+- iM.TelePick does not permanently store selected text, screenshots, or notes outside the user's browser and Telegram delivery flow.
 
 ## 4. Data Sharing
 
-TelePick does not sell, rent, or transfer user data to third parties.
+iM.TelePick does not sell, rent, or transfer user data to third parties.
 
 Data is transmitted only to Telegram's API as requested by the user to deliver messages/photos to the user's configured Telegram chat.
 
 ## 5. Permissions Justification
 
-TelePick requests only the permissions needed for its single purpose:
+iM.TelePick requests only the permissions needed for its single purpose:
 
 - `storage`: store bot token, chat ID, and per-site send preferences
 - `activeTab`: access the current tab only after a user gesture (text selection, floating button, context menu, or screenshot action) to read selected content and capture a visible-area screenshot
-- `contextMenus`: provide right-click "TelePick: Screenshot" menu action
+- `contextMenus`: provide right-click "iM.TelePick: Screenshot" menu action
 - host permission `https://api.telegram.org/*`: send content through Telegram Bot API
 
 ## 6. User Control
@@ -59,7 +59,7 @@ We aim to minimize data access and process only what is required for the extensi
 
 ## 8. Children's Privacy
 
-TelePick is not directed to children under 13, and we do not knowingly collect data from children.
+iM.TelePick is not directed to children under 13, and we do not knowingly collect data from children.
 
 ## 9. Changes to This Policy
 
@@ -67,4 +67,4 @@ This policy may be updated to reflect feature or compliance changes. The latest 
 
 ## 10. Contact
 
-For privacy questions, contact: **madatovislom250@gmail.com** or open an issue at [github.com/IMadatov/TelePick](https://github.com/IMadatov/TelePick).
+For privacy questions, contact: **madatovislom250@gmail.com** or open an issue at [github.com/IMadatov/iM.TelePick](https://github.com/IMadatov/iM.TelePick).

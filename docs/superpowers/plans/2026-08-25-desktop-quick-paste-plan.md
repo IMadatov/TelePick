@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Implement the glassmorphic Quick Paste popup UI based on the Tailwind HTML design for the TelePick Avalonia desktop client.
+**Goal:** Implement the glassmorphic Quick Paste popup UI based on the Tailwind HTML design for the iM.TelePick Avalonia desktop client.
 
 **Architecture:** We will define global color and font resources in `App.axaml`. We will then completely overhaul `Views/ClipboardPopupWindow.axaml` (or create it if it's currently a stub) to use a borderless window, custom search TextBox, filter toggle buttons, and a customized ListBox for clipboard items.
 
@@ -19,7 +19,7 @@
 ### Task 1: Global Resources and Colors
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/App.axaml`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/App.axaml`
 
 **Interfaces:**
 - Consumes: Nothing
@@ -34,7 +34,7 @@ Set the default font family for the application and add a definition for a monos
 ### Task 2: Window Configuration and Layout Structure
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/Views/ClipboardPopupWindow.axaml`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Views/ClipboardPopupWindow.axaml`
 
 **Interfaces:**
 - Consumes: Global resources from Task 1.
@@ -49,7 +49,7 @@ Create a master `Border` with `CornerRadius="12"`, `Background="{DynamicResource
 ### Task 3: Header (Search and Filters)
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/Views/ClipboardPopupWindow.axaml`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Views/ClipboardPopupWindow.axaml`
 
 **Interfaces:**
 - Consumes: Window Layout from Task 2.
@@ -64,8 +64,8 @@ Below the search box, add a horizontal `ScrollViewer` or `StackPanel`. Add `Radi
 ### Task 4: Clipboard Item List and Hover Actions
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/Views/ClipboardPopupWindow.axaml`
-- Modify: `clients/desktop/src/TelePick.Desktop/ViewModels/MainWindowViewModel.cs` (or `ClipboardPopupViewModel.cs` if it exists)
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/Views/ClipboardPopupWindow.axaml`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/ViewModels/MainWindowViewModel.cs` (or `ClipboardPopupViewModel.cs` if it exists)
 
 **Interfaces:**
 - Consumes: Layout structure from Task 2.

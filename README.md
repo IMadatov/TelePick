@@ -1,8 +1,8 @@
-# TelePick
+# iM.TelePick
 
 **Pick selected text and send it as a note to your Telegram chat.**
 
-TelePick is a monorepo with two clients that share the same core purpose — capture text (and screenshots), add an optional note, and send it to your Telegram chat via your own bot.
+iM.TelePick is a monorepo with two clients that share the same core purpose — capture text (and screenshots), add an optional note, and send it to your Telegram chat via your own bot.
 
 ## Clients
 
@@ -27,13 +27,13 @@ Minimal MVP is available. See [`clients/desktop/README.md`](clients/desktop/READ
 
 ```bash
 cd clients/desktop
-dotnet run --project src/TelePick.Desktop
+dotnet run --project src/iM.TelePick.Desktop
 ```
 
 ## Repository structure
 
 ```
-TelePick/
+iM.TelePick/
   README.md
   clients/
     extension/          # Chrome MV3 extension
@@ -43,7 +43,7 @@ TelePick/
       README.md
       PRIVACY.md
     desktop/            # .NET 8 Avalonia desktop app
-      TelePick.sln
+      iM.TelePick.sln
       src/
       tests/
       README.md
@@ -52,7 +52,7 @@ TelePick/
 ## Privacy
 
 - The browser extension stores credentials in `chrome.storage.sync`. See [`clients/extension/PRIVACY.md`](clients/extension/PRIVACY.md) for details.
-- The desktop app stores credentials in `~/.config/TelePick/settings.json`.
+- The desktop app stores credentials in `~/.config/iM.TelePick/settings.json`.
 - Selected text is sent only to Telegram's API using your bot; no third-party servers are used.
 
 ## License

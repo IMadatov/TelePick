@@ -196,7 +196,7 @@ Minimal changes — just enough to use the new service:
 
 ### Build
 ```bash
-cd clients/desktop && dotnet build src/TelePick.Desktop
+cd clients/desktop && dotnet build src/iM.TelePick.Desktop
 ```
 
 ### Manual testing

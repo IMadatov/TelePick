@@ -6,7 +6,7 @@ function ensureContextMenu() {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: SCREENSHOT_CONTEXT_MENU_ID,
-      title: "TelePick: Screenshot",
+      title: "iM.TelePick: Screenshot",
       contexts: ["all"],
     });
   });
@@ -416,12 +416,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         const results = await Promise.all(
           destinations.map(async (destination) => {
             const targetLabel = resolveDestinationLabel(destination, recipients);
-            const testText = `TelePick test message — target: ${targetLabel}`;
+            const testText = `iM.TelePick test message — target: ${targetLabel}`;
             const formattedMessage = buildMessage(
               testText,
               "",
-              "https://github.com/IMadatov/TelePick",
-              "TelePick"
+              "https://github.com/IMadatov/iM.TelePick",
+              "iM.TelePick"
             );
             const sendResult = await sendMessageSingle({
               botToken,

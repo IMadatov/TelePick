@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "TelePick",
-  "short_name": "TelePick",
+  "name": "iM.TelePick",
+  "short_name": "iM.TelePick",
   "version": "1.0.0",
   "description": "Pick selected text and send it as a note to your Telegram chat",
   "permissions": ["storage", "activeTab", "contextMenus"],

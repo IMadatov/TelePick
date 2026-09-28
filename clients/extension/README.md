@@ -1,8 +1,8 @@
-# TelePick
+# iM.TelePick
 
 **Pick selected text and send it as a note to your Telegram chat.**
 
-TelePick is a Chrome extension (Manifest V3). Select text on any webpage, click the floating button, add an optional note, and send the selection to your Telegram chat via your own bot.
+iM.TelePick is a Chrome extension (Manifest V3). Select text on any webpage, click the floating button, add an optional note, and send the selection to your Telegram chat via your own bot.
 
 ## Features
 
@@ -44,9 +44,9 @@ TelePick is a Chrome extension (Manifest V3). Select text on any webpage, click 
 
 **Groups/channels:** add the bot to the group, send a message, then use `getUpdates`. Group IDs are usually negative (e.g. `-1001234567890`).
 
-### 3. Configure TelePick
+### 3. Configure iM.TelePick
 
-1. Click the TelePick icon → **Open Settings**, or right-click the extension → **Options**.
+1. Click the iM.TelePick icon → **Open Settings**, or right-click the extension → **Options**.
 2. Paste **Bot Token** and **Chat ID**.
 3. Click **Save**, then **Send test message** to verify.
 

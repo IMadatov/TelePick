@@ -19,9 +19,9 @@
 ### Task 1: Create IStartupService and Factory
 
 **Files:**
-- Create: `clients/desktop/src/TelePick.Desktop/Services/IStartupService.cs`
-- Create: `clients/desktop/src/TelePick.Desktop/Services/StartupServiceFactory.cs`
-- Modify: `clients/desktop/src/TelePick.Desktop/App.axaml.cs` (or wherever services are registered)
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/IStartupService.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/StartupServiceFactory.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/App.axaml.cs` (or wherever services are registered)
 
 **Interfaces:**
 - Consumes: Nothing
@@ -30,7 +30,7 @@
 - [ ] **Step 1: Write IStartupService interface**
 
 ```csharp
-namespace TelePick.Desktop.Services;
+namespace iM.TelePick.Desktop.Services;
 
 public interface IStartupService
 {
@@ -45,7 +45,7 @@ public interface IStartupService
 ```csharp
 using System.Runtime.InteropServices;
 
-namespace TelePick.Desktop.Services;
+namespace iM.TelePick.Desktop.Services;
 
 public static class StartupServiceFactory
 {
@@ -83,7 +83,7 @@ Pass it to `MainWindowViewModel` constructor (this might require updating constr
 
 - [ ] **Step 4: Commit**
 ```bash
-git add clients/desktop/src/TelePick.Desktop/Services/IStartupService.cs clients/desktop/src/TelePick.Desktop/Services/StartupServiceFactory.cs
+git add clients/desktop/src/iM.TelePick.Desktop/Services/IStartupService.cs clients/desktop/src/iM.TelePick.Desktop/Services/StartupServiceFactory.cs
 git commit -m "feat: add IStartupService and StartupServiceFactory"
 ```
 
@@ -92,7 +92,7 @@ git commit -m "feat: add IStartupService and StartupServiceFactory"
 ### Task 2: Implement LinuxStartupService
 
 **Files:**
-- Create: `clients/desktop/src/TelePick.Desktop/Services/LinuxStartupService.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/LinuxStartupService.cs`
 
 **Interfaces:**
 - Consumes: `IStartupService`
@@ -104,7 +104,7 @@ git commit -m "feat: add IStartupService and StartupServiceFactory"
 using System;
 using System.IO;
 
-namespace TelePick.Desktop.Services;
+namespace iM.TelePick.Desktop.Services;
 
 public class LinuxStartupService : IStartupService
 {
@@ -139,7 +139,7 @@ public class LinuxStartupService : IStartupService
             var content = $"""
                 [Desktop Entry]
                 Type=Application
-                Name=TelePick
+                Name=iM.TelePick
                 Exec="{_executablePath}"
                 Hidden=false
                 NoDisplay=false
@@ -172,7 +172,7 @@ public class LinuxStartupService : IStartupService
 
 - [ ] **Step 2: Commit**
 ```bash
-git add clients/desktop/src/TelePick.Desktop/Services/LinuxStartupService.cs
+git add clients/desktop/src/iM.TelePick.Desktop/Services/LinuxStartupService.cs
 git commit -m "feat: implement Linux startup service using desktop files"
 ```
 
@@ -181,7 +181,7 @@ git commit -m "feat: implement Linux startup service using desktop files"
 ### Task 3: Implement WindowsStartupService
 
 **Files:**
-- Create: `clients/desktop/src/TelePick.Desktop/Services/WindowsStartupService.cs`
+- Create: `clients/desktop/src/iM.TelePick.Desktop/Services/WindowsStartupService.cs`
 
 **Interfaces:**
 - Consumes: `IStartupService`
@@ -193,12 +193,12 @@ git commit -m "feat: implement Linux startup service using desktop files"
 using System;
 using Microsoft.Win32;
 
-namespace TelePick.Desktop.Services;
+namespace iM.TelePick.Desktop.Services;
 
 public class WindowsStartupService : IStartupService
 {
     private const string RegistryKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    private const string AppName = "TelePick";
+    private const string AppName = "iM.TelePick";
     private readonly string _executablePath;
 
     public WindowsStartupService()
@@ -255,7 +255,7 @@ Verify if `Microsoft.Win32.Registry` needs to be installed, though it's typicall
 
 - [ ] **Step 3: Commit**
 ```bash
-git add clients/desktop/src/TelePick.Desktop/Services/WindowsStartupService.cs
+git add clients/desktop/src/iM.TelePick.Desktop/Services/WindowsStartupService.cs
 git commit -m "feat: implement Windows startup service using registry"
 ```
 
@@ -264,8 +264,8 @@ git commit -m "feat: implement Windows startup service using registry"
 ### Task 4: Integrate StartupService in MainWindowViewModel
 
 **Files:**
-- Modify: `clients/desktop/src/TelePick.Desktop/ViewModels/MainWindowViewModel.cs`
-- Modify: `clients/desktop/src/TelePick.Desktop/App.axaml.cs` (to pass dependency)
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/ViewModels/MainWindowViewModel.cs`
+- Modify: `clients/desktop/src/iM.TelePick.Desktop/App.axaml.cs` (to pass dependency)
 
 **Interfaces:**
 - Consumes: `IStartupService`
@@ -324,6 +324,6 @@ LaunchOnStartup = _startupService.IsEnabled();
 
 - [ ] **Step 4: Commit**
 ```bash
-git add clients/desktop/src/TelePick.Desktop/ViewModels/MainWindowViewModel.cs clients/desktop/src/TelePick.Desktop/App.axaml.cs
+git add clients/desktop/src/iM.TelePick.Desktop/ViewModels/MainWindowViewModel.cs clients/desktop/src/iM.TelePick.Desktop/App.axaml.cs
 git commit -m "feat: integrate OS startup service with UI toggle"
 ```

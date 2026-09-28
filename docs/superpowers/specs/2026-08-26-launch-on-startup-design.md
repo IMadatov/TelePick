@@ -1,7 +1,7 @@
 # Launch on Startup Design Spec
 
 ## Overview
-This document outlines the architecture for the "Launch on Startup" feature in TelePick, a cross-platform Avalonia application. The current UI has a toggle for this feature, but there is no underlying OS integration. This design provides a clean, OS-agnostic interface with platform-specific implementations.
+This document outlines the architecture for the "Launch on Startup" feature in iM.TelePick, a cross-platform Avalonia application. The current UI has a toggle for this feature, but there is no underlying OS integration. This design provides a clean, OS-agnostic interface with platform-specific implementations.
 
 ## Architecture
 

@@ -1,7 +1,7 @@
 # Global OS Shortcut Design
 
 ## Objective
-Implement a cross-platform global hotkey feature for the TelePick Avalonia desktop application. The hotkey should work regardless of whether the application is in focus, allowing the user to instantly capture clipboard content.
+Implement a cross-platform global hotkey feature for the iM.TelePick Avalonia desktop application. The hotkey should work regardless of whether the application is in focus, allowing the user to instantly capture clipboard content.
 
 ## Chosen Approach
 We will use **SharpHook** (`libuiohook` wrapper), which provides a unified, highly reliable API across Linux, Windows, and macOS for intercepting global keyboard events.

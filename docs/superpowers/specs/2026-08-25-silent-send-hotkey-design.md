@@ -146,7 +146,7 @@ Add `SendClipboardToTelegramAsync()` private method:
 ## Verification
 
 ```bash
-cd clients/desktop && dotnet build src/TelePick.Desktop
+cd clients/desktop && dotnet build src/iM.TelePick.Desktop
 ```
 
 Manual test: run app → set hotkey in settings → copy text → press hotkey → check Telegram chat.
